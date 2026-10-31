@@ -802,10 +802,17 @@ void sendPrtk() {
     hrms = sqrtf(fix.sigmaLat * fix.sigmaLat + fix.sigmaLon * fix.sigmaLon);
   }
   if (flowing && fix.sigmaAlt >= 0) vrms = fix.sigmaAlt;
-  char line[80];
-  snprintf(line, sizeof(line), "$PRTK,%s,%u,%.2f,%.2f,%.3f,%.3f\n",
-           flowing ? k902QualityName(fix.quality) : "NODATA", flowing ? fix.satellites : 0,
-           flowing && fix.pdop > 0 ? fix.pdop : 0.0f, flowing ? fix.hdop : 0.0f, hrms, vrms);
+  char line[96];
+  // Trailing age (GGA field 13) so the phone badge can show "รอ FLOAT" while quality is still SINGLE.
+  if (flowing && fix.diffAge >= 0) {
+    snprintf(line, sizeof(line), "$PRTK,%s,%u,%.2f,%.2f,%.3f,%.3f,%.0f\n",
+             k902QualityName(fix.quality), fix.satellites,
+             fix.pdop > 0 ? fix.pdop : 0.0f, fix.hdop, hrms, vrms, fix.diffAge);
+  } else {
+    snprintf(line, sizeof(line), "$PRTK,%s,%u,%.2f,%.2f,%.3f,%.3f\n",
+             flowing ? k902QualityName(fix.quality) : "NODATA", flowing ? fix.satellites : 0,
+             flowing && fix.pdop > 0 ? fix.pdop : 0.0f, flowing ? fix.hdop : 0.0f, hrms, vrms);
+  }
   bleSend(line, strlen(line));
 }
 
