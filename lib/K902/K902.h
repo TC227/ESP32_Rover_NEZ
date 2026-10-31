@@ -31,6 +31,27 @@ struct K902Imu {
   double accel[3] = {0, 0, 0};  // m/s^2, or g on some firmware builds
 };
 
+// Binary Insrtkcompensate (msg 2366) — tip compensation / INS-RTK tilt survey status.
+struct K902InsRtk {
+  uint8_t posMode = 0;
+  double lat = 0;
+  double lon = 0;
+  double hgt = 0;
+  float pitch = 0;
+  float roll = 0;
+  float heading = 0;
+  float tilt = 0;
+  bool compensateValid = false;
+  double deltaEast = 0;
+  double deltaNorth = 0;
+  double deltaUp = 0;
+  int8_t status = -1;     // -1 WAIT_INIT … 4 INITOK / compensating
+  uint16_t step = 0;      // 0..1000
+  uint8_t direction = 0;  // shake/rotate hint while calibrating
+  uint8_t needShack = 0;
+  uint32_t errorCode = 0;
+};
+
 const char *k902QualityName(uint8_t quality);
 
 // SinoGNSS (ComNav) K902 on one UART: sends ComNav ASCII commands, decodes NMEA and the IMUDATA
@@ -42,6 +63,7 @@ class K902 {
   using FixHandler = void (*)(const K902Fix &fix);                     // after every GGA
   using TextHandler = void (*)(const char *line);                      // command replies, ComNav # logs
   using ImuHandler = void (*)(const K902Imu &imu);                     // every CRC-valid IMUDATA frame
+  using InsRtkHandler = void (*)(const K902InsRtk &comp);              // Insrtkcompensate binary
   using RtcmOutHandler = void (*)(const uint8_t *data, size_t len);    // complete RTCM3 frames from the board
 
   void begin(HardwareSerial &uart, int8_t rxPin, int8_t txPin, uint32_t baud,
@@ -60,6 +82,7 @@ class K902 {
   void onFix(FixHandler handler) { fixHandler_ = handler; }
   void onText(TextHandler handler) { textHandler_ = handler; }
   void onImu(ImuHandler handler) { imuHandler_ = handler; }
+  void onInsRtk(InsRtkHandler handler) { insRtkHandler_ = handler; }
   void onRtcmOut(RtcmOutHandler handler) { rtcmOutHandler_ = handler; }
 
   const K902Fix &fix() const { return fix_; }
@@ -181,5 +204,6 @@ class K902 {
   FixHandler fixHandler_ = nullptr;
   TextHandler textHandler_ = nullptr;
   ImuHandler imuHandler_ = nullptr;
+  InsRtkHandler insRtkHandler_ = nullptr;
   RtcmOutHandler rtcmOutHandler_ = nullptr;
 };

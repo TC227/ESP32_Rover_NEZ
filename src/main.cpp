@@ -25,16 +25,17 @@
 #define BLE_SEND_NMEA 1    // every NMEA sentence on BLE; SW Maps needs GGA and RMC for a position
 #define BLE_SEND_PRTK_S 1  // "$PRTK,<fix>,<sats>" 1 Hz + "$S,<seq>,<dN cm>,<dE cm>" movement per fix
 #define TILT_ENABLED 1     // pole bubble from the K902 IMU: status line + "$TILT,<pitch>,<roll>"
+#define K902_INS_ENABLED 1 // GNSS+INS + INSRTK tip survey when the board firmware supports it
 // Bubble snappiness: higher blend / lower thresholds = follows the pole faster (more IMU noise).
 // Accel-only bubbles feel bad while swinging (linear accel ≠ gravity). Gate hard when
 // |a|≠g, and fuse gyro when the short IMUDATA frame carries it. BLE ~25 Hz binary tilt.
-static const float kTiltAccelBlendStatic = 0.55f;
-static const float kTiltAccelBlendDynamic = 0.08f;
-static const float kTiltStaticGAbs = 1.6f;    // | |a|-g | below this → trust accel
-static const float kTiltShowEpsDeg = 0.015f;
-static const unsigned kTiltBleGapMs = 40;
-static const unsigned kTiltBleRetryMs = 15;
-static const float kTiltGyroAlpha = 0.98f;    // complementary: high = trust gyro short-term
+static const float kTiltAccelBlendStatic = 0.92f; // settle to gravity faster when held still
+static const float kTiltAccelBlendDynamic = 0.12f;
+static const float kTiltStaticGAbs = 1.8f;    // | |a|-g | below this → trust accel
+static const float kTiltShowEpsDeg = 0.01f;
+static const unsigned kTiltBleGapMs = 25;     // ~40 Hz bubble notify
+static const unsigned kTiltBleRetryMs = 10;
+static const float kTiltGyroAlpha = 0.72f;    // complementary: lower = return to level faster when still
 
 #define SERVICE_UUID           "6E400001-B5A3-F393-E0A9-E50E24DCCA9E"
 #define CHARACTERISTIC_UUID_RX "6E400002-B5A3-F393-E0A9-E50E24DCCA9E"
@@ -51,6 +52,14 @@ const char *const kK902Setup[] = {
   "unlockoutall",
   "rtkobsmode 0",
   "set appscene survey",
+#if K902_INS_ENABLED
+  "inscontrol enable",
+  "set smootheddr on",
+  "set imuaxestype 1",   // 1..8 — change if the OEM board is rotated on the pole head
+  "set drleverarm 0 0 0",
+  "insrtk fastinit on",
+  "log " K902_PORT " insrtkcompensateb ontime 0.2",
+#endif
   "log gpgga ontime 0.2",
   "log gprmc ontime 1",
   "log gpgst ontime 1",
@@ -146,8 +155,14 @@ float fusedRoll = 0;
 bool fusedInit = false;
 bool tiltFresh = false;
 bool tiltGyroLive = false;
+bool insRtkLive = false;
+bool insInitPending = false;
+int8_t lastInsStatus = -99;
+float poleHeightM = 2.0f;
 unsigned long lastImuMs = 0;
 unsigned long lastImuSampleMs = 0;
+unsigned long lastPinsMs = 0;
+unsigned long insInitStartedMs = 0;
 unsigned long lastTiltBleMs = 0;
 unsigned long lastTiltAttemptMs = 0;
 unsigned long tiltTx = 0;
@@ -1041,19 +1056,102 @@ void sendBstatOff() {
   bleSend(line, strlen(line));
 }
 
+void applyInsRodLength(float meters) {
+  if (meters < 0.1f) meters = 0.1f;
+  if (meters > 20.0f) meters = 20.0f;
+  poleHeightM = meters;
+  prefs.putFloat("poleH", poleHeightM);
+#if K902_INS_ENABLED
+  char cmd[48];
+  // INSRTK rod length is millimetres.
+  snprintf(cmd, sizeof(cmd), "insrtk rodlength %u", (unsigned)lroundf(poleHeightM * 1000.0f));
+  gnss.sendCommand(cmd);
+#endif
+}
+
+#if K902_INS_ENABLED
+void onInsRtkComp(const K902InsRtk &c) {
+  insRtkLive = true;
+  // Bubble stays on high-rate IMU fuse — INS attitude (~5 Hz) feels laggy in the hand.
+  if (isfinite(c.tilt)) tiltDeg = c.tilt;
+
+  if (insInitPending && c.status != lastInsStatus) {
+    lastInsStatus = c.status;
+    char line[48];
+    if (c.status == 4) {
+      insInitPending = false;
+      setLevelReference();
+      snprintf(line, sizeof(line), "$ICALIB,OK,ins\n");
+    } else if (c.status == 2 || c.status == 3) {
+      snprintf(line, sizeof(line), "$ICALIB,ALIGN,%d,%u\n", (int)c.status, (unsigned)c.step);
+    } else if (c.status == -1) {
+      snprintf(line, sizeof(line), "$ICALIB,START,wait_init\n");
+    } else {
+      snprintf(line, sizeof(line), "$ICALIB,ALIGN,%d,%u\n", (int)c.status, (unsigned)c.step);
+    }
+    bleSend(line, strlen(line));
+  }
+
+  unsigned long now = millis();
+  if (deviceConnected && now - lastPinsMs >= 200) {
+    lastPinsMs = now;
+    char line[128];
+    snprintf(line, sizeof(line), "$PINS,%d,%.2f,%.2f,%.2f,%u,%u,0x%X\n",
+             (int)c.status, c.tilt, c.pitch, c.roll,
+             c.compensateValid ? 1u : 0u, (unsigned)c.step, (unsigned)c.errorCode);
+    bleSend(line, strlen(line));
+    if (c.compensateValid) {
+      // Tip ≈ ARP + ENU deltas (small-angle flat Earth).
+      const double mPerDegLat = 111132.92;
+      const double mPerDegLon = 111412.84 * cos(c.lat * DEG_TO_RAD);
+      const double tipLat = c.lat + c.deltaNorth / mPerDegLat;
+      const double tipLon = c.lon + (mPerDegLon != 0.0 ? c.deltaEast / mPerDegLon : 0.0);
+      const double tipAlt = c.hgt + c.deltaUp;
+      snprintf(line, sizeof(line), "$PTIP,%.9f,%.9f,%.3f,%.2f\n", tipLat, tipLon, tipAlt, c.tilt);
+      bleSend(line, strlen(line));
+    }
+  }
+}
+#endif
+
 void handlePhoneCommand(char *cmd) {
   for (char *p = cmd; *p; ++p) {
     if (*p == '\r' || *p == '\n') *p = '\0';
   }
   Serial.printf("Phone< %s\n", cmd);
   if (strncmp(cmd, "$ICMD,CALIB", 11) == 0) {
-    const char *reply = setLevelReference() ? "$ICALIB,OK\n" : "$ICALIB,FAIL,no_imu\n";
+    // Optional pole height: $ICMD,CALIB,2.000
+    const char *comma = strchr(cmd + 11, ',');
+    if (comma && comma[1]) {
+      float h = (float)atof(comma + 1);
+      if (h > 0.05f) applyInsRodLength(h);
+    }
+    bool levelOk = setLevelReference();
+#if K902_INS_ENABLED
+    applyInsRodLength(poleHeightM);
+    gnss.sendCommand("insrtk reset");
+    gnss.sendCommand("insrtk fastinit on");
+    gnss.sendCommand("insrtk init 1");
+    insInitPending = true;
+    lastInsStatus = -99;
+    insInitStartedMs = millis();
+    const char *reply = "$ICALIB,START,ins\n";
     bleSend(reply, strlen(reply));
     Serial.printf("Phone> %s", reply);
+    if (!levelOk) Serial.println("INS init queued; bubble level ref not updated (no IMU yet)");
+#else
+    const char *reply = levelOk ? "$ICALIB,OK\n" : "$ICALIB,FAIL,no_imu\n";
+    bleSend(reply, strlen(reply));
+    Serial.printf("Phone> %s", reply);
+#endif
     return;
   }
   if (strncmp(cmd, "$ICMD,HEIGHT", 12) == 0) {
-    // The bubble uses the saved level reference; the pole height only matters on the phone.
+    const char *comma = strchr(cmd + 12, ',');
+    if (comma && comma[1]) {
+      float h = (float)atof(comma + 1);
+      if (h > 0.05f) applyInsRodLength(h);
+    }
     return;
   }
   if (strncmp(cmd, "$LCMD,START", 11) == 0) {
@@ -1286,6 +1384,10 @@ void setup() {
   phoneCmdQueue = xQueueCreate(4, kPhoneCmdMax);
   rtcmBuffer = xStreamBufferCreate(4096, 1);
   prefs.begin("rover");
+  if (prefs.isKey("poleH")) {
+    float h = prefs.getFloat("poleH", 2.0f);
+    if (h > 0.05f && h < 20.0f) poleHeightM = h;
+  }
   if (prefs.isKey("levelRef")) {
     prefs.getBytes("levelRef", levelRef, sizeof(levelRef));
     float n = sqrtf(levelRef[0] * levelRef[0] + levelRef[1] * levelRef[1] + levelRef[2] * levelRef[2]);
@@ -1305,6 +1407,9 @@ void setup() {
   gnss.onFix(onGnssFix);
   gnss.onText(onGnssText);
   gnss.onImu(onGnssImu);
+#if K902_INS_ENABLED
+  gnss.onInsRtk(onInsRtkComp);
+#endif
   gnss.onRtcmOut(onRtcmFromBoard);
   gnss.begin(Serial2, K902_RX_PIN, K902_TX_PIN, K902_BAUD, kK902Setup,
              sizeof(kK902Setup) / sizeof(kK902Setup[0]), K902_RTCM_INPUT);
@@ -1377,6 +1482,15 @@ void loop() {
     cmd[kPhoneCmdMax - 1] = '\0';
     handlePhoneCommand(cmd);
   }
+#if K902_INS_ENABLED
+  // Boards without INSRTK never emit compensate frames — fall back to bubble level-only OK.
+  if (insInitPending && !insRtkLive && insInitStartedMs != 0 && now - insInitStartedMs > 5000) {
+    insInitPending = false;
+    const char *reply = setLevelReference() ? "$ICALIB,OK,level_only\n" : "$ICALIB,FAIL,no_imu\n";
+    bleSend(reply, strlen(reply));
+    Serial.println("INS-RTK not reporting — used bubble level reference only");
+  }
+#endif
   // The phone is the caster. With it gone this long nobody gets the corrections, and a
   // forgotten fixed position would freeze the next rover session.
   if (!oldDeviceConnected && now - phoneLostAt >= 60000) {

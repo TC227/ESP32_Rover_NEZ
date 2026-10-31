@@ -408,6 +408,31 @@ void K902::handleBinary(size_t total) {
   const uint8_t *msg = bin_ + bin_[3];
   size_t msgLen = total - 4 - bin_[3];
 
+  // Insrtkcompensate (2366): tip compensation + INS-RTK status for survey poles.
+  if (id == 2366 && msgLen >= 89 && insRtkHandler_) {
+    K902InsRtk c;
+    c.posMode = msg[0];
+    memcpy(&c.lat, msg + 1, 8);
+    memcpy(&c.lon, msg + 9, 8);
+    memcpy(&c.hgt, msg + 17, 8);
+    memcpy(&c.pitch, msg + 37, 4);
+    memcpy(&c.roll, msg + 41, 4);
+    memcpy(&c.heading, msg + 45, 4);
+    memcpy(&c.tilt, msg + 49, 4);
+    c.compensateValid = msg[53] != 0;
+    memcpy(&c.deltaEast, msg + 54, 8);
+    memcpy(&c.deltaNorth, msg + 62, 8);
+    memcpy(&c.deltaUp, msg + 70, 8);
+    c.status = (int8_t)msg[78];
+    memcpy(&c.step, msg + 79, 2);
+    c.direction = msg[83];
+    c.needShack = msg[84];
+    memcpy(&c.errorCode, msg + 85, 4);
+    lastBinaryMs_ = millis();
+    insRtkHandler_(c);
+    return;
+  }
+
   K902Imu imu;
   imu.messageId = id;
   bool ok = false;
