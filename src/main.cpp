@@ -26,12 +26,15 @@
 #define BLE_SEND_PRTK_S 1  // "$PRTK,<fix>,<sats>" 1 Hz + "$S,<seq>,<dN cm>,<dE cm>" movement per fix
 #define TILT_ENABLED 1     // pole bubble from the K902 IMU: status line + "$TILT,<pitch>,<roll>"
 // Bubble snappiness: higher blend / lower thresholds = follows the pole faster (more IMU noise).
-static const float kTiltAccelBlend = 0.88f;   // fraction of each new accel sample kept (was 0.70)
-static const float kTiltShowEpsDeg = 0.04f;   // update shown angles above this delta (was 0.15°)
-// Keep tilt sparse: phone→ESP RTCM writes share the same radio. Flooding notifies
-// starves WRITE_NR and the K902 RTK LED stays dark (phone writes stay at 0).
-static const unsigned kTiltBleGapMs = 100;    // ~10 Hz max
-static const unsigned kTiltBleRetryMs = 40;
+// Accel-only bubbles feel bad while swinging (linear accel ≠ gravity). Gate hard when
+// |a|≠g, and fuse gyro when the short IMUDATA frame carries it. BLE ~25 Hz binary tilt.
+static const float kTiltAccelBlendStatic = 0.55f;
+static const float kTiltAccelBlendDynamic = 0.08f;
+static const float kTiltStaticGAbs = 1.6f;    // | |a|-g | below this → trust accel
+static const float kTiltShowEpsDeg = 0.015f;
+static const unsigned kTiltBleGapMs = 40;
+static const unsigned kTiltBleRetryMs = 15;
+static const float kTiltGyroAlpha = 0.98f;    // complementary: high = trust gyro short-term
 
 #define SERVICE_UUID           "6E400001-B5A3-F393-E0A9-E50E24DCCA9E"
 #define CHARACTERISTIC_UUID_RX "6E400002-B5A3-F393-E0A9-E50E24DCCA9E"
@@ -60,7 +63,7 @@ const char *const kK902Setup[] = {
   "log gagsv ontime 5",
   "log gbgsv ontime 5",
 #if TILT_ENABLED
-  "log " K902_PORT " imudatab ontime 0.1",
+  "log " K902_PORT " imudatab ontime 0.05",
 #endif
 };
 
@@ -138,8 +141,13 @@ bool gravitySet = false;
 float tiltDeg = 0;
 float shownPitch = 0;
 float shownRoll = 0;
+float fusedPitch = 0;           // complementary-filter lean (IMU frame)
+float fusedRoll = 0;
+bool fusedInit = false;
 bool tiltFresh = false;
+bool tiltGyroLive = false;
 unsigned long lastImuMs = 0;
+unsigned long lastImuSampleMs = 0;
 unsigned long lastTiltBleMs = 0;
 unsigned long lastTiltAttemptMs = 0;
 unsigned long tiltTx = 0;
@@ -564,12 +572,12 @@ void sendTiltBle(unsigned long now) {
   const bool heartbeat = lastTiltBleMs == 0 || now - lastTiltBleMs >= 500;
   if (!moved && !heartbeat) return;
   lastTiltAttemptMs = now;
-  // Binary on the dedicated char; ASCII on TX only as rare fallback (≤1 Hz).
+  // Binary on the dedicated char. ASCII only if binary fails — never both (dual path = jitter).
   const bool binOk = bleSendTiltBinary(shownPitch, shownRoll);
   bool asciiOk = false;
-  if (!binOk || lastTiltAsciiMs == 0 || now - lastTiltAsciiMs >= 1000) {
+  if (!binOk) {
     char line[32];
-    snprintf(line, sizeof(line), "$TILT,%.1f,%.1f\n", shownPitch, shownRoll);
+    snprintf(line, sizeof(line), "$TILT,%.2f,%.2f\n", shownPitch, shownRoll);
     asciiOk = bleSend(line, strlen(line));
     if (asciiOk) lastTiltAsciiMs = now;
   }
@@ -703,8 +711,7 @@ float gravityNorm() {
 
 void bubbleLean(float *pitchDeg, float *rollDeg);
 
-// Static tilt only (like a bubble level): the angle between measured gravity and the reference
-// taken with the pole vertical. It is not valid while the pole is being swung.
+// Spirit-level attitude: trust accel only when nearly static; otherwise coast on gyro (or hold).
 void onGnssImu(const K902Imu &imu) {
   float raw = 0;
   for (int i = 0; i < 3; i++) raw += (float)(imu.accel[i] * imu.accel[i]);
@@ -714,34 +721,75 @@ void onGnssImu(const K902Imu &imu) {
   static bool announced = false;
   if (!announced) {
     announced = true;
-    Serial.printf("IMU id=%u |a|=%.3f %s acc=%.3f %.3f %.3f\n", imu.messageId, raw,
-                  scale == 1.0f ? "m/s^2" : "g", imu.accel[0], imu.accel[1], imu.accel[2]);
+    Serial.printf("IMU id=%u |a|=%.3f %s acc=%.3f %.3f %.3f gyro=%.4f %.4f %.4f\n",
+                  imu.messageId, raw, scale == 1.0f ? "m/s^2" : "g",
+                  imu.accel[0], imu.accel[1], imu.accel[2],
+                  imu.gyro[0], imu.gyro[1], imu.gyro[2]);
   }
   float sample[3];
   for (int i = 0; i < 3; i++) {
     sample[i] = (float)imu.accel[i] * scale;
     if (!isfinite(sample[i])) return;
   }
+  const float sampleG = sqrtf(sample[0] * sample[0] + sample[1] * sample[1] + sample[2] * sample[2]);
+  const bool nearlyStatic = fabsf(sampleG - 9.80665f) < kTiltStaticGAbs;
+  const float blend = nearlyStatic ? kTiltAccelBlendStatic : kTiltAccelBlendDynamic;
   for (int i = 0; i < 3; i++) {
-    gravity[i] = gravitySet ? gravity[i] + kTiltAccelBlend * (sample[i] - gravity[i]) : sample[i];
+    gravity[i] = gravitySet ? gravity[i] + blend * (sample[i] - gravity[i]) : sample[i];
     if (!isfinite(gravity[i])) {
       gravitySet = false;
       return;
     }
   }
   gravitySet = true;
-  lastImuMs = millis();
+  unsigned long now = millis();
+  float dt = lastImuSampleMs ? (now - lastImuSampleMs) * 0.001f : 0.05f;
+  if (dt < 0.001f) dt = 0.001f;
+  if (dt > 0.2f) dt = 0.2f;
+  lastImuSampleMs = now;
+  lastImuMs = now;
+
   float g = gravityNorm();
   if (g < 1.0f) return;
   float c = (gravity[0] * levelRef[0] + gravity[1] * levelRef[1] + gravity[2] * levelRef[2]) / g;
   tiltDeg = acosf(constrain(c, -1.0f, 1.0f)) * RAD_TO_DEG;
-  float pitch = 0, roll = 0;
-  bubbleLean(&pitch, &roll);
-  if (!isfinite(pitch) || !isfinite(roll)) return;
-  if (!tiltFresh || fabsf(pitch - shownPitch) >= kTiltShowEpsDeg || fabsf(roll - shownRoll) >= kTiltShowEpsDeg) {
-    shownPitch = pitch;
-    shownRoll = roll;
+  float accelPitch = 0, accelRoll = 0;
+  bubbleLean(&accelPitch, &accelRoll);
+  if (!isfinite(accelPitch) || !isfinite(accelRoll)) return;
+
+  // Gyro from full IMUDATA or short 48-byte (gyro||accel) layout. Units: rad/s preferred;
+  // if magnitude looks like deg/s (>~10), convert.
+  float gx = (float)imu.gyro[0], gy = (float)imu.gyro[1], gz = (float)imu.gyro[2];
+  const float gmag = fabsf(gx) + fabsf(gy) + fabsf(gz);
+  tiltGyroLive = gmag > 1e-6f;
+  if (tiltGyroLive && gmag > 10.0f) {
+    gx *= DEG_TO_RAD;
+    gy *= DEG_TO_RAD;
+    gz *= DEG_TO_RAD;
   }
+
+  if (!fusedInit) {
+    fusedPitch = accelPitch;
+    fusedRoll = accelRoll;
+    fusedInit = true;
+  } else if (tiltGyroLive) {
+    // Map body rates onto lean axes used by bubbleLean (IMU pitch/roll of the pole).
+    fusedPitch += gy * RAD_TO_DEG * dt;
+    fusedRoll += gx * RAD_TO_DEG * dt;
+    if (nearlyStatic) {
+      fusedPitch = kTiltGyroAlpha * fusedPitch + (1.0f - kTiltGyroAlpha) * accelPitch;
+      fusedRoll = kTiltGyroAlpha * fusedRoll + (1.0f - kTiltGyroAlpha) * accelRoll;
+    }
+  } else {
+    // Accel-only: update lean only while nearly static so swinging does not thrash the bubble.
+    if (nearlyStatic) {
+      fusedPitch = accelPitch;
+      fusedRoll = accelRoll;
+    }
+  }
+
+  shownPitch = fusedPitch;
+  shownRoll = fusedRoll;
   tiltFresh = true;
 }
 
@@ -925,7 +973,7 @@ const char *const kBaseCommands[] = {
   "log " K902_PORT " rtcm1005b ontime 5",
   "log " K902_PORT " rtcm1033b ontime 10",
   "log gpgga ontime 1",
-  "log " K902_PORT " imudatab ontime 0.1",  // keep bubble alive while base is transmitting
+  "log " K902_PORT " imudatab ontime 0.05",  // keep bubble alive while base is transmitting
 };
 
 // zone <= 0 means the phone did not send one; fall back to the zone of the live fix.

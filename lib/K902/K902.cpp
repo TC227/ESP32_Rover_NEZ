@@ -418,6 +418,10 @@ void K902::handleBinary(size_t total) {
     ok = true;
   } else if (msgLen == kImuShortBytes) {
     ok = decodeShortImu(msg, imu.accel);
+    // 48-byte firmware layout often packs 3×gyro doubles then 3×accel doubles.
+    if (ok && imuAccelKind_ == 1 && imuAccelOff_ == 24) {
+      memcpy(imu.gyro, msg, 24);
+    }
   }
   if (!ok) {
     otherBinaryId_ = id;
