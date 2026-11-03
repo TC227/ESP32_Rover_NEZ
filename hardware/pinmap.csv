@@ -1,0 +1,42 @@
+net,from_module,from_pin,from_name,to_module,to_pin,to_name,esp32_gpio,level,direction,firmware,notes
+GND,ALL,GND,GND,ALL,GND,GND,,0V,common,,Star/pour; K902 COM2 GND must share this net. Never share with RS-232 SGND only.
+5V_SYS,J1_USBC,A4/B4,VBUS via F1/D1,U3,1,VIN,,5V,power,,USB-C 5V after 1A PTC + Schottky OR.
+5V_SYS,J5_5VIN,1,5V,D2,A,anode,,5V,power,,External 5V (power bank). OR-ing Schottky with USB.
+HC12_VCC,D3,K,cathode,J3_HC12,1,VCC,,~4.3-4.7V,power,,1N5819 (or 1N4007) from 5V_SYS. HC-12 wants 3.2-5.5V; series diode for long TX (base RTCM).
+3V3,U3,5,VOUT,U1,2,3V3,,3.3V,power,,"ESP32, CP2102N VDD, pull-ups, PWR LED. Do NOT power K902 EVK VIN from 3V3."
+3V3,U3,5,VOUT,U2,6,VDD,,3.3V,power,,CP2102N self-powered from board 3V3.
+EN,U1,3,EN,R1,2,10k to 3V3,,3.3V,input,strapping,"10k pull-up + 100nF to GND. SW1 RST to GND. Auto-program Q2 collector."
+IO0,U1,25,IO0,R2,2,10k to 3V3,0,3.3V,input,strapping HIGH=boot,"SW2 BOOT to GND. Auto-program Q1 collector. LOW at reset = download."
+UART0_TX,U1,35,TXD0,U2,26,RXD,1,3.3V,ESP32->USB,Serial 115200,USB serial monitor / flash.
+UART0_RX,U1,34,RXD0,U2,25,TXD,3,3.3V,USB->ESP32,Serial 115200,USB serial / flash.
+UART2_RX,J2_K902,2,K902_TXD,U1,27,IO16,16,3.3V TTL,K902->ESP32,"Serial2 RX, K902_RX_PIN 16","K902 COM2 TXD. NEVER RS-232 DB9."
+UART2_TX,U1,28,IO17,J2_K902,3,K902_RXD,17,3.3V TTL,ESP32->K902,"Serial2 TX, K902_TX_PIN 17","K902 COM2 RXD. NEVER RS-232 DB9."
+UART1_RX,J3_HC12,4,TXD via R10,U1,11,IO26,26,3.3V TTL,HC12->ESP32,"UART1 RX, HC12_RX_PIN 26","1k series R10. Optional BAT54S clamp D4 if TXD > 3.6V."
+UART1_TX,U1,12,IO27,J3_HC12,3,RXD,27,3.3V TTL,ESP32->HC12,"UART1 TX, HC12_TX_PIN 27","HC-12 RXD is 3.3-5V tolerant. Direct 3.3V OK. No shifter."
+HC12_SET,U1,10,IO25,J3_HC12,5,SET,25,3.3V,ESP32->HC12,HC12_SET_PIN 25,"10k pull-up R3 to 3V3 (default transparent). FW: HIGH=data LOW=AT."
+USB_D+,J1_USBC,A6/B6,D+,U2,4,D+,,USB,bidir,,Via USBLC6-2 ESD.
+USB_D-,J1_USBC,A7/B7,D-,U2,3,D-,,USB,bidir,,Via USBLC6-2 ESD.
+USB_CC1,J1_USBC,A5,CC1,R4,2,5.1k to GND,,USB CC,,,"Required for USB-C 5V sink."
+USB_CC2,J1_USBC,B5,CC2,R5,2,5.1k to GND,,USB CC,,,
+VBUS_SENSE,J1_USBC,A4/B4,VBUS,U2,8,VBUS,,5V,input,,CP2102N USB detect.
+PROG_3V3,J4_PROG,1,3V3,U1,2,3V3,,3.3V,power,,External USB-UART option; leave unpowered if USB-C stuffed.
+PROG_TX,J4_PROG,2,TXD0,U1,35,TXD0,1,3.3V,,,Do not drive if CP2102N is enumerating.
+PROG_RX,J4_PROG,3,RXD0,U1,34,RXD0,3,3.3V,,,
+PROG_IO0,J4_PROG,4,IO0,U1,25,IO0,0,3.3V,,,
+PROG_EN,J4_PROG,5,EN,U1,3,EN,,3.3V,,,
+PROG_GND,J4_PROG,6,GND,U1,1,GND,,0V,,,
+NC_IO12,U1,14,IO12,,,,12,strapping,leave NC,,"Must be LOW at boot for 3.3V flash. Do not pull up. No new signals."
+NC_IO2,U1,24,IO2,,,,2,strapping,leave NC or 10k DNP to GND,,"Do not use for LED unless firmware is updated. Strapping."
+NC_IO15,U1,23,IO15,,,,15,strapping,leave NC,,"Avoid for new signals."
+NC_IO5,U1,29,IO5,,,,5,strapping,leave NC,,"Avoid for new signals."
+FLASH_SD2,U1,17,SD2,,,,9,flash,do not route,,Internal flash. Leave unconnected.
+FLASH_SD3,U1,18,SD3,,,,10,flash,do not route,,Internal flash.
+FLASH_SD1,U1,19,SD1,,,,11,flash,do not route,,Internal flash.
+FLASH_SD0,U1,20,SD0,,,,7,flash,do not route,,Internal flash.
+FLASH_CMD,U1,21,CMD,,,,8,flash,do not route,,Internal flash.
+FLASH_CLK,U1,22,CLK,,,,6,flash,do not route,,Internal flash.
+BLE_RF,U1,ANT,PCB antenna,on-module,,,2.4 GHz,RF,ESP32 onboard,"BLEDevice + BluetoothSerial","No extra BT module. Keep-out opposite HC-12 433 MHz."
+HC12_ANT,J3_HC12,ANT1,IPEX/spring,,,,433.4 MHz CH1,RF,HC-12,AT+C001 FU3 P8,Do not share keep-out with ESP32 antenna.
+K902_COM2_GND,J2_K902,1,GND,U1,1,GND,,0V,common,,"ComNav EVK 16-pin: pin 1 or 15."
+K902_EVK_TX_COM2,EVK,13,TX_COM2,J2_K902,2,K902_TXD,16,3.3V LVCMOS,K902->ESP32,,"Adapter cable only. LVCMOS 3.3V."
+K902_EVK_RX_COM2,EVK,6,RX_COM2,J2_K902,3,K902_RXD,17,3.3V LVCMOS,ESP32->K902,,"Adapter cable only. Not DB9."

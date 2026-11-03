@@ -12,16 +12,29 @@
 #include <Preferences.h>
 
 #include "K902.h"
+#include "Hc12Radio.h"
+
+#ifndef K902_BASE_BUILD
+#define K902_BASE_BUILD 0
+#endif
 
 // ESP32 UART2 <-> K902 UART2 (COM2), 3.3 V TTL (never wire its RS-232 DB9 directly):
 // K902 TXD -> GPIO16 (RX2), K902 RXD <- GPIO17 (TX2), GND <-> GND.
 #define K902_RX_PIN 16
 #define K902_TX_PIN 17
 #define K902_BAUD 115200
+// HC-12 433 MHz (same on base and rover): TXD->GPIO26, RXD<-GPIO27, SET->GPIO25, VCC 5V, GND.
+#define HC12_RX_PIN 26
+#define HC12_TX_PIN 27
+#define HC12_SET_PIN 25
 #define K902_PORT "COM2"   // K902 port those wires go to
 #define K902_RTCM_INPUT 1  // RTCM3 written by the phone to the RX characteristic is fed to the K902
 
-#define BLE_DEVICE_NAME "GNSS"  // BLE name for this app, and the Classic name Survey Master pairs with
+#if K902_BASE_BUILD
+#define BLE_DEVICE_NAME "GNSS-BASE"  // Bluetooth Classic name shown for the Base ESP32
+#else
+#define BLE_DEVICE_NAME "GNSS"  // BLE name for this app and Classic Survey Master on Rover
+#endif
 #define BLE_SEND_NMEA 1    // every NMEA sentence on BLE; SW Maps needs GGA and RMC for a position
 #define BLE_SEND_PRTK_S 1  // "$PRTK,<fix>,<sats>" 1 Hz + "$S,<seq>,<dN cm>,<dE cm>" movement per fix
 #define TILT_ENABLED 1     // pole bubble from the K902 IMU: status line + "$TILT,<pitch>,<roll>"
@@ -77,6 +90,13 @@ const char *const kK902Setup[] = {
 };
 
 K902 gnss;
+Hc12Radio hc12;
+#if !K902_BASE_BUILD
+unsigned long lastBaseLinkStatusMs = 0;
+unsigned long lastRadioRtcmMs = 0;
+enum class RoverCorrectionSource : uint8_t { Radio = 0, PhoneNtrip = 1 };
+RoverCorrectionSource roverCorrectionSource = RoverCorrectionSource::Radio;
+#endif
 
 BLEServer *pServer = NULL;
 BLECharacteristic *pTxCharacteristic = NULL;
@@ -119,6 +139,7 @@ volatile bool sppUpEvent = false;
 volatile bool sppDownEvent = false;
 volatile bool sppCongested = false;
 volatile bool baseActive = false;
+unsigned long lastRadioStatusMs = 0;
 unsigned long lastBstatMs = 0;
 volatile bool rawLogActive = false;  // phone is recording the K902's own RTCM observations
 unsigned long lastRtcmOutMs = 0;
@@ -211,7 +232,7 @@ bool allCommandAscii(const uint8_t *data, size_t len) {
 
 // Only these reach the command path; anything else on the RX characteristic is RTCM.
 bool commandPrefixOk(const char *s, size_t len) {
-  static const char *const kPrefixes[] = {"$ICMD,", "$BCMD,", "$LCMD,"};
+  static const char *const kPrefixes[] = {"$ICMD,", "$BCMD,", "$LCMD,", "$RCMD,", "$WCMD,"};
   for (const char *p : kPrefixes) {
     size_t n = strlen(p);
     if (strncmp(s, p, len < n ? len : n) == 0) return true;
@@ -341,6 +362,8 @@ bool bleNotifyRaw(const uint8_t *data, size_t len) {
   return true;
 }
 
+void sppSend(const uint8_t *data, size_t len);
+
 bool bleSend(const char *data, size_t len) {
   return bleNotifyRaw(reinterpret_cast<const uint8_t *>(data), len);
 }
@@ -412,7 +435,11 @@ void ingestPhoneWrite(const uint8_t *data, size_t len) {
   } else {
     phoneCmdAccLen = 0;
   }
+#if !K902_BASE_BUILD
+  if (roverCorrectionSource == RoverCorrectionSource::PhoneNtrip) rtcmPush(data, len);
+#else
   rtcmPush(data, len);
+#endif
 }
 
 void onGatts(esp_gatts_cb_event_t event, esp_gatt_if_t gattsIf, esp_ble_gatts_cb_param_t *param) {
@@ -933,7 +960,12 @@ void sendBstat() {
 void onRtcmFromBoard(const uint8_t *data, size_t len) {
   if ((!baseActive && !rawLogActive) || len == 0) return;
   lastRtcmOutMs = millis();
+#if K902_BASE_BUILD
+  if (baseActive) hc12.write(data, len);
+  if (deviceConnected && rawLogActive) queueRtcmToPhone(data, len);
+#else
   if (deviceConnected) queueRtcmToPhone(data, len);
+#endif
 }
 
 // Raw observations for RINEX: MSM4 per constellation plus GPS/GLONASS ephemerides.
@@ -1119,6 +1151,43 @@ void handlePhoneCommand(char *cmd) {
     if (*p == '\r' || *p == '\n') *p = '\0';
   }
   Serial.printf("Phone< %s\n", cmd);
+  if (strncmp(cmd, "$WCMD,WIFI,", 11) == 0) {
+    bleSend("$WCMD,ACK\n", 10);
+    return;
+  }
+#if !K902_BASE_BUILD
+  if (strncmp(cmd, "$RCMD,SOURCE,", 13) == 0) {
+    const char *source = cmd + 13;
+    if (strcmp(source, "BASE") == 0) {
+      roverCorrectionSource = RoverCorrectionSource::Radio;
+      prefs.putUChar("corrSrc", static_cast<uint8_t>(roverCorrectionSource));
+      uint8_t dump[64];
+      while (hc12.read(dump, sizeof(dump)) > 0) {}
+      lastRadioRtcmMs = 0;
+      bleSend("$RSOURCE,ACK,BASE\n", 18);
+    } else if (strcmp(source, "NTRIP") == 0) {
+      roverCorrectionSource = RoverCorrectionSource::PhoneNtrip;
+      prefs.putUChar("corrSrc", static_cast<uint8_t>(roverCorrectionSource));
+      bleSend("$RSOURCE,ACK,NTRIP\n", 19);
+    }
+    lastBaseLinkStatusMs = 0;
+    return;
+  }
+  if (strncmp(cmd, "$RCMD,BASEHOST,", 15) == 0) {
+    bleSend("$BASEHOST,ACK\n", 14);
+    return;
+  }
+  if (strncmp(cmd, "$RCMD,STOPBASE", 14) == 0) {
+    const bool ok = hc12.writeText("$BCMD,STOP\n") > 0;
+    bleSend(ok ? "$BSTOP,OK\n" : "$BSTOP,FAIL\n", ok ? 10 : 12);
+    Serial.printf("Rover asked base to stop via HC-12: %s\n", ok ? "OK" : "FAIL");
+    return;
+  }
+#endif
+  if (strncmp(cmd, "$BCMD,STATUS", 12) == 0) {
+    sendBstat();
+    return;
+  }
   if (strncmp(cmd, "$ICMD,CALIB", 11) == 0) {
     // Optional pole height: $ICMD,CALIB,2.000
     const char *comma = strchr(cmd + 11, ',');
@@ -1227,6 +1296,8 @@ void printStatus() {
                   (unsigned long)rawFramesDropped, (unsigned)rawCount, (unsigned long)bleNotifyFails,
                   bleCongested ? " CONGESTED" : "");
   }
+  Serial.printf(" | HC-12 %lu baud tx=%lu rx=%lu drop=%lu", (unsigned long)hc12.baud(),
+                (unsigned long)hc12.txBytes(), (unsigned long)hc12.rxBytes(), (unsigned long)hc12.drops());
   Serial.printf(" | BLE %s %s q=%u, SPP %s %lu B, phone %lu B/%lu writes, wait %u, RTCM %lu B/%lu frames base=%lu gps=%lu glo=%lu gal=%lu bds=%lu qzs=%lu last=%u tilt %lu/%lu\n",
                 deviceConnected ? "connected" : "advertising", gnss.portState(), gnss.pendingCommands(),
                 SerialBT.hasClient() ? "connected" : "waiting", (unsigned long)sppBytes,
@@ -1384,6 +1455,10 @@ void setup() {
   phoneCmdQueue = xQueueCreate(4, kPhoneCmdMax);
   rtcmBuffer = xStreamBufferCreate(4096, 1);
   prefs.begin("rover");
+#if !K902_BASE_BUILD
+  const uint8_t savedSource = prefs.getUChar("corrSrc", 0);
+  roverCorrectionSource = savedSource == 1 ? RoverCorrectionSource::PhoneNtrip : RoverCorrectionSource::Radio;
+#endif
   if (prefs.isKey("poleH")) {
     float h = prefs.getFloat("poleH", 2.0f);
     if (h > 0.05f && h < 20.0f) poleHeightM = h;
@@ -1414,14 +1489,18 @@ void setup() {
   gnss.begin(Serial2, K902_RX_PIN, K902_TX_PIN, K902_BAUD, kK902Setup,
              sizeof(kK902Setup) / sizeof(kK902Setup[0]), K902_RTCM_INPUT);
 
-  // Classic SPP first so the controller starts in dual mode, then BLE for this app.
+  hc12.begin(HC12_RX_PIN, HC12_TX_PIN, HC12_SET_PIN);
+  if (hc12.configure()) Serial.println("HC-12 radio ready");
+  else Serial.println("HC-12 AT failed — 9600 transparent if a module is wired");
+
+#if !K902_BASE_BUILD
   SerialBT.register_callback(onSppEvent);
   if (SerialBT.begin(BLE_DEVICE_NAME)) {
     Serial.println("Classic Bluetooth SPP ready (Survey Master)");
   } else {
     Serial.println("Classic Bluetooth SPP failed");
   }
-
+#endif
   BLEDevice::init(BLE_DEVICE_NAME);
   BLEDevice::setMTU(247);
   BLEDevice::setPower(ESP_PWR_LVL_P9, ESP_BLE_PWR_TYPE_ADV);
@@ -1431,28 +1510,24 @@ void setup() {
   pServer = BLEDevice::createServer();
   pServer->setCallbacks(new MyServerCallbacks());
   BLEService *pService = pServer->createService(SERVICE_UUID);
-
   pTxCharacteristic = pService->createCharacteristic(
     CHARACTERISTIC_UUID_TX,
     BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY
   );
   pTxCharacteristic->addDescriptor(new BLE2902());
   pTxCharacteristic->setCallbacks(new TxCallbacks());
-
   pTiltCharacteristic = pService->createCharacteristic(
     CHARACTERISTIC_UUID_TILT,
     BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY
   );
   pTiltCharacteristic->addDescriptor(new BLE2902());
   pTiltCharacteristic->setCallbacks(new TxCallbacks());
-
   BLECharacteristic *pRxCharacteristic = pService->createCharacteristic(
     CHARACTERISTIC_UUID_RX,
     BLECharacteristic::PROPERTY_WRITE | BLECharacteristic::PROPERTY_WRITE_NR
   );
   pRxCharacteristic->setAccessPermissions(ESP_GATT_PERM_READ | ESP_GATT_PERM_WRITE);
   pRxCharacteristic->setCallbacks(new MyCallbacks());
-
   pService->start();
   rxCharHandle = pRxCharacteristic->getHandle();
   Serial.printf("RX char %s handle=%u (WRITE + WRITE_NR)\n",
@@ -1467,6 +1542,25 @@ void loop() {
   unsigned long now = millis();
   serviceBleCongestion(now);
   serviceBle(now);
+#if K902_BASE_BUILD
+  {
+    char radioLine[80];
+    if (hc12.pollLine(radioLine, sizeof(radioLine))) {
+      if (strncmp(radioLine, "$BCMD,STOP", 10) == 0) {
+        Serial.println("HC-12 stop from rover");
+        if (baseActive) stopBase();
+      }
+    }
+    if (deviceConnected && now - lastRadioStatusMs >= 2000) {
+      lastRadioStatusMs = now;
+      char line[48];
+      if (!hc12.ready()) snprintf(line, sizeof(line), "$RADIO,FAIL\n");
+      else if (baseActive) snprintf(line, sizeof(line), "$RADIO,UP,%lu\n", (unsigned long)hc12.txBytes());
+      else snprintf(line, sizeof(line), "$RADIO,READY,%lu\n", (unsigned long)hc12.baud());
+      bleSend(line, strlen(line));
+    }
+  }
+#else
   if (sppUpEvent) {
     sppUpEvent = false;
     Serial.println("Survey Master Bluetooth connected");
@@ -1476,6 +1570,23 @@ void loop() {
     Serial.println("Survey Master Bluetooth disconnected");
   }
   drainSpp();
+  if (roverCorrectionSource == RoverCorrectionSource::Radio) {
+    uint8_t baseRtcm[256];
+    size_t baseRtcmLen;
+    while ((baseRtcmLen = hc12.read(baseRtcm, sizeof(baseRtcm))) > 0) {
+      lastRadioRtcmMs = now;
+      rtcmPush(baseRtcm, baseRtcmLen);
+    }
+  }
+  if (deviceConnected && now - lastBaseLinkStatusMs >= 2000) {
+    lastBaseLinkStatusMs = now;
+    const char *linkStatus = roverCorrectionSource == RoverCorrectionSource::PhoneNtrip
+        ? "$BASELINK,MODE,NTRIP\n"
+        : ((now - lastRadioRtcmMs) < 3000 && lastRadioRtcmMs != 0 ? "$BASELINK,UP\n"
+           : "$BASELINK,WAIT,RADIO\n");
+    bleSend(linkStatus, strlen(linkStatus));
+  }
+#endif
   handleConsole();
   char cmd[kPhoneCmdMax];
   while (phoneCmdQueue && xQueueReceive(phoneCmdQueue, cmd, 0) == pdTRUE) {
@@ -1491,8 +1602,8 @@ void loop() {
     Serial.println("INS-RTK not reporting — used bubble level reference only");
   }
 #endif
-  // The phone is the caster. With it gone this long nobody gets the corrections, and a
-  // forgotten fixed position would freeze the next rover session.
+  // Base keeps sending RTCM over HC-12 after the phone disconnects BLE.
+#if !K902_BASE_BUILD
   if (!oldDeviceConnected && now - phoneLostAt >= 60000) {
     if (baseActive) {
       Serial.println("Phone gone 60 s - stopping base");
@@ -1504,6 +1615,14 @@ void loop() {
       rawLogActive = false;
     }
   }
+#else
+  // Base operation is independent of the phone after the app configures the fixed position.
+  if (!oldDeviceConnected && now - phoneLostAt >= 60000 && rawLogActive && !baseActive) {
+    Serial.println("Phone gone 60 s - stopping raw log");
+    disarmRawLog();
+    rawLogActive = false;
+  }
+#endif
   // A K902 power cycle drops its logs; ask again when observations stop while NMEA still runs.
   if (rawLogActive && !baseActive && gnss.nmeaFlowing() && now - lastRtcmOutMs > 15000 &&
       now - lastRawArmMs > 20000) {
@@ -1527,8 +1646,13 @@ void loop() {
   if (now - lastStatus >= 1000) {
     lastStatus = now;
     if (!quietStatus && consoleLen == 0) printStatus();
+#if K902_BASE_BUILD
+    if (BLE_SEND_PRTK_S && deviceConnected) sendPrtk();
+    if (deviceConnected && now - lastBstatMs >= 1000) {
+#else
     if (BLE_SEND_PRTK_S && !baseActive) sendPrtk();
     if (baseActive && now - lastBstatMs >= 1000) {
+#endif
       lastBstatMs = now;
       sendBstat();
     }

@@ -1,0 +1,50 @@
+item,qty,ref,value,footprint_kicad,lcsc_hint,stuff,notes
+1,1,U1,ESP32-WROOM-32E 4MB,RF_Module:ESP32-WROOM-32,C701342,yes,Custom PCB module. PCB antenna. Do not use a 30-pin DevKit on the production PCB (DevKit is proto-only). ESP32-WROOM-32D also OK.
+2,1,U2,CP2102N-A02-GQFN28,Package_DFN_QFN:QFN-28-1EP_5x5mm_P0.5mm_EP3.35x3.35mm,C529246,yes,USB-UART. 3.3V IO. CH340C is cheaper alt (SOP-16) if hand-solder.
+3,1,U3,AP2112K-3.3 600mA,Package_TO_SOT_SMD:SOT-23-5,C51118,yes,3.3V for ESP32+USB-UART only. EN pin to VIN. Alt hand-solder: AMS1117-3.3 SOT-223 (more heat).
+4,1,U4,USBLC6-2SC6,Package_TO_SOT_SMD:SOT-23-6,C7511,yes,USB D+/D- ESD.
+5,1,J1,USB-C receptacle 16P mid-mount,Connector_USB:USB_C_Receptacle_GCT_USB4105-xx-A_16P_TopMnt_Horizontal,C2765186,yes,5V sink. CC1/CC2 5.1k to GND required.
+6,1,J2,Pin socket female 1x09 2.54mm,Connector_PinSocket_2.54mm:PinSocket_1x09_P2.54mm_Vertical,C124379,yes,K902 left female. Pin1 SCK .. 5 RX2 6 TX2 7 3V3 8 5V 9 GND. Module male headers plug down. COM2 = RX2/TX2.
+6b,1,J6,Pin socket female 1x10 2.54mm,Connector_PinSocket_2.54mm:PinSocket_1x10_P2.54mm_Vertical,C124380,yes,K902 right female. Pin1 INT .. Pin10 GND. GND aligned with J2 pin9.
+6c,2,U1,Pin socket female 1x15 2.54mm,Connector_PinSocket_2.54mm:PinSocket_1x15_P2.54mm_Vertical,C124411,yes,ESP32 DevKit female pair. 25.4 mm row spacing. Male DevKit pins plug in.
+7,1,J3,Header 2.54mm 1x05,Connector_PinHeader_2.54mm:PinHeader_1x05_P2.54mm_Vertical,C50984,yes,HC-12 plug. Pin1 VCC Pin2 GND Pin3 RXD Pin4 TXD Pin5 SET. Leave room for 27.8x14.4mm module + IPEX.
+8,1,J4,Header 2.54mm 1x06,Connector_PinHeader_2.54mm:PinHeader_1x06_P2.54mm_Vertical,C50985,yes,PROG: 3V3 TXD0 RXD0 IO0 EN GND. Optional if USB-C works.
+9,1,J5,JST PH 2P 2.00mm,Connector_JST:JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical,C15793,yes,Battery / 5V in. PH2.0 NOT XH 2.54. Pin1 BAT+ Pin2 GND. Left rim on B.Cu, cable exits -X. One source at a time with USB-C 5V module.
+9b,1,J7,JST PH 6P 2.00mm male,Connector_JST:JST_PH_B6B-PH-K_1x06_P2.00mm_Vertical,B6B-PH-K,yes,Spare K902 J1 cable. Pin1 5V 2 UART2_TX 3 UART2_RX 4 EVENT 5 GND 6 NC. Front. Do not stack K902 on J2/J6 and plug J7 at the same time.
+9c,1,J8,JST PH 2P 2.00mm male,Connector_JST:JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical,C15793,yes,Circular carrier SW3 PWR jack (not battery). Pin1 K Pin2 GND. Left rim B.Cu above J5. Cable exits -X. External switch shorts K to GND. Do not wire K to 5V.
+9d,1,-,USB-C 5V 25x20 PSU module,Module 25x20 3-pad,NA,yes,Carrier U3 back top-left. Pads + 5V / − GND / K enable. USB +Y. Same 5V net as J5; use one source.
+10,1,J3A,SMA edge or U.FL,Connector_Coaxial:SMA_Amphenol_132134_Vertical,C75099,optional,Only if not using HC-12 onboard IPEX/spring. Do not also stuff spring on ANT2.
+11,2,SW1 SW2,6x6mm tactile 160gf,Button_Switch_THT:SW_PUSH_6mm,C318884,yes,Production radio PCB only: SW1=EN/RST SW2=BOOT/IO0. Not on the circular carrier.
+11b,1,SW3,6x6mm tactile 160gf off-board,Button_Switch_THT:SW_PUSH_6mm,C318884,off-board,Circular carrier: do NOT stuff on PCB. Panel/handheld momentary on a PH2.0 cable into J8. Press shorts K to GND. Same part family as SW1.
+12,2,Q1 Q2,2N7002,Package_TO_SOT_SMD:SOT-23,C20917,yes,Auto-program: Q1 IO0 Q2 EN. Espressif DTR/RTS circuit.
+13,1,D1,SS14 Schottky 1A 40V,Diode_SMD:D_SMA,C8678,yes,USB 5V OR-ing into 5V_SYS.
+14,1,D2,SS14 Schottky 1A 40V,Diode_SMD:D_SMA,C8678,yes,J5 5V OR-ing into 5V_SYS.
+15,1,D3,1N5819W SOD-123,Diode_SMD:D_SOD-123,C261937,yes,5V_SYS to HC12_VCC. Drops ~0.3V; keeps HC-12 LDO cooler during continuous TX. Alt 1N4007 as datasheet.
+16,1,D4,BAT54S dual Schottky,Package_TO_SOT_SMD:SOT-23,C16580,DNP,Clamp UART1_RX to 3V3/GND. Stuff only if HC-12 TXD measures >3.6V.
+17,1,D5,LED 0805 green,LED_SMD:LED_0805_2012Metric,C2297,yes,PWR on 3V3. Firmware has no GPIO LED.
+18,1,F1,PTC 1A 6V 1812,Fuse:Fuse_1812_4532Metric,C147394,yes,USB VBUS input.
+19,2,R1 R2,10k 1% 0603,Resistor_SMD:R_0603_1608Metric,C22775,yes,EN pull-up IO0 pull-up.
+20,1,R3,10k 1% 0603,Resistor_SMD:R_0603_1608Metric,C22775,yes,HC12_SET pull-up to 3V3. Default transparent if ESP32 is in reset.
+21,2,R4 R5,5.1k 1% 0603,Resistor_SMD:R_0603_1608Metric,C25905,yes,USB-C CC1 CC2 to GND.
+22,1,R6,1k 1% 0603,Resistor_SMD:R_0603_1608Metric,C21190,yes,PWR LED series.
+23,2,R7 R8,10k 1% 0603,Resistor_SMD:R_0603_1608Metric,C22775,yes,Q1 Q2 gate/base series from RTS DTR.
+24,1,R9,4.7k 1% 0603,Resistor_SMD:R_0603_1608Metric,C25879,yes,CP2102N RSTn to 3V3.
+25,1,R10,1k 1% 0603,Resistor_SMD:R_0603_1608Metric,C21190,yes,Series HC-12 TXD to GPIO26.
+26,1,R11,12k 1% 0603,Resistor_SMD:R_0603_1608Metric,C22859,DNP,Optional IO2 pull-down if USB download is flaky. Do not pull IO2 high.
+27,1,R12,4.7k 1% 0603,Resistor_SMD:R_0603_1608Metric,C25879,yes,CP2102N VBUS pin sense (if required by app note).
+28,1,C1,10uF 6.3V X5R 0805,Capacitor_SMD:C_0805_2012Metric,C15850,yes,3V3 bulk at ESP32 pin 2.
+29,4,C2 C8 C11 C12,100nF 16V X7R 0603,Capacitor_SMD:C_0603_1608Metric,C14663,yes,3V3 decouple ESP32; EN RC; LDO out; CP2102N VDD.
+30,1,C3,1uF 16V X5R 0603,Capacitor_SMD:C_0603_1608Metric,C15849,yes,LDO input.
+31,1,C4,10uF 6.3V X5R 0805,Capacitor_SMD:C_0805_2012Metric,C15850,yes,LDO output bulk.
+32,1,C5,100nF 16V 0603,Capacitor_SMD:C_0603_1608Metric,C14663,yes,5V_SYS.
+33,1,C6,220uF 10V electrolytic 5x5.4,Capacitor_SMD:CP_Elec_5x5.4,C19702,yes,HC12_VCC reservoir. Datasheet asks >=22uF preferably 1000uF; 220uF is a practical SMT compromise. Add 1000uF TH if base TX browns out.
+34,1,C7,100nF 16V 0603,Capacitor_SMD:C_0603_1608Metric,C14663,yes,HC12_VCC HF.
+35,2,C9 C10,100nF 50V 0603,Capacitor_SMD:C_0603_1608Metric,C14663,yes,Auto-program: DTR-EN and RTS-IO0 if using capacitor method instead of Q1/Q2. DNP if Q1/Q2 stuffed.
+36,1,C13,1uF 16V 0603,Capacitor_SMD:C_0603_1608Metric,C15849,yes,CP2102N VDD/REGIN per datasheet.
+37,1,MH1-MH4,M3 mounting hole 3.2mm,MountingHole:MountingHole_3.2mm_M3,NA,yes,Corners. GND via ring.
+38,1,-,HC-12 Si4463 module,Module 27.8x14.4mm 2.54mm 1x5,NA,yes,Buy separately. VCC 5V path. Same module BASE and ROVER. Channel 1 = 433.4 MHz in firmware.
+39,1,-,433 MHz antenna,IPEX/spring/SMA,NA,yes,On HC-12 ANT1 or ANT2 not both.
+40,1,-,K902 GNSS (off-board),ComNav K902 + EVK or carrier,NA,yes,NOT on this PCB. Wire COM2 TTL only. EVK VIN 5-12V from its own PSU.
+41,0,-,esp32_hotspot LTE board,NA,NA,do not stuff,Not on this radio path. Phone BLE + HC-12 only.
+42,0,-,GPIO radio switch,NA,NA,do not stuff,433 vs NTRIP is an app toggle. No hardware switch.
+43,0,-,External Bluetooth module,NA,NA,do not stuff,BLE is ESP32 onboard radio.
