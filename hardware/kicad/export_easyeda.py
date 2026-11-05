@@ -324,7 +324,7 @@ def write_easyeda_std(pads, segs, vias, holes, nets) -> str:
 
     # --- Device components (EasyEDA LIB, official-style female/male + module bodies) ---
     pitch = 2.54
-    k902_xl, k902_xr, k902_gnd_y = 37.5, 82.5, 53.0
+    k902_xl, k902_xr, k902_gnd_y = 43.0, 77.0, 48.57
     k902_left = [
         (str(i), k902_xl, k902_gnd_y + (9 - i) * pitch, net)
         for i, net in enumerate(
@@ -338,7 +338,7 @@ def write_easyeda_std(pads, segs, vias, holes, nets) -> str:
     esp = (100.0, 60.0)
     y0 = esp[1] - 17.78
     lx, rx = esp[0] - 12.7, esp[0] + 12.7
-    left_nets = {5: "UART2_RX", 6: "UART2_TX", 0: "3V3", 1: "GND"}
+    left_nets = {5: "UART2_RX", 6: "UART2_TX", 0: "3V3", 1: "GND", 14: "BUZZER"}
     right_nets = {0: "VIN", 1: "GND", 5: "UART1_TX", 6: "UART1_RX", 7: "HC12_SET"}
     esp_l = [(str(i + 1), lx, y0 + i * pitch, left_nets.get(i, "")) for i in range(15)]
     esp_r = [(str(i + 1), rx, y0 + i * pitch, right_nets.get(i, "")) for i in range(15)]
@@ -360,8 +360,8 @@ def write_easyeda_std(pads, segs, vias, holes, nets) -> str:
         ("6", 26.0, 51.0, ""),
     ]
 
-    shapes.append(module_device("M1", "K902-48x42", "K902_48x42", (36, 39, 84, 81), "1",
-                                [(39, 42), (81, 42), (39, 78), (81, 78)]))
+    shapes.append(module_device("M1", "K902-38x38", "K902_38x38", (41, 41, 79, 79), "1",
+                                [(45, 45), (75, 45), (45, 75), (75, 75)]))
     shapes.append(header_device("J2", "HDR-F-1x9", "HDR-TH_9P-P2.54-V-F", k902_left, "1", MODEL_F10, "0,0,90", "-12.6"))
     shapes.append(header_device("J6", "HDR-F-1x10", "HDR-TH_10P-P2.54-V-F", k902_right, "1", MODEL_F10, "0,0,90", "-12.6"))
     shapes.append(header_device("U1L", "HDR-F-1x15", "HDR-TH_15P-P2.54-V-F-1", esp_l, "1", MODEL_F15, "0,0,90", "-12.6"))
@@ -377,6 +377,8 @@ def write_easyeda_std(pads, segs, vias, holes, nets) -> str:
     ))
     shapes.append(header_device("J5", "JST-PH-2P", "CONN-TH_B2B-PH-K-S", j5_pins, "2", MODEL_PH2, "180,0,0", "-13.8"))
     shapes.append(header_device("J8", "SW3-PWR-PH2", "CONN-TH_B2B-PH-K-S", j8_pins, "2", MODEL_PH2, "180,0,0", "-13.8"))
+    bz_pins = [("VCC", 98.0, 30.54, "5V"), ("IO", 98.0, 28.0, "BUZZER"), ("GND", 98.0, 25.46, "GND")]
+    shapes.append(header_device("BZ1", "BUZZER-ACTIVE", "BUZZER_3P", bz_pins, "1", None, "0,0,0", "-11.8"))
     shapes.append(module_device(
         "R10", "1k", "R_Axial_P7.62", (106, 48.5, 110, 51.5), "2",
         extra_pads=[("1", 110.0, 50.0, "UART1_RX"), ("2", 106.0, 50.0, "UART1_RX_HC")],
@@ -386,7 +388,8 @@ def write_easyeda_std(pads, segs, vias, holes, nets) -> str:
         extra_pads=[("1", 42.0, 20.0, "5V"), ("2", 42.0, 16.0, "GND")],
     ))
 
-    shapes.append(text_label("K902 48x42", 38, 83, "3"))
+    shapes.append(text_label("K902 38x38", 42, 80.6, "3"))
+    shapes.append(text_label("BZ1 GPIO23", 90, 36, "3"))
     shapes.append(text_label("ESP32", 90, 40, "3"))
     shapes.append(text_label("J7 JST-PH6", 18, 63, "3"))
     shapes.append(text_label("J8 K-GND", 10, 66, "3"))
@@ -491,7 +494,7 @@ def write_easyeda_pro(pads, segs, vias, holes, nets) -> tuple[str, str]:
     lines.append(rec(["LAYER_PHYS", 0, "COPPER", 0.035, 0, 0, 0]))
     lines.append(rec(["LAYER_PHYS", 2, "COPPER", 0.035, 0, 0, 0]))
 
-    for name in ("GND", "5V", "UART2_RX", "UART2_TX", "UART1_RX", "UART1_TX", "UART1_RX_HC", "HC12_SET", "VIN", "3V3", "PSU_K"):
+    for name in ("GND", "5V", "UART2_RX", "UART2_TX", "UART1_RX", "UART1_TX", "UART1_RX_HC", "HC12_SET", "VIN", "3V3", "PSU_K", "BUZZER"):
         lines.append(rec(["NET", name, None, None, 0, None, 0, None]))
 
     # Circular outline as two 180° arcs
@@ -507,7 +510,7 @@ def write_easyeda_pro(pads, segs, vias, holes, nets) -> tuple[str, str]:
             xb, yb = px(c, d)
             lines.append(rec(["LINE", eid(), 0, "", layer, xa, ya, xb, yb, 0.15, 0]))
 
-    box(36, 39, 84, 81, 3)
+    box(41, 41, 79, 79, 3)
     box(86.8, 41.5, 113.2, 78.5, 3)
     box(49.5, 18.8, 77.3, 33.2, 4)
     box(16, 78, 41, 98, 4)
@@ -518,7 +521,7 @@ def write_easyeda_pro(pads, segs, vias, holes, nets) -> tuple[str, str]:
         xa, ya = px(x, y)
         lines.append(rec(["STRING", eid(), 0, layer, xa, ya, txt, "Arial", 1.2, 0.15, 0, 0, 6, 0, 0, 0, mirror, 0]))
 
-    label("K902 48x42", 38, 83, 3)
+    label("K902 38x38", 42, 80.6, 3)
     label("ESP32", 90, 40, 3)
     label("HC-12", 50, 34.5, 4, 1)
     label("USB-C 5V", 17, 99, 4, 1)

@@ -13,6 +13,7 @@ item,qty,ref,value,footprint_kicad,lcsc_hint,stuff,notes
 9b,1,J7,JST PH 6P 2.00mm male,Connector_JST:JST_PH_B6B-PH-K_1x06_P2.00mm_Vertical,B6B-PH-K,yes,Spare K902 J1 cable. Pin1 5V 2 UART2_TX 3 UART2_RX 4 EVENT 5 GND 6 NC. Front. Do not stack K902 on J2/J6 and plug J7 at the same time.
 9c,1,J8,JST PH 2P 2.00mm male,Connector_JST:JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical,C15793,yes,Circular carrier SW3 PWR jack (not battery). Pin1 K Pin2 GND. Left rim B.Cu above J5. Cable exits -X. External switch shorts K to GND. Do not wire K to 5V.
 9d,1,-,USB-C 5V 25x20 PSU module,Module 25x20 3-pad,NA,yes,Carrier U3 back top-left. Pads + 5V / − GND / K enable. USB +Y. Same 5V net as J5; use one source.
+9e,1,BZ1,Active buzzer module 5V 3-pin,Carrier:BUZZER_3P,NA,yes,Front lower-right (98,28). VCC=5V I/O=GPIO23 GND. High = beep. Clear of GNSS and ESP antennas.
 10,1,J3A,SMA edge or U.FL,Connector_Coaxial:SMA_Amphenol_132134_Vertical,C75099,optional,Only if not using HC-12 onboard IPEX/spring. Do not also stuff spring on ANT2.
 11,2,SW1 SW2,6x6mm tactile 160gf,Button_Switch_THT:SW_PUSH_6mm,C318884,yes,Production radio PCB only: SW1=EN/RST SW2=BOOT/IO0. Not on the circular carrier.
 11b,1,SW3,6x6mm tactile 160gf off-board,Button_Switch_THT:SW_PUSH_6mm,C318884,off-board,Circular carrier: do NOT stuff on PCB. Panel/handheld momentary on a PH2.0 cable into J8. Press shorts K to GND. Same part family as SW1.
@@ -41,7 +42,7 @@ item,qty,ref,value,footprint_kicad,lcsc_hint,stuff,notes
 34,1,C7,100nF 16V 0603,Capacitor_SMD:C_0603_1608Metric,C14663,yes,HC12_VCC HF.
 35,2,C9 C10,100nF 50V 0603,Capacitor_SMD:C_0603_1608Metric,C14663,yes,Auto-program: DTR-EN and RTS-IO0 if using capacitor method instead of Q1/Q2. DNP if Q1/Q2 stuffed.
 36,1,C13,1uF 16V 0603,Capacitor_SMD:C_0603_1608Metric,C15849,yes,CP2102N VDD/REGIN per datasheet.
-37,1,MH1-MH4,M3 mounting hole 3.2mm,MountingHole:MountingHole_3.2mm_M3,NA,yes,Corners. GND via ring.
+37,4,H1-H4,M3 mounting hole 3.2mm NPTH,MountingHole:MountingHole_3.2mm_M3,NA,yes,Circular carrier. 4 holes on BCD 112 mm, on the +X +Y -X -Y axes.
 38,1,-,HC-12 Si4463 module,Module 27.8x14.4mm 2.54mm 1x5,NA,yes,Buy separately. VCC 5V path. Same module BASE and ROVER. Channel 1 = 433.4 MHz in firmware.
 39,1,-,433 MHz antenna,IPEX/spring/SMA,NA,yes,On HC-12 ANT1 or ANT2 not both.
 40,1,-,K902 GNSS (off-board),ComNav K902 + EVK or carrier,NA,yes,NOT on this PCB. Wire COM2 TTL only. EVK VIN 5-12V from its own PSU.

@@ -6,7 +6,7 @@
    `c:\project\ESP32_Rover_NEZ\hardware\kicad\gnss-head.kicad_pro`
 4. เปิด **PCB Editor** — แผงพาหะ `gnss-head.kicad_pcb`
    - วงกลม **DIA 120 mm** ศูนย์กลาง `(60, 60)` — **K902 อยู่กลางเป๊ะ**
-   - ด้านหน้า: K902 48×42 + ซ็อกเก็ตตัวเมีย 1×9+1×10 + **J7 JST-PH 6P ตัวผู้สำรอง** + ESP32 ซ็อกเก็ตตัวเมีย 2×15
+   - ด้านหน้า: K902 38×38 + ซ็อกเก็ตตัวเมีย 1×9+1×10 ห่าง 34 มม. + **J7 JST-PH 6P ตัวผู้สำรอง** + ESP32 ซ็อกเก็ตตัวเมีย 2×15
    - ด้านหลัง: USB-C 5V บนซ้าย (USB +Y แพด +/−/K) + HC-12 ใต้ K902 (เสา +X) + **BAT J5 PH2.0** + **J8 SW3 PWR PH2.0** (สวิตช์ภายนอก ไม่บัดกรี 6×6 บนแผง)
    - เปิดใน EasyEDA **Standard**: `easyeda/gnss-head.json` — File → Import → EasyEDA (ดู `easyeda/README.md`) ไม่ต้องใช้ Pro
 5. สลับดูด้านหลัง: กด **B** หรือ View → Flip Board

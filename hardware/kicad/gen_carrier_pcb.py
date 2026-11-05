@@ -137,21 +137,22 @@ NETS = [
     (9, "VIN"),
     (10, "UART1_RX_HC"),
     (11, "PSU_K"),
+    (12, "BUZZER"),
 ]
 
 # --- Placement ---
-# K902 board from mechanical drawing: 48 mm wide × 42 mm tall, RF/MMCX on +X.
-# Main body 42×42; overall 48 including J3. CENTERED on the disk.
-K902_W, K902_H = 48.0, 42.0
-K902 = (CX - K902_W / 2, CY - K902_H / 2, CX + K902_W / 2, CY + K902_H / 2)  # (36,39)-(84,81)
+# URTK1.2 / K902 body 38×38 mm, centered. SMA / pin1 toward +Y.
+# Pin rows 2.0 mm in from the left and right edges → 34 mm between rows.
+K902_W, K902_H = 38.0, 38.0
+K902 = (CX - K902_W / 2, CY - K902_H / 2, CX + K902_W / 2, CY + K902_H / 2)  # (41,41)-(79,79)
 assert abs((K902[0] + K902[2]) / 2 - CX) < 1e-9
 assert abs((K902[1] + K902[3]) / 2 - CY) < 1e-9
 ESP = (100.0, 60.0)  # right of K902, USB toward -Y, WROOM +Y
 # K9022 photo: female sockets receive male headers from the module bottom.
-# Left 1x9 (SCK..GND), right 1x10 (INT..GND), 2.54 mm, GND aligned, pin1 toward RF (+Y).
+# Left 1x9 (SCK..GND), right 1x10 (INT..GND), 2.54 mm, GND aligned, pin1 toward SMA (+Y).
 K902_PITCH = 2.54
-K902_XL, K902_XR = 37.5, 82.5
-K902_GND_Y = 53.0
+K902_XL, K902_XR = CX - 17.0, CX + 17.0  # 43 and 77; row spacing 34 mm
+K902_GND_Y = CY - 4.5 * K902_PITCH  # right column is 10 pins; GND is the −Y end
 HC_PINS = (48.0, 26.0)  # back, body +X under K902, ANT +X
 PSU = (16.0, 78.0, 41.0, 98.0)  # top-left, USB-C toward +Y rim
 J5 = (8.0, 46.0)  # BAT PH2.0 on back, left rim, cable out −X
@@ -249,7 +250,7 @@ parts: list[str] = []
 # ----- TOP: ESP32 -----
 left_names = ["3V3", "GND", "15", "2", "4", "16", "17", "5", "18", "19", "21", "RX0", "TX0", "22", "23"]
 right_names = ["VIN", "GND2", "13", "12", "14", "27", "26", "25", "33", "32", "35", "34", "VN", "VP", "EN"]
-left_nets = {"3V3": (8, "3V3"), "GND": (1, "GND"), "16": (3, "UART2_RX"), "17": (4, "UART2_TX")}
+left_nets = {"3V3": (8, "3V3"), "GND": (1, "GND"), "16": (3, "UART2_RX"), "17": (4, "UART2_TX"), "23": (12, "BUZZER")}
 right_nets = {"VIN": (9, "VIN"), "GND2": (1, "GND"), "27": (6, "UART1_TX"), "26": (5, "UART1_RX"), "25": (7, "HC12_SET")}
 
 esp_pads = []
@@ -352,12 +353,28 @@ parts.append(
 )
 tht += [("J7.1", *j7_5v), ("J7.2", *j7_tx), ("J7.3", *j7_rx), ("J7.4", J7[0], j7y(4)), ("J7.5", *j7_gnd), ("J7.6", J7[0], j7y(6))]
 
-# K902 NPTH
-kx0, ky0, kx1, ky1 = K902
-k_holes = [(kx0 + 3, ky0 + 3), (kx1 - 3, ky0 + 3), (kx0 + 3, ky1 - 3), (kx1 - 3, ky1 - 3)]
-kh = [npth(f"MH{i+1}", x - (kx0 + kx1) / 2, y - (ky0 + ky1) / 2, 2.6) for i, (x, y) in enumerate(k_holes)]
+# Active buzzer module, front, lower right. GPIO23 high = beep. Not under the antennas.
+BZ = (98.0, 28.0)
+bz_vcc = (BZ[0], BZ[1] + 2.54)
+bz_io = (BZ[0], BZ[1])
+bz_gnd = (BZ[0], BZ[1] - 2.54)
+bz_pads = [
+    pad("VCC", 0, 2.54, 2, "5V", 0.9, 1.6),
+    pad("IO", 0, 0, 12, "BUZZER", 0.9, 1.6),
+    pad("GND", 0, -2.54, 1, "GND", 0.9, 1.6),
+]
 parts.append(
-    fp_header("Carrier:K902_48x42", "F.Cu", (CX, CY), "M1", "K902-48x42", "CENTERED 48x42  RF +X  J1 left")
+    fp_header("Carrier:BUZZER_3P", "F.Cu", BZ, "BZ1", "BUZZER-ACTIVE", "GPIO23 high = beep. VCC=5V. Lower right, clear of antennas")
+    + "".join(bz_pads)
+    + "\t)\n"
+)
+tht += [("BZ1.VCC", *bz_vcc), ("BZ1.IO", *bz_io), ("BZ1.GND", *bz_gnd)]
+
+# K902 mounting holes 30×30 mm, Ø2.2, centered on the 38×38 body
+k_holes = [(CX + sx * 15.0, CY + sy * 15.0) for sx in (-1.0, 1.0) for sy in (-1.0, 1.0)]
+kh = [npth(f"MH{i+1}", x - CX, y - CY, 2.2) for i, (x, y) in enumerate(k_holes)]
+parts.append(
+    fp_header("Carrier:K902_38x38", "F.Cu", (CX, CY), "M1", "K902-38x38", "CENTERED 38x38  SMA +Y  pins 34 mm apart")
     + "".join(kh)
     + "\t)\n"
 )
@@ -435,8 +452,8 @@ parts.append(
 tht += [("C6.1", *c6_p), ("C6.2", *c6_n)]
 
 hole_xy = []
-for i in range(6):
-    ang = math.radians(30.0 + i * 60.0)  # 30° offset so holes miss ESP/HC-12 at ±X
+for i in range(4):
+    ang = math.radians(i * 90.0)  # on the +X, +Y, −X, −Y axes
     hx = CX + BOLT_R * math.cos(ang)
     hy = CY + BOLT_R * math.sin(ang)
     hole_xy.append((hx, hy))
@@ -466,8 +483,8 @@ graphics.append(
 # F.SilkS top
 graphics.append(silk_rect(*K902))
 graphics.append(silk_rect(*K902, "F.CrtYd"))
-graphics.append(silk_text("K902 48x42 CENTER  J3 MMCX +X", 36.5, 83.2, 1.0))
-graphics.append(silk_text("J1 left  RF +X", 36.5, 36.6, 0.8))
+graphics.append(silk_text("K902 38x38  SMA +Y", 42.0, 80.6, 1.0))
+graphics.append(silk_text("pins 34 mm", 42.0, 39.2, 0.8))
 graphics.append(silk_rect(ESP[0] - 13.2, ESP[1] - 18.5, ESP[0] + 13.2, ESP[1] + 18.5))
 graphics.append(silk_text("ESP32 FEMALE 2x15  USB -Y", ESP[0] - 12, ESP[1] - 20.2, 0.85))
 graphics.append(silk_text("J7 JST-PH 6P SPARE", J7[0] - 8.5, j7y(1) + 2.2, 0.75))
@@ -479,7 +496,9 @@ graphics.append(silk_text("RX", J7[0] - 5.2, j7y(3) - 0.35, 0.55))
 graphics.append(silk_text("EVT", J7[0] - 5.6, j7y(4) - 0.35, 0.55))
 graphics.append(silk_text("GND", J7[0] - 5.6, j7y(5) - 0.35, 0.55))
 graphics.append(silk_text("NC", J7[0] - 5.2, j7y(6) - 0.35, 0.55))
-graphics.append(silk_text("DIA 120  6xM3 BCD 112", 42, 8.5, 1.0))
+graphics.append(silk_text("DIA 120  4xM3 BCD 112", 42, 8.5, 1.0))
+graphics.append(silk_rect(BZ[0] - 6.0, BZ[1] - 6.0, BZ[0] + 6.0, BZ[1] + 6.0))
+graphics.append(silk_text("BZ1 GPIO23", BZ[0] - 8.0, BZ[1] + 7.2, 0.7))
 for i, name in enumerate(k902_left_names, start=1):
     graphics.append(silk_text(name, K902_XL + 1.6, k902_left_y(i) - 0.35, 0.55))
 for i, name in enumerate(k902_right_names, start=1):
@@ -529,16 +548,32 @@ def on_disk(x: float, y: float, margin: float = 2.0) -> bool:
 
 tracks: list[str] = []
 # UART2 on F.Cu: approach K902 TX2/RX2 from inside the module, not along the pin column
-tracks.append(segment(*gpio16, 41.0, gpio16[1], 3, 0.35))
-tracks.append(segment(41.0, gpio16[1], 41.0, k902_tx2[1], 3, 0.35))
-tracks.append(segment(41.0, k902_tx2[1], *k902_tx2, 3, 0.35))
-tracks.append(segment(*gpio17, 43.5, gpio17[1], 4, 0.35))
-tracks.append(segment(43.5, gpio17[1], 43.5, k902_rx2[1], 4, 0.35))
-tracks.append(segment(43.5, k902_rx2[1], *k902_rx2, 4, 0.35))
-tracks.append(segment(*j7_rx, 41.0, j7_rx[1], 3, 0.35))
-tracks.append(segment(41.0, j7_rx[1], 41.0, gpio16[1], 3, 0.35))
-tracks.append(segment(*j7_tx, 43.5, j7_tx[1], 4, 0.35))
-tracks.append(segment(43.5, j7_tx[1], 43.5, gpio17[1], 4, 0.35))
+# West of the left pin row (x=43) so the verticals do not run through the header.
+tracks.append(segment(*gpio16, 39.0, gpio16[1], 3, 0.35))
+tracks.append(segment(39.0, gpio16[1], 39.0, k902_tx2[1], 3, 0.35))
+tracks.append(segment(39.0, k902_tx2[1], *k902_tx2, 3, 0.35))
+tracks.append(segment(*gpio17, 41.0, gpio17[1], 4, 0.35))
+tracks.append(segment(41.0, gpio17[1], 41.0, k902_rx2[1], 4, 0.35))
+tracks.append(segment(41.0, k902_rx2[1], *k902_rx2, 4, 0.35))
+tracks.append(segment(*j7_rx, 39.0, j7_rx[1], 3, 0.35))
+tracks.append(segment(39.0, j7_rx[1], 39.0, gpio16[1], 3, 0.35))
+tracks.append(segment(*j7_tx, 41.0, j7_tx[1], 4, 0.35))
+tracks.append(segment(41.0, j7_tx[1], 41.0, gpio17[1], 4, 0.35))
+
+# BUZZER on B.Cu: GPIO23 is the top of the ESP left header. Jog east of the HC-12 SET trace.
+gpio23 = (LX, py(14))
+tracks.append(segment(*gpio23, 82.0, gpio23[1], 12, 0.4, "B.Cu"))
+tracks.append(segment(82.0, gpio23[1], 82.0, 46.0, 12, 0.4, "B.Cu"))
+tracks.append(segment(82.0, 46.0, 93.0, 46.0, 12, 0.4, "B.Cu"))
+tracks.append(segment(93.0, 46.0, 93.0, bz_io[1], 12, 0.4, "B.Cu"))
+tracks.append(segment(93.0, bz_io[1], *bz_io, 12, 0.4, "B.Cu"))
+# 5V from JP1, staying below the DevKit body.
+tracks.append(segment(jp_at[0] - 1.27, jp_at[1], jp_at[0] - 1.27, bz_vcc[1], 2, 0.6))
+tracks.append(segment(jp_at[0] - 1.27, bz_vcc[1], *bz_vcc, 2, 0.6))
+# GND up the gap between K902 and ESP, below the UART2 traces.
+tracks.append(segment(*bz_gnd, 83.0, bz_gnd[1], 1, 0.5))
+tracks.append(segment(83.0, bz_gnd[1], 83.0, esp_gnd_l[1], 1, 0.5))
+tracks.append(segment(83.0, esp_gnd_l[1], *esp_gnd_l, 1, 0.5))
 
 # UART1 on B.Cu: approach HC-12 from the pin side (west), ANT hangs +X
 tracks.append(segment(*gpio27, 90.0, gpio27[1], 6, 0.35, "B.Cu"))
@@ -662,9 +697,9 @@ header = f"""(kicad_pcb
 \t(title_block
 \t\t(title "GNSS Head Carrier")
 \t\t(date "2026-11-03")
-\t\t(rev "15")
+\t\t(rev "19")
 \t\t(company "ESP32_Rover_NEZ")
-\t\t(comment 1 "DIA 120  K902 48x42 CENTER  RF +X  ESP FEMALE 2x15  PSU +Y  J8 SW3-PWR ext  HC-12 ANT+X")
+\t\t(comment 1 "DIA 120  K902 38x38 CENTER  SMA +Y  ESP FEMALE 2x15  PSU +Y  J8 SW3-PWR ext  HC-12 ANT+X")
 \t)
 {layers}\t(setup
 \t\t(pad_to_mask_clearance 0.05)
