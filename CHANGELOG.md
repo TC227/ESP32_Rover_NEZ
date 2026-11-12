@@ -1,3 +1,10 @@
+## 1.2.3 - 2026-11-11
+
+- BLE firmware update into the inactive OTA slot, and `$FW` reports 1.2.3.
+- HC-12 accepts AT at 115200 or 9600, then locks 115200 channel 1.
+- K902 IMU setup stays on imudatab. rawimub at 100 Hz is not logged, so the bubble keeps its frames.
+- Drop insrtk commands this K902 firmware rejects.
+
 ## 1.2.0 - 2026-11-05
 
 - One firmware for BASE and ROVER. BLE/Classic name `E25aer_gnss`. App selects role with `$ROLE`; stored in NVS.

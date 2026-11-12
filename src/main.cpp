@@ -10,6 +10,8 @@
 #include <freertos/stream_buffer.h>
 #include <esp_system.h>
 #include <Preferences.h>
+#include <Update.h>
+#include <esp_ota_ops.h>
 
 #include "K902.h"
 #include "Hc12Radio.h"
@@ -28,7 +30,7 @@
 #define K902_RTCM_INPUT 1  // RTCM3 written by the phone to the RX characteristic is fed to the K902
 
 #define BLE_DEVICE_NAME "E25aer_gnss"  // one binary; app sends $ROLE,BASE|ROVER after connect
-#define FW_VERSION "1.2.0"
+#define FW_VERSION "1.2.3"
 #define BLE_SEND_NMEA 1    // every NMEA sentence on BLE; SW Maps needs GGA and RMC for a position
 #define BLE_SEND_PRTK_S 1  // "$PRTK,<fix>,<sats>" 1 Hz + "$S,<seq>,<dN cm>,<dE cm>" movement per fix
 #define TILT_ENABLED 1     // pole bubble from the K902 IMU: status line + "$TILT,<pitch>,<roll>"
@@ -49,6 +51,12 @@ static const float kTiltGyroAlpha = 0.72f;    // complementary: lower = return t
 #define CHARACTERISTIC_UUID_TX "6E400003-B5A3-F393-E0A9-E50E24DCCA9E"
 // Dedicated notify lane for the pole bubble — not shared with NMEA / RTCM on TX.
 #define CHARACTERISTIC_UUID_TILT "6E400004-B5A3-F393-E0A9-E50E24DCCA9E"
+// Firmware image only. NMEA, RTCM, and $ commands stay on RX/TX/TILT.
+#define CHARACTERISTIC_UUID_OTA "6E400005-B5A3-F393-E0A9-E50E24DCCA9E"
+static const uint8_t kOtaStart = 0x01;
+static const uint8_t kOtaChunk = 0x02;
+static const uint8_t kOtaFinish = 0x03;
+static const uint8_t kOtaAbort = 0x04;
 // Binary tilt packet: [0x1F][pitch_cdeg int16 LE][roll_cdeg int16 LE]
 static const uint8_t kTiltPacketTag = 0x1F;
 
@@ -64,8 +72,9 @@ const char *const kK902Setup[] = {
   "set smootheddr on",
   "set imuaxestype 1",   // 1..8 — change if the OEM board is rotated on the pole head
   "set drleverarm 0 0 0",
-  "insrtk fastinit on",
-  "log " K902_PORT " insrtkcompensateb ontime 0.2",
+  "set drconfig 1.0",    // walk-up init ~1 m/s; default vehicle threshold never aligns on a pole
+  "set rtkfreq 10",
+  "set pvtfreq 10",
 #endif
   "log gpgga ontime 0.2",
   "log gprmc ontime 1",
@@ -81,6 +90,11 @@ const char *const kK902Setup[] = {
 #if TILT_ENABLED
   "log " K902_PORT " imudatab ontime 0.05",
 #endif
+  // rawimub at 100 Hz fills the 115200 COM2 link and drops imudatab, so the
+  // bubble and level calibration see no IMU. insconfigb is only on change.
+  "unlog " K902_PORT " rawimub",
+  "log " K902_PORT " insconfigb onchanged",
+  "saveconfig",
 };
 
 K902 gnss;
@@ -97,12 +111,21 @@ RoverCorrectionSource roverCorrectionSource = RoverCorrectionSource::Radio;
 BLEServer *pServer = NULL;
 BLECharacteristic *pTxCharacteristic = NULL;
 BLECharacteristic *pTiltCharacteristic = NULL;
+BLECharacteristic *pOtaCharacteristic = NULL;
+bool otaActive = false;
+uint32_t otaExpected = 0;
+uint32_t otaWritten = 0;
+volatile bool otaRebootPending = false;
+unsigned long otaRebootAt = 0;
+void abortOta();
 volatile bool deviceConnected = false;
 volatile unsigned long bleConnectedAtMs = 0;
 volatile bool phoneWriteAnnounced = false;
 volatile bool phoneWriteWarned = false;
 volatile uint16_t peerMtu = 23;
 volatile bool connectEvent = false;
+volatile bool fwAnnouncePending = false;
+unsigned long lastFwAnnounceMs = 0;
 volatile bool disconnectEvent = false;
 volatile bool mtuEvent = false;
 volatile uint16_t disconnectReason = 0;
@@ -136,6 +159,7 @@ volatile bool sppDownEvent = false;
 volatile bool sppCongested = false;
 volatile bool baseActive = false;
 unsigned long lastRadioStatusMs = 0;
+SemaphoreHandle_t hc12Mux = NULL;
 unsigned long lastBstatMs = 0;
 volatile bool rawLogActive = false;  // phone is recording the K902's own RTCM observations
 unsigned long lastRtcmOutMs = 0;
@@ -205,8 +229,13 @@ class MyServerCallbacks : public BLEServerCallbacks {
       BLE2902 *tiltCcc = (BLE2902 *)pTiltCharacteristic->getDescriptorByUUID((uint16_t)0x2902);
       if (tiltCcc != NULL) tiltCcc->setNotifications(true);
     }
+    if (pOtaCharacteristic != NULL) {
+      BLE2902 *otaCcc = (BLE2902 *)pOtaCharacteristic->getDescriptorByUUID((uint16_t)0x2902);
+      if (otaCcc != NULL) otaCcc->setNotifications(true);
+    }
   }
   void onDisconnect(BLEServer *server, esp_ble_gatts_cb_param_t *param) {
+    if (otaActive) abortOta();
     deviceConnected = false;
     peerMtu = 23;
     disconnectReason = param->disconnect.reason;
@@ -228,7 +257,7 @@ bool allCommandAscii(const uint8_t *data, size_t len) {
 
 // Only these reach the command path; anything else on the RX characteristic is RTCM.
 bool commandPrefixOk(const char *s, size_t len) {
-  static const char *const kPrefixes[] = {"$ICMD,", "$BCMD,", "$LCMD,", "$RCMD,", "$WCMD,", "$ROLE"};
+  static const char *const kPrefixes[] = {"$ICMD,", "$BCMD,", "$LCMD,", "$RCMD,", "$WCMD,", "$ROLE", "$FW", "$VER"};
   for (const char *p : kPrefixes) {
     size_t n = strlen(p);
     if (strncmp(s, p, len < n ? len : n) == 0) return true;
@@ -951,10 +980,34 @@ void sendBstat() {
   bleSend(line, strlen(line));
 }
 
+bool hc12Lock(uint32_t waitMs) {
+  if (!hc12Mux) return false;
+  return xSemaphoreTake(hc12Mux, pdMS_TO_TICKS(waitMs)) == pdTRUE;
+}
+
+void hc12Unlock() {
+  if (hc12Mux) xSemaphoreGive(hc12Mux);
+}
+
+// AT uses delay(). It runs here so the main loop can keep reading K902 (no NODATA).
+void hc12Task(void *) {
+  for (;;) {
+    if (!hc12.atOk() && hc12Lock(1000)) {
+      const bool ok = hc12.configure();
+      hc12Unlock();
+      Serial.println(ok ? "HC-12 115200 ready" : "HC-12 not 115200 yet — retry");
+    }
+    vTaskDelay(pdMS_TO_TICKS(hc12.atOk() ? 30000 : 4000));
+  }
+}
+
 void onRtcmFromBoard(const uint8_t *data, size_t len) {
   if ((!baseActive && !rawLogActive) || len == 0) return;
   lastRtcmOutMs = millis();
-  if (isBaseRole() && baseActive) hc12.write(data, len);
+  if (isBaseRole() && baseActive && hc12.atOk() && hc12Lock(0)) {
+    hc12.write(data, len);
+    hc12Unlock();
+  }
   if (deviceConnected && (rawLogActive || !isBaseRole())) queueRtcmToPhone(data, len);
 }
 
@@ -1069,7 +1122,8 @@ void stopBase() {
   }
   // Re-arm rover logs even if NMEA is still flowing (configure() would no-op then).
   for (size_t i = 0; i < sizeof(kK902Setup) / sizeof(kK902Setup[0]); i++) {
-    if (strncmp(kK902Setup[i], "unlogall", 8) == 0 || strcmp(kK902Setup[i], "fix none") == 0) continue;
+    if (strncmp(kK902Setup[i], "unlogall", 8) == 0 || strcmp(kK902Setup[i], "fix none") == 0 ||
+        strcmp(kK902Setup[i], "saveconfig") == 0) continue;
     if (!gnss.sendCommand(kK902Setup[i])) Serial.printf("K902 queue full at %s\n", kK902Setup[i]);
   }
   baseActive = false;
@@ -1079,8 +1133,10 @@ void stopBase() {
 }
 
 void flushHc12Rx() {
+  if (!hc12Lock(20)) return;
   uint8_t dump[64];
   while (hc12.read(dump, sizeof(dump)) > 0) {}
+  hc12Unlock();
 }
 
 void sendRoleAck() {
@@ -1112,12 +1168,6 @@ void applyInsRodLength(float meters) {
   if (meters > 20.0f) meters = 20.0f;
   poleHeightM = meters;
   prefs.putFloat("poleH", poleHeightM);
-#if K902_INS_ENABLED
-  char cmd[48];
-  // INSRTK rod length is millimetres.
-  snprintf(cmd, sizeof(cmd), "insrtk rodlength %u", (unsigned)lroundf(poleHeightM * 1000.0f));
-  gnss.sendCommand(cmd);
-#endif
 }
 
 #if K902_INS_ENABLED
@@ -1165,11 +1215,22 @@ void onInsRtkComp(const K902InsRtk &c) {
 }
 #endif
 
+void sendFwVersion() {
+  char line[24];
+  const int n = snprintf(line, sizeof(line), "$FW,%s\n", FW_VERSION);
+  if (n > 0) bleSend(line, (size_t)n);
+}
+
 void handlePhoneCommand(char *cmd) {
   for (char *p = cmd; *p; ++p) {
     if (*p == '\r' || *p == '\n') *p = '\0';
   }
   Serial.printf("Phone< %s\n", cmd);
+  if (strcmp(cmd, "$FW") == 0 || strncmp(cmd, "$FW,", 4) == 0 ||
+      strcmp(cmd, "$VER") == 0 || strncmp(cmd, "$VER,", 5) == 0) {
+    sendFwVersion();
+    return;
+  }
   if (strncmp(cmd, "$WCMD,WIFI,", 11) == 0) {
     bleSend("$WCMD,ACK\n", 10);
     return;
@@ -1210,7 +1271,11 @@ void handlePhoneCommand(char *cmd) {
       Serial.println("STOPBASE on this head — local base off");
       return;
     }
-    const bool ok = hc12.writeText("$BCMD,STOP\n") > 0;
+    bool ok = false;
+    if (hc12.atOk() && hc12Lock(50)) {
+      ok = hc12.writeText("$BCMD,STOP\n") > 0;
+      hc12Unlock();
+    }
     bleSend(ok ? "$BSTOP,OK\n" : "$BSTOP,FAIL\n", ok ? 10 : 12);
     Serial.printf("Rover asked base to stop via HC-12: %s\n", ok ? "OK" : "FAIL");
     return;
@@ -1227,23 +1292,10 @@ void handlePhoneCommand(char *cmd) {
       if (h > 0.05f) applyInsRodLength(h);
     }
     bool levelOk = setLevelReference();
-#if K902_INS_ENABLED
     applyInsRodLength(poleHeightM);
-    gnss.sendCommand("insrtk reset");
-    gnss.sendCommand("insrtk fastinit on");
-    gnss.sendCommand("insrtk init 1");
-    insInitPending = true;
-    lastInsStatus = -99;
-    insInitStartedMs = millis();
-    const char *reply = "$ICALIB,START,ins\n";
+    const char *reply = levelOk ? "$ICALIB,OK,level_only\n" : "$ICALIB,FAIL,no_imu\n";
     bleSend(reply, strlen(reply));
     Serial.printf("Phone> %s", reply);
-    if (!levelOk) Serial.println("INS init queued; bubble level ref not updated (no IMU yet)");
-#else
-    const char *reply = levelOk ? "$ICALIB,OK\n" : "$ICALIB,FAIL,no_imu\n";
-    bleSend(reply, strlen(reply));
-    Serial.printf("Phone> %s", reply);
-#endif
     return;
   }
   if (strncmp(cmd, "$ICMD,HEIGHT", 12) == 0) {
@@ -1422,6 +1474,8 @@ void serviceBle(unsigned long now) {
     paramsRequested = false;
     connectedAt = now;
     lastTiltBleMs = 0;
+    fwAnnouncePending = true;
+    lastFwAnnounceMs = 0;
     Serial.printf("Bluetooth Connected! %02X:%02X:%02X:%02X:%02X:%02X, ", peerAddr[0], peerAddr[1],
                   peerAddr[2], peerAddr[3], peerAddr[4], peerAddr[5]);
     printLinkParams();
@@ -1465,6 +1519,7 @@ void serviceBle(unsigned long now) {
   if (disconnectEvent) {
     disconnectEvent = false;
     oldDeviceConnected = false;
+    fwAnnouncePending = false;
     advertisePending = true;
     disconnectedAt = now;
     clearRawQueue();
@@ -1479,7 +1534,108 @@ void serviceBle(unsigned long now) {
   }
 }
 
+void otaNotify(const char *msg) {
+  if (pOtaCharacteristic == NULL || !deviceConnected || msg == NULL) return;
+  pOtaCharacteristic->setValue((uint8_t *)msg, strlen(msg));
+  pOtaCharacteristic->notify();
+}
+
+void abortOta() {
+  if (!otaActive && !Update.isRunning()) return;
+  Update.abort();
+  otaActive = false;
+  otaExpected = 0;
+  otaWritten = 0;
+  otaRebootPending = false;
+}
+
+uint32_t otaSlotCap() {
+  const esp_partition_t *next = esp_ota_get_next_update_partition(nullptr);
+  return next == nullptr ? 0 : next->size;
+}
+
+bool otaBegin(uint32_t size) {
+  const uint32_t cap = otaSlotCap();
+  if (cap == 0 || size == 0 || size > cap) {
+    otaNotify("$OTA,ERR,size\n");
+    return false;
+  }
+  if (otaActive) abortOta();
+  if (!Update.begin(size)) {
+    otaNotify("$OTA,ERR,begin\n");
+    return false;
+  }
+  otaActive = true;
+  otaExpected = size;
+  otaWritten = 0;
+  otaRebootPending = false;
+  otaNotify("$OTA,ACK,0\n");
+  return true;
+}
+
+void otaWriteChunk(const uint8_t *data, size_t len) {
+  if (!otaActive || data == nullptr || len == 0) return;
+  if (otaWritten + len > otaExpected) {
+    abortOta();
+    otaNotify("$OTA,ERR,over\n");
+    return;
+  }
+  const size_t n = Update.write(const_cast<uint8_t *>(data), len);
+  if (n != len) {
+    abortOta();
+    otaNotify("$OTA,ERR,write\n");
+    return;
+  }
+  otaWritten += n;
+}
+
+void otaFinish() {
+  if (!otaActive) return;
+  if (otaWritten != otaExpected) {
+    abortOta();
+    otaNotify("$OTA,ERR,short\n");
+    return;
+  }
+  if (!Update.end(true)) {
+    abortOta();
+    otaNotify("$OTA,ERR,end\n");
+    return;
+  }
+  otaActive = false;
+  otaNotify("$OTA,OK\n");
+  otaRebootAt = millis();
+  otaRebootPending = true;
+}
+
+class OtaCallbacks : public BLECharacteristicCallbacks {
+  void onWrite(BLECharacteristic *c) override {
+    const uint8_t *data = c->getData();
+    const size_t len = c->getLength();
+    if (data == nullptr || len == 0) return;
+    const uint8_t op = data[0];
+    if (op == kOtaStart && len >= 5) {
+      const uint32_t size = (uint32_t)data[1] | ((uint32_t)data[2] << 8) |
+                            ((uint32_t)data[3] << 16) | ((uint32_t)data[4] << 24);
+      otaBegin(size);
+      return;
+    }
+    if (!otaActive) return;
+    if (op == kOtaAbort) {
+      abortOta();
+      otaNotify("$OTA,ERR,abort\n");
+      return;
+    }
+    if (op == kOtaFinish) {
+      otaFinish();
+      return;
+    }
+    if (op == kOtaChunk && len > 1) otaWriteChunk(data + 1, len - 1);
+  }
+};
+
 void setup() {
+  pinMode(HC12_SET_PIN, OUTPUT);
+  digitalWrite(HC12_SET_PIN, LOW);  // hold AT before USB/Serial come up
   pinMode(BUZZER_PIN, OUTPUT);
   digitalWrite(BUZZER_PIN, LOW);
   Serial.begin(115200);
@@ -1522,9 +1678,9 @@ void setup() {
   gnss.begin(Serial2, K902_RX_PIN, K902_TX_PIN, K902_BAUD, kK902Setup,
              sizeof(kK902Setup) / sizeof(kK902Setup[0]), K902_RTCM_INPUT);
 
+  hc12Mux = xSemaphoreCreateMutex();
   hc12.begin(HC12_RX_PIN, HC12_TX_PIN, HC12_SET_PIN);
-  if (hc12.configure()) Serial.println("HC-12 radio ready");
-  else Serial.println("HC-12 AT failed — 9600 transparent if a module is wired");
+  xTaskCreate(hc12Task, "hc12", 4096, nullptr, 1, nullptr);
 
   SerialBT.register_callback(onSppEvent);
   if (SerialBT.begin(BLE_DEVICE_NAME)) {
@@ -1559,28 +1715,67 @@ void setup() {
   );
   pRxCharacteristic->setAccessPermissions(ESP_GATT_PERM_READ | ESP_GATT_PERM_WRITE);
   pRxCharacteristic->setCallbacks(new MyCallbacks());
+  pOtaCharacteristic = pService->createCharacteristic(
+    CHARACTERISTIC_UUID_OTA,
+    BLECharacteristic::PROPERTY_WRITE | BLECharacteristic::PROPERTY_WRITE_NR |
+    BLECharacteristic::PROPERTY_NOTIFY
+  );
+  pOtaCharacteristic->addDescriptor(new BLE2902());
+  pOtaCharacteristic->setCallbacks(new OtaCallbacks());
   pService->start();
   rxCharHandle = pRxCharacteristic->getHandle();
   Serial.printf("RX char %s handle=%u (WRITE + WRITE_NR)\n",
                 pRxCharacteristic->getUUID().toString().c_str(), (unsigned)rxCharHandle);
   BLEAdvertising *adv = pServer->getAdvertising();
   adv->addServiceUUID(SERVICE_UUID);
+  adv->setScanResponse(true);
+  BLEAdvertisementData scanData;
+  scanData.setName(BLE_DEVICE_NAME);
+  char mfg[2 + sizeof(FW_VERSION)];
+  mfg[0] = (char)0xFF;
+  mfg[1] = (char)0xFF;
+  memcpy(mfg + 2, FW_VERSION, strlen(FW_VERSION));
+  scanData.setManufacturerData(String(mfg, 2 + strlen(FW_VERSION)));
+  adv->setScanResponseData(scanData);
   adv->start();
   Serial.println("Waiting for phone...");
 }
 
 void loop() {
   unsigned long now = millis();
+  if (otaRebootPending && now - otaRebootAt >= 400) {
+    otaRebootPending = false;
+    ESP.restart();
+  }
   serviceBleCongestion(now);
   serviceBle(now);
-  if (isBaseRole()) {
-    char radioLine[80];
-    if (hc12.pollLine(radioLine, sizeof(radioLine))) {
-      if (strncmp(radioLine, "$BCMD,STOP", 10) == 0) {
-        Serial.println("HC-12 stop from rover");
-        if (baseActive) stopBase();
+  if (fwAnnouncePending && deviceConnected && now - lastFwAnnounceMs >= 500) {
+    lastFwAnnounceMs = now;
+    char line[24];
+    const int n = snprintf(line, sizeof(line), "$FW,%s\n", FW_VERSION);
+    if (n > 0 && bleSend(line, (size_t)n)) fwAnnouncePending = false;
+  }
+  bool radioStop = false;
+  if (hc12Lock(0)) {
+    if (isBaseRole() && hc12.atOk()) {
+      char radioLine[80];
+      if (hc12.pollLine(radioLine, sizeof(radioLine)) && strncmp(radioLine, "$BCMD,STOP", 10) == 0) {
+        radioStop = true;
+      }
+    } else if (!isBaseRole() && hc12.atOk() &&
+               roverCorrectionSource == RoverCorrectionSource::Radio && !baseActive) {
+      uint8_t baseRtcm[256];
+      size_t baseRtcmLen;
+      while ((baseRtcmLen = hc12.read(baseRtcm, sizeof(baseRtcm))) > 0) {
+        lastRadioRtcmMs = now;
+        rtcmPush(baseRtcm, baseRtcmLen);
       }
     }
+    hc12Unlock();
+  }
+  if (radioStop && baseActive) {
+    Serial.println("HC-12 stop from rover");
+    stopBase();
   }
   if (sppUpEvent) {
     sppUpEvent = false;
@@ -1595,20 +1790,12 @@ void loop() {
     if (deviceConnected && now - lastRadioStatusMs >= 2000) {
       lastRadioStatusMs = now;
       char line[48];
-      if (!hc12.ready()) snprintf(line, sizeof(line), "$RADIO,FAIL\n");
-      else if (baseActive) snprintf(line, sizeof(line), "$RADIO,UP,%lu\n", (unsigned long)hc12.txBytes());
-      else snprintf(line, sizeof(line), "$RADIO,READY,%lu\n", (unsigned long)hc12.baud());
+      if (baseActive && hc12.atOk()) snprintf(line, sizeof(line), "$RADIO,UP,%lu\n", (unsigned long)hc12.txBytes());
+      else if (hc12.atOk()) snprintf(line, sizeof(line), "$RADIO,READY,115200\n");
+      else snprintf(line, sizeof(line), "$RADIO,WAIT,AT\n");
       bleSend(line, strlen(line));
     }
   } else {
-    if (roverCorrectionSource == RoverCorrectionSource::Radio && !baseActive) {
-      uint8_t baseRtcm[256];
-      size_t baseRtcmLen;
-      while ((baseRtcmLen = hc12.read(baseRtcm, sizeof(baseRtcm))) > 0) {
-        lastRadioRtcmMs = now;
-        rtcmPush(baseRtcm, baseRtcmLen);
-      }
-    }
     if (deviceConnected && now - lastBaseLinkStatusMs >= 2000) {
       lastBaseLinkStatusMs = now;
       const char *linkStatus = roverCorrectionSource == RoverCorrectionSource::PhoneNtrip

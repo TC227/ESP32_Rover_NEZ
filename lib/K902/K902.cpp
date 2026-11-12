@@ -224,7 +224,8 @@ void K902::configure() {
   portMode_ = PortMode::Unknown;
   for (size_t i = 0; i < setupCount_; i++) {
     // Retries must not undo a base session ("fix none") or chop RTCM output ("unlogall").
-    if (!first && (strncmp(setup_[i], "unlogall", 8) == 0 || strcmp(setup_[i], "fix none") == 0)) continue;
+    if (!first && (strncmp(setup_[i], "unlogall", 8) == 0 || strcmp(setup_[i], "fix none") == 0 ||
+                  strcmp(setup_[i], "saveconfig") == 0)) continue;
     if (!sendCommand(setup_[i])) {
       Serial.printf("K902 setup queue full at %s\n", setup_[i]);
       break;

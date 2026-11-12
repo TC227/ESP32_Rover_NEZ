@@ -109,7 +109,7 @@ class K902 {
   static const size_t kLineMax = 512;
   static const size_t kBinaryMax = 512;
   static const size_t kMaxFields = 24;
-  static const size_t kQueueLen = 24;
+  static const size_t kQueueLen = 32;
   static const size_t kCommandMax = 128;
   static const size_t kMaxBauds = 9;
 

@@ -13,6 +13,7 @@ class Hc12Radio {
   void begin(int8_t rxPin, int8_t txPin, int8_t setPin);
   bool configure();
   bool ready() const { return ready_; }
+  bool atOk() const { return atOk_; }
   uint32_t baud() const { return baud_; }
   size_t write(const uint8_t *data, size_t len);
   size_t writeText(const char *text);
@@ -24,6 +25,7 @@ class Hc12Radio {
 
  private:
   bool atCommand(const char *cmd);
+  bool pingAt();
   void enterAt();
   void leaveAt(uint32_t baud);
 
@@ -33,6 +35,7 @@ class Hc12Radio {
   int8_t setPin_ = -1;
   uint32_t baud_ = kAtBaud;
   bool ready_ = false;
+  volatile bool atOk_ = false;
   uint32_t txBytes_ = 0;
   uint32_t rxBytes_ = 0;
   uint32_t drops_ = 0;
