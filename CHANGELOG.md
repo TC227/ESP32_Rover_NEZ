@@ -1,3 +1,23 @@
+## 1.2.8 - 2026-11-13
+
+- Enable the K902 `INSRTKCOMPENSATEB` output for tilted-pole surveying.
+- Forward compensated pole-tip coordinates and pole-frame tilt/heading only after the K902 reports a valid INS solution.
+- Keep IMU and INS logs armed after a receiver restart, and allow up to 85 seconds for field INS alignment.
+
+## 1.2.6 - 2026-11-13
+
+- Rover Wi-Fi beacon stays visible beside BLE. The hotspot is started before Classic Bluetooth, modem sleep is off, and a failed start is retried. Channel 1, name `E25aer_gnss`.
+
+## 1.2.5 - 2026-11-13
+
+- Rover re-sends `log COM2 imudatab` while NMEA is alive but the bubble stream is not. Boot no longer sends `imuaxestype` or `saveconfig`, which restarted the K902 and dropped that log.
+- The bubble follows the accelerometer even when the first samples are not perfectly still.
+
+## 1.2.4 - 2026-11-13
+
+- Rover opens a Wi-Fi hotspot named E25aer_gnss so the phone can use Wi-Fi instead of BLE. Corrections stay on HC-12.
+- A head saved as BASE does not start the hotspot.
+
 ## 1.2.3 - 2026-11-11
 
 - BLE firmware update into the inactive OTA slot, and `$FW` reports 1.2.3.

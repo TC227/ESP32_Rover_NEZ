@@ -12,6 +12,9 @@
 #include <Preferences.h>
 #include <Update.h>
 #include <esp_ota_ops.h>
+#include <WiFi.h>
+#include <esp_coexist.h>
+#include <esp_wifi.h>
 
 #include "K902.h"
 #include "Hc12Radio.h"
@@ -30,7 +33,9 @@
 #define K902_RTCM_INPUT 1  // RTCM3 written by the phone to the RX characteristic is fed to the K902
 
 #define BLE_DEVICE_NAME "E25aer_gnss"  // one binary; app sends $ROLE,BASE|ROVER after connect
-#define FW_VERSION "1.2.3"
+#define ROVER_WIFI_PASS "e25aer433"
+#define ROVER_WIFI_PORT 9000
+#define FW_VERSION "1.2.8"
 #define BLE_SEND_NMEA 1    // every NMEA sentence on BLE; SW Maps needs GGA and RMC for a position
 #define BLE_SEND_PRTK_S 1  // "$PRTK,<fix>,<sats>" 1 Hz + "$S,<seq>,<dN cm>,<dE cm>" movement per fix
 #define TILT_ENABLED 1     // pole bubble from the K902 IMU: status line + "$TILT,<pitch>,<roll>"
@@ -70,7 +75,8 @@ const char *const kK902Setup[] = {
 #if K902_INS_ENABLED
   "inscontrol enable",
   "set smootheddr on",
-  "set imuaxestype 1",   // 1..8 — change if the OEM board is rotated on the pole head
+  // imuaxestype is not sent here. The manual applies it only after saveconfig and a
+  // reboot, and that reboot drops every command still queued, including imudatab.
   "set drleverarm 0 0 0",
   "set drconfig 1.0",    // walk-up init ~1 m/s; default vehicle threshold never aligns on a pole
   "set rtkfreq 10",
@@ -90,11 +96,15 @@ const char *const kK902Setup[] = {
 #if TILT_ENABLED
   "log " K902_PORT " imudatab ontime 0.05",
 #endif
+#if K902_INS_ENABLED
+  // Required for true tilted-pole surveying.  IMUDATA drives only the bubble;
+  // INSRTKCOMPENSATE carries the K902-calculated pole-tip ENU offset.
+  "log " K902_PORT " insrtkcompensateb ontime 0.2",
+#endif
   // rawimub at 100 Hz fills the 115200 COM2 link and drops imudatab, so the
   // bubble and level calibration see no IMU. insconfigb is only on change.
   "unlog " K902_PORT " rawimub",
   "log " K902_PORT " insconfigb onchanged",
-  "saveconfig",
 };
 
 K902 gnss;
@@ -120,6 +130,8 @@ unsigned long otaRebootAt = 0;
 void abortOta();
 volatile bool deviceConnected = false;
 volatile unsigned long bleConnectedAtMs = 0;
+volatile unsigned long lastBleTrafficMs = 0;
+uint16_t peerConnId = 0;
 volatile bool phoneWriteAnnounced = false;
 volatile bool phoneWriteWarned = false;
 volatile uint16_t peerMtu = 23;
@@ -201,6 +213,7 @@ bool insInitPending = false;
 int8_t lastInsStatus = -99;
 float poleHeightM = 2.0f;
 unsigned long lastImuMs = 0;
+unsigned long lastImuRearmMs = 0;
 unsigned long lastImuSampleMs = 0;
 unsigned long lastPinsMs = 0;
 unsigned long insInitStartedMs = 0;
@@ -215,6 +228,8 @@ class MyServerCallbacks : public BLEServerCallbacks {
     Serial.println("BLE Server: onConnect called");
     deviceConnected = true;
     bleConnectedAtMs = millis();
+    lastBleTrafficMs = bleConnectedAtMs;
+    peerConnId = param->connect.conn_id;
     phoneWriteAnnounced = false;
     phoneWriteWarned = false;
     memcpy(peerAddr, param->connect.remote_bda, sizeof(peerAddr));
@@ -237,6 +252,7 @@ class MyServerCallbacks : public BLEServerCallbacks {
   void onDisconnect(BLEServer *server, esp_ble_gatts_cb_param_t *param) {
     if (otaActive) abortOta();
     deviceConnected = false;
+    peerConnId = 0;
     peerMtu = 23;
     disconnectReason = param->disconnect.reason;
     disconnectEvent = true;
@@ -380,6 +396,7 @@ bool bleNotifyRaw(const uint8_t *data, size_t len) {
       }
       return false;
     }
+    lastBleTrafficMs = millis();
     data += n;
     len -= n;
     sent += n;
@@ -389,7 +406,111 @@ bool bleNotifyRaw(const uint8_t *data, size_t len) {
 
 void sppSend(const uint8_t *data, size_t len);
 
+WiFiServer roverPhoneServer(ROVER_WIFI_PORT);
+WiFiClient roverPhone;
+bool roverApUp = false;
+
+bool phoneOnWifi() { return roverPhone.connected(); }
+
+unsigned long lastApTryMs = 0;
+
+void ensureRoverAp() {
+  // While the phone is on BLE, prefer that link. Balance at all times lets the
+  // softAP starve connection events until the phone reports a supervision timeout.
+  esp_coex_preference_set(deviceConnected ? ESP_COEX_PREFER_BT : ESP_COEX_PREFER_BALANCE);
+  if (isBaseRole()) {
+    if (!roverApUp) return;
+    roverPhone.stop();
+    roverPhoneServer.stop();
+    WiFi.softAPdisconnect(true);
+    WiFi.mode(WIFI_OFF);
+    roverApUp = false;
+    Serial.println("Rover WiFi AP off");
+    return;
+  }
+  if (roverApUp) {
+    if (WiFi.softAPgetStationNum() == 0 && WiFi.softAPIP() == IPAddress(0, 0, 0, 0)) roverApUp = false;
+    else return;
+  }
+  const unsigned long now = millis();
+  if (lastApTryMs != 0 && now - lastApTryMs < 3000) return;
+  lastApTryMs = now;
+  WiFi.persistent(false);
+  WiFi.mode(WIFI_AP);
+  WiFi.setSleep(false);
+  esp_wifi_set_ps(WIFI_PS_NONE);
+  const bool ok = WiFi.softAP(BLE_DEVICE_NAME, ROVER_WIFI_PASS, 1, 0, 1);
+  if (!ok) {
+    Serial.println("Rover WiFi AP failed — retry");
+    return;
+  }
+  roverPhoneServer.begin();
+  roverApUp = true;
+  // Bringing the AP back up can stop BLE advertising. Schedule a restart when
+  // the phone is not already connected.
+  if (pServer != NULL && !deviceConnected) {
+    advertisePending = true;
+    disconnectedAt = millis();
+  }
+  Serial.printf("Rover WiFi AP %s ch1 %s:%u\n", BLE_DEVICE_NAME, WiFi.softAPIP().toString().c_str(), ROVER_WIFI_PORT);
+}
+
+void serviceRoverPhone() {
+  ensureRoverAp();
+  if (!roverApUp) return;
+  if (roverPhoneServer.hasClient()) {
+    if (roverPhone.connected()) roverPhone.stop();
+    roverPhone = roverPhoneServer.accept();
+    roverPhone.setNoDelay(true);
+    Serial.println("Phone WiFi connected");
+    char line[32];
+    snprintf(line, sizeof(line), "$FW,%s\n", FW_VERSION);
+    roverPhone.write(reinterpret_cast<const uint8_t *>(line), strlen(line));
+  }
+  if (!roverPhone.connected()) return;
+  static uint8_t frame[3 + 1023 + 3];
+  static size_t frameLen = 0;
+  static size_t frameNeed = 0;
+  static char line[160];
+  static size_t lineLen = 0;
+  int budget = 1024;
+  while (budget-- > 0 && roverPhone.available() > 0) {
+    int raw = roverPhone.read();
+    if (raw < 0) break;
+    uint8_t b = (uint8_t)raw;
+    if (frameLen > 0) {
+      frame[frameLen++] = b;
+      if (frameLen == 3) frameNeed = 3 + ((((size_t)frame[1] & 0x03) << 8) | frame[2]) + 3;
+      if (frameLen >= 3 && frameLen == frameNeed) {
+        rtcmPush(frame, frameLen);
+        frameLen = 0;
+      } else if (frameLen > sizeof(frame)) {
+        frameLen = 0;
+      }
+      continue;
+    }
+    if (b == 0xD3 && lineLen == 0) {
+      frame[0] = b;
+      frameLen = 1;
+      continue;
+    }
+    if (b == '\r' || b == '\n') {
+      if (lineLen == 0) continue;
+      line[lineLen] = '\0';
+      if (line[0] == '$') handlePhoneCommand(line);
+      lineLen = 0;
+      continue;
+    }
+    if (b >= 0x20 && b <= 0x7E && lineLen + 1 < sizeof(line)) line[lineLen++] = (char)b;
+    else lineLen = 0;
+  }
+}
+
 bool bleSend(const char *data, size_t len) {
+  if (phoneOnWifi()) {
+    roverPhone.write(reinterpret_cast<const uint8_t *>(data), len);
+    return true;
+  }
   return bleNotifyRaw(reinterpret_cast<const uint8_t *>(data), len);
 }
 
@@ -482,6 +603,7 @@ void onGatts(esp_gatts_cb_event_t event, esp_gatt_if_t gattsIf, esp_ble_gatts_cb
     lastGattsWriteHandle = param->write.handle;
     lastGattsWriteLen = param->write.len;
     gattsWriteSeen++;
+    lastBleTrafficMs = millis();
     if (!param->write.is_prep && param->write.len > 0 && param->write.value != NULL &&
         rxCharHandle != 0 && param->write.handle == rxCharHandle) {
       ingestPhoneWrite(param->write.value, param->write.len);
@@ -612,7 +734,7 @@ void holdLine(char *dest, size_t cap, size_t *held, const char *sentence, size_t
 }
 
 void flushQualityLines() {
-  if (!deviceConnected) return;
+  if (!deviceConnected && !phoneOnWifi()) return;
   if (pendingGsaLen) {
     bleSend(pendingGsa, pendingGsaLen);
     pendingGsaLen = 0;
@@ -624,7 +746,20 @@ void flushQualityLines() {
 }
 
 void sendTiltBle(unsigned long now) {
-  if (!TILT_ENABLED || !tiltFresh || !deviceConnected) return;
+  if (!TILT_ENABLED || !tiltFresh) return;
+  if (phoneOnWifi()) {
+    if (lastImuMs == 0 || now - lastImuMs > 3000) return;
+    if (lastTiltBleMs != 0 && now - lastTiltBleMs < kTiltBleGapMs) return;
+    char line[32];
+    snprintf(line, sizeof(line), "$TILT,%.2f,%.2f\n", shownPitch, shownRoll);
+    if (!bleSend(line, strlen(line))) return;
+    lastTiltSentPitch = shownPitch;
+    lastTiltSentRoll = shownRoll;
+    lastTiltBleMs = now;
+    tiltTx++;
+    return;
+  }
+  if (!deviceConnected) return;
   if (lastImuMs == 0 || now - lastImuMs > 3000) return;
   if (lastTiltBleMs != 0 && now - lastTiltBleMs < kTiltBleGapMs) return;
   if (bleCongested) {
@@ -742,7 +877,7 @@ void onGnssSentence(const char *sentence, size_t len) {
   bool gsa = sentenceType(sentence, len, "GSA,");
   bool gst = sentenceType(sentence, len, "GST,");
   bool gsv = sentenceType(sentence, len, "GSV,") && gsvFirstPage(sentence, len);
-  if (!deviceConnected) {
+  if (!deviceConnected && !phoneOnWifi()) {
     if (gsa) holdLine(pendingGsa, sizeof(pendingGsa), &pendingGsaLen, sentence, len);
     else if (gst) holdLine(pendingGst, sizeof(pendingGst), &pendingGstLen, sentence, len);
     return;
@@ -837,20 +972,18 @@ void onGnssImu(const K902Imu &imu) {
     fusedPitch = accelPitch;
     fusedRoll = accelRoll;
     fusedInit = true;
-  } else if (tiltGyroLive) {
+  } else if (tiltGyroLive && nearlyStatic) {
     // Map body rates onto lean axes used by bubbleLean (IMU pitch/roll of the pole).
     fusedPitch += gy * RAD_TO_DEG * dt;
     fusedRoll += gx * RAD_TO_DEG * dt;
-    if (nearlyStatic) {
-      fusedPitch = kTiltGyroAlpha * fusedPitch + (1.0f - kTiltGyroAlpha) * accelPitch;
-      fusedRoll = kTiltGyroAlpha * fusedRoll + (1.0f - kTiltGyroAlpha) * accelRoll;
-    }
+    fusedPitch = kTiltGyroAlpha * fusedPitch + (1.0f - kTiltGyroAlpha) * accelPitch;
+    fusedRoll = kTiltGyroAlpha * fusedRoll + (1.0f - kTiltGyroAlpha) * accelRoll;
   } else {
-    // Accel-only: update lean only while nearly static so swinging does not thrash the bubble.
-    if (nearlyStatic) {
-      fusedPitch = accelPitch;
-      fusedRoll = accelRoll;
-    }
+    // Always follow gravity. Holding the last angle while |a| leaves 1 g left the
+    // bubble stuck on a rover whose first samples were not a clean static reading.
+    const float follow = nearlyStatic ? 0.85f : 0.45f;
+    fusedPitch += follow * (accelPitch - fusedPitch);
+    fusedRoll += follow * (accelRoll - fusedRoll);
   }
 
   shownPitch = fusedPitch;
@@ -1022,6 +1155,22 @@ const RawLog kRawLogs[] = {
   {"rtcm1019b", 30}, {"rtcm1020b", 30},
 };
 const size_t kRawLogCount = sizeof(kRawLogs) / sizeof(kRawLogs[0]);
+
+// Boot setup can be lost when the K902 restarts mid-queue. NMEA from the saved
+// config then keeps flowing, so the normal retry never runs and the bubble stays dead.
+void ensureBubbleLog(unsigned long now) {
+  if (!TILT_ENABLED || !gnss.nmeaFlowing()) return;
+  if (lastImuMs != 0 && now - lastImuMs < 2000) return;
+  if (lastImuRearmMs != 0 && now - lastImuRearmMs < 8000) return;
+  if (gnss.freeCommandSlots() < 3) return;
+  lastImuRearmMs = now;
+  gnss.sendCommand("unlog " K902_PORT " rawimub");
+  gnss.sendCommand("log " K902_PORT " imudatab ontime 0.05");
+#if K902_INS_ENABLED
+  gnss.sendCommand("log " K902_PORT " insrtkcompensateb ontime 0.2");
+#endif
+  Serial.println("IMU quiet - re-armed IMU/INS logs");
+}
 
 bool armRawLog() {
   lastRawArmMs = millis();
@@ -1202,6 +1351,13 @@ void onInsRtkComp(const K902InsRtk &c) {
              c.compensateValid ? 1u : 0u, (unsigned)c.step, (unsigned)c.errorCode);
     bleSend(line, strlen(line));
     if (c.compensateValid) {
+      // App-side guide/stakeout also needs heading together with the live
+      // bubble.  Convert the bubble's IMU frame to the app's pole frame.
+      char tiltLine[80];
+      const float polePitch = -shownRoll;
+      const float poleRoll = shownPitch;
+      snprintf(tiltLine, sizeof(tiltLine), "$PTILT,%.2f,%.2f,%.2f\n", polePitch, poleRoll, c.heading);
+      bleSend(tiltLine, strlen(tiltLine));
       // Tip ≈ ARP + ENU deltas (small-angle flat Earth).
       const double mPerDegLat = 111132.92;
       const double mPerDegLon = 111412.84 * cos(c.lat * DEG_TO_RAD);
@@ -1293,7 +1449,17 @@ void handlePhoneCommand(char *cmd) {
     }
     bool levelOk = setLevelReference();
     applyInsRodLength(poleHeightM);
+#if K902_INS_ENABLED
+    // The INS log is already armed at boot.  Wait for its first status frame
+    // so the app can distinguish a real tilted-pole solution from bubble-only.
+    insRtkLive = false;
+    insInitPending = levelOk;
+    insInitStartedMs = millis();
+    lastInsStatus = -99;
+    const char *reply = levelOk ? "$ICALIB,START,wait_ins\n" : "$ICALIB,FAIL,no_imu\n";
+#else
     const char *reply = levelOk ? "$ICALIB,OK,level_only\n" : "$ICALIB,FAIL,no_imu\n";
+#endif
     bleSend(reply, strlen(reply));
     Serial.printf("Phone> %s", reply);
     return;
@@ -1508,6 +1674,20 @@ void serviceBle(unsigned long now) {
     // Prefer ~7.5–15 ms connection events for the tilt characteristic.
     if (connTimeout < 400) pServer->updateConnParams(peerAddr, 6, 12, 0, 600);
   }
+  // Phone-side supervision timeout does not always deliver onDisconnect, so the
+  // head stays "connected" and never advertises. Drop a silent link and advertise.
+  if (deviceConnected && lastBleTrafficMs != 0 && now - lastBleTrafficMs > 20000) {
+    Serial.println("BLE silent 20s — drop link and advertise");
+    const uint16_t id = peerConnId;
+    deviceConnected = false;
+    peerConnId = 0;
+    oldDeviceConnected = false;
+    fwAnnouncePending = false;
+    advertisePending = true;
+    disconnectedAt = now;
+    phoneLostAt = now;
+    if (id != 0) pServer->disconnect(id);
+  }
   if (advFailedEvent) {
     advFailedEvent = false;
     if (!deviceConnected) {
@@ -1682,6 +1862,7 @@ void setup() {
   hc12.begin(HC12_RX_PIN, HC12_TX_PIN, HC12_SET_PIN);
   xTaskCreate(hc12Task, "hc12", 4096, nullptr, 1, nullptr);
 
+  ensureRoverAp();  // before Classic BT, so the first beacon is not lost
   SerialBT.register_callback(onSppEvent);
   if (SerialBT.begin(BLE_DEVICE_NAME)) {
     Serial.println("Classic Bluetooth SPP ready (Survey Master)");
@@ -1727,10 +1908,12 @@ void setup() {
   Serial.printf("RX char %s handle=%u (WRITE + WRITE_NR)\n",
                 pRxCharacteristic->getUUID().toString().c_str(), (unsigned)rxCharHandle);
   BLEAdvertising *adv = pServer->getAdvertising();
-  adv->addServiceUUID(SERVICE_UUID);
+  // The 128-bit NUS UUID does not fit beside "E25aer_gnss" in the 31-byte
+  // advert. Putting the UUID here pushes the name into the scan response,
+  // which the phone often misses, so the survey list stays empty.
   adv->setScanResponse(true);
   BLEAdvertisementData scanData;
-  scanData.setName(BLE_DEVICE_NAME);
+  scanData.setCompleteServices(BLEUUID(SERVICE_UUID));
   char mfg[2 + sizeof(FW_VERSION)];
   mfg[0] = (char)0xFF;
   mfg[1] = (char)0xFF;
@@ -1743,6 +1926,7 @@ void setup() {
 
 void loop() {
   unsigned long now = millis();
+  ensureRoverAp();
   if (otaRebootPending && now - otaRebootAt >= 400) {
     otaRebootPending = false;
     ESP.restart();
@@ -1796,7 +1980,8 @@ void loop() {
       bleSend(line, strlen(line));
     }
   } else {
-    if (deviceConnected && now - lastBaseLinkStatusMs >= 2000) {
+    serviceRoverPhone();
+    if ((deviceConnected || phoneOnWifi()) && now - lastBaseLinkStatusMs >= 2000) {
       lastBaseLinkStatusMs = now;
       const char *linkStatus = roverCorrectionSource == RoverCorrectionSource::PhoneNtrip
           ? "$BASELINK,MODE,NTRIP\n"
@@ -1813,7 +1998,7 @@ void loop() {
   }
 #if K902_INS_ENABLED
   // Boards without INSRTK never emit compensate frames — fall back to bubble level-only OK.
-  if (insInitPending && !insRtkLive && insInitStartedMs != 0 && now - insInitStartedMs > 5000) {
+  if (insInitPending && !insRtkLive && insInitStartedMs != 0 && now - insInitStartedMs > 85000) {
     insInitPending = false;
     const char *reply = setLevelReference() ? "$ICALIB,OK,level_only\n" : "$ICALIB,FAIL,no_imu\n";
     bleSend(reply, strlen(reply));
@@ -1852,6 +2037,7 @@ void loop() {
     armRawLog();
   }
 
+  ensureBubbleLog(now);
   gnss.poll();
 
   if (!baseActive && gnss.acceptsCorrections()) {

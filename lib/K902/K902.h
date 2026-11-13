@@ -139,7 +139,10 @@ class K902 {
   void readUart(uint32_t now);
   bool feedBinary(uint8_t b);
   bool feedRtcmOut(uint8_t b);
-  bool decodeShortImu(const uint8_t *msg, double *accel);
+  /// Decode compact/vendor-specific IMUDATA payloads.  K902 releases in the
+  /// field have used more than one payload length, so do not require one
+  /// exact binary layout for the bubble level.
+  bool decodeCompactImu(const uint8_t *msg, size_t msgLen, double *accel);
   void handleBinary(size_t total);
   void handleLine(uint32_t now);
   bool isSentence(const char *type) const;
@@ -178,8 +181,9 @@ class K902 {
   uint16_t imuMessageId_ = 0;
   uint16_t otherBinaryId_ = 0;
   uint16_t otherBinaryLen_ = 0;
-  int8_t imuAccelKind_ = -1;  // 0 = 3 floats, 1 = 3 doubles, inside a 48-byte IMUDATA body
+  int8_t imuAccelKind_ = -1;  // 0 = 3 floats, 1 = 3 doubles, inside the learned IMUDATA body
   uint8_t imuAccelOff_ = 0;
+  uint16_t imuAccelBytes_ = 0;
 
   char queue_[kQueueLen][kCommandMax];
   uint8_t queueHead_ = 0;

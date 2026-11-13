@@ -13,7 +13,7 @@ const uint32_t kDataFlowingMs = 4000;
 const uint8_t kAttemptsPerBaud = 2;
 const uint32_t kFallbackBauds[] = {115200, 460800, 230400, 921600, 9600, 57600, 38400, 19200};
 const uint16_t kImuBodyBytes = 56;   // manual layout: time + 3 gyro + 3 accel, all doubles
-const uint16_t kImuShortBytes = 48;  // this K902 firmware: message 2264 is 48 bytes, not 56
+const uint16_t kImuMinBytes = 24;    // at least one three-axis double vector
 
 // RTCM3 frame check (Qualcomm CRC-24Q over preamble, length and payload).
 uint32_t crc24q(const uint8_t *data, size_t len) {
@@ -366,17 +366,23 @@ bool K902::feedBinary(uint8_t b) {
   return true;
 }
 
-bool K902::decodeShortImu(const uint8_t *msg, double *accel) {
-  if (imuAccelKind_ >= 0) {
+bool K902::decodeCompactImu(const uint8_t *msg, size_t msgLen, double *accel) {
+  // K902 releases in the field differ in IMUDATA payload length. Keep a
+  // learned vector position only while that layout stays the same.
+  if (imuAccelKind_ >= 0 && imuAccelBytes_ == msgLen &&
+      imuAccelOff_ + (imuAccelKind_ == 1 ? 24 : 12) <= msgLen) {
     readAccel(msg, imuAccelKind_, imuAccelOff_, accel);
     return true;
   }
   float best = 1.0e9f;
   int kind = -1;
   uint8_t off = 0;
-  for (uint8_t i = 0; i + 24 <= kImuShortBytes; i += 8) {
+  // readAccel stores an 8-bit offset; IMUDATA itself is much smaller, but
+  // cap the scan so an unrelated large binary message cannot wrap an offset.
+  const size_t scanLen = msgLen > 255 ? 255 : msgLen;
+  for (uint16_t i = 0; i + 24 <= scanLen; i += 8) {
     double a[3];
-    readAccel(msg, 1, i, a);
+    readAccel(msg, 1, (uint8_t)i, a);
     float score;
     if (gravityScore(a[0], a[1], a[2], &score) && score < best) {
       best = score;
@@ -384,9 +390,9 @@ bool K902::decodeShortImu(const uint8_t *msg, double *accel) {
       off = i;
     }
   }
-  for (uint8_t i = 0; i + 12 <= kImuShortBytes; i += 4) {
+  for (uint16_t i = 0; i + 12 <= scanLen; i += 4) {
     double a[3];
-    readAccel(msg, 0, i, a);
+    readAccel(msg, 0, (uint8_t)i, a);
     float score;
     if (gravityScore(a[0], a[1], a[2], &score) && score < best) {
       best = score;
@@ -397,6 +403,7 @@ bool K902::decodeShortImu(const uint8_t *msg, double *accel) {
   if (kind < 0) return false;
   imuAccelKind_ = (int8_t)kind;
   imuAccelOff_ = off;
+  imuAccelBytes_ = (uint16_t)msgLen;
   readAccel(msg, kind, off, accel);
   return true;
 }
@@ -437,13 +444,13 @@ void K902::handleBinary(size_t total) {
   K902Imu imu;
   imu.messageId = id;
   bool ok = false;
-  if (msgLen >= kImuBodyBytes) {
+  if (msgLen == kImuBodyBytes) {
     memcpy(&imu.gpsSeconds, msg, 8);
     memcpy(imu.gyro, msg + 8, 24);
     memcpy(imu.accel, msg + 32, 24);
     ok = true;
-  } else if (msgLen == kImuShortBytes) {
-    ok = decodeShortImu(msg, imu.accel);
+  } else if (msgLen >= kImuMinBytes) {
+    ok = decodeCompactImu(msg, msgLen, imu.accel);
     // 48-byte firmware layout often packs 3×gyro doubles then 3×accel doubles.
     if (ok && imuAccelKind_ == 1 && imuAccelOff_ == 24) {
       memcpy(imu.gyro, msg, 24);
