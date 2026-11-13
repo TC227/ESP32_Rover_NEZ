@@ -12,9 +12,6 @@
 #include <Preferences.h>
 #include <Update.h>
 #include <esp_ota_ops.h>
-#include <WiFi.h>
-#include <esp_coexist.h>
-#include <esp_wifi.h>
 
 #include "K902.h"
 #include "Hc12Radio.h"
@@ -33,9 +30,7 @@
 #define K902_RTCM_INPUT 1  // RTCM3 written by the phone to the RX characteristic is fed to the K902
 
 #define BLE_DEVICE_NAME "E25aer_gnss"  // one binary; app sends $ROLE,BASE|ROVER after connect
-#define ROVER_WIFI_PASS "e25aer433"
-#define ROVER_WIFI_PORT 9000
-#define FW_VERSION "1.2.8"
+#define FW_VERSION "1.2.11"
 #define BLE_SEND_NMEA 1    // every NMEA sentence on BLE; SW Maps needs GGA and RMC for a position
 #define BLE_SEND_PRTK_S 1  // "$PRTK,<fix>,<sats>" 1 Hz + "$S,<seq>,<dN cm>,<dE cm>" movement per fix
 #define TILT_ENABLED 1     // pole bubble from the K902 IMU: status line + "$TILT,<pitch>,<roll>"
@@ -175,6 +170,7 @@ SemaphoreHandle_t hc12Mux = NULL;
 unsigned long lastBstatMs = 0;
 volatile bool rawLogActive = false;  // phone is recording the K902's own RTCM observations
 unsigned long lastRtcmOutMs = 0;
+unsigned long rtcmOutFrames = 0;   // complete RTCM3 frames received from the K902
 unsigned long lastRawArmMs = 0;
 unsigned long lastLstatMs = 0;
 
@@ -406,111 +402,7 @@ bool bleNotifyRaw(const uint8_t *data, size_t len) {
 
 void sppSend(const uint8_t *data, size_t len);
 
-WiFiServer roverPhoneServer(ROVER_WIFI_PORT);
-WiFiClient roverPhone;
-bool roverApUp = false;
-
-bool phoneOnWifi() { return roverPhone.connected(); }
-
-unsigned long lastApTryMs = 0;
-
-void ensureRoverAp() {
-  // While the phone is on BLE, prefer that link. Balance at all times lets the
-  // softAP starve connection events until the phone reports a supervision timeout.
-  esp_coex_preference_set(deviceConnected ? ESP_COEX_PREFER_BT : ESP_COEX_PREFER_BALANCE);
-  if (isBaseRole()) {
-    if (!roverApUp) return;
-    roverPhone.stop();
-    roverPhoneServer.stop();
-    WiFi.softAPdisconnect(true);
-    WiFi.mode(WIFI_OFF);
-    roverApUp = false;
-    Serial.println("Rover WiFi AP off");
-    return;
-  }
-  if (roverApUp) {
-    if (WiFi.softAPgetStationNum() == 0 && WiFi.softAPIP() == IPAddress(0, 0, 0, 0)) roverApUp = false;
-    else return;
-  }
-  const unsigned long now = millis();
-  if (lastApTryMs != 0 && now - lastApTryMs < 3000) return;
-  lastApTryMs = now;
-  WiFi.persistent(false);
-  WiFi.mode(WIFI_AP);
-  WiFi.setSleep(false);
-  esp_wifi_set_ps(WIFI_PS_NONE);
-  const bool ok = WiFi.softAP(BLE_DEVICE_NAME, ROVER_WIFI_PASS, 1, 0, 1);
-  if (!ok) {
-    Serial.println("Rover WiFi AP failed — retry");
-    return;
-  }
-  roverPhoneServer.begin();
-  roverApUp = true;
-  // Bringing the AP back up can stop BLE advertising. Schedule a restart when
-  // the phone is not already connected.
-  if (pServer != NULL && !deviceConnected) {
-    advertisePending = true;
-    disconnectedAt = millis();
-  }
-  Serial.printf("Rover WiFi AP %s ch1 %s:%u\n", BLE_DEVICE_NAME, WiFi.softAPIP().toString().c_str(), ROVER_WIFI_PORT);
-}
-
-void serviceRoverPhone() {
-  ensureRoverAp();
-  if (!roverApUp) return;
-  if (roverPhoneServer.hasClient()) {
-    if (roverPhone.connected()) roverPhone.stop();
-    roverPhone = roverPhoneServer.accept();
-    roverPhone.setNoDelay(true);
-    Serial.println("Phone WiFi connected");
-    char line[32];
-    snprintf(line, sizeof(line), "$FW,%s\n", FW_VERSION);
-    roverPhone.write(reinterpret_cast<const uint8_t *>(line), strlen(line));
-  }
-  if (!roverPhone.connected()) return;
-  static uint8_t frame[3 + 1023 + 3];
-  static size_t frameLen = 0;
-  static size_t frameNeed = 0;
-  static char line[160];
-  static size_t lineLen = 0;
-  int budget = 1024;
-  while (budget-- > 0 && roverPhone.available() > 0) {
-    int raw = roverPhone.read();
-    if (raw < 0) break;
-    uint8_t b = (uint8_t)raw;
-    if (frameLen > 0) {
-      frame[frameLen++] = b;
-      if (frameLen == 3) frameNeed = 3 + ((((size_t)frame[1] & 0x03) << 8) | frame[2]) + 3;
-      if (frameLen >= 3 && frameLen == frameNeed) {
-        rtcmPush(frame, frameLen);
-        frameLen = 0;
-      } else if (frameLen > sizeof(frame)) {
-        frameLen = 0;
-      }
-      continue;
-    }
-    if (b == 0xD3 && lineLen == 0) {
-      frame[0] = b;
-      frameLen = 1;
-      continue;
-    }
-    if (b == '\r' || b == '\n') {
-      if (lineLen == 0) continue;
-      line[lineLen] = '\0';
-      if (line[0] == '$') handlePhoneCommand(line);
-      lineLen = 0;
-      continue;
-    }
-    if (b >= 0x20 && b <= 0x7E && lineLen + 1 < sizeof(line)) line[lineLen++] = (char)b;
-    else lineLen = 0;
-  }
-}
-
 bool bleSend(const char *data, size_t len) {
-  if (phoneOnWifi()) {
-    roverPhone.write(reinterpret_cast<const uint8_t *>(data), len);
-    return true;
-  }
   return bleNotifyRaw(reinterpret_cast<const uint8_t *>(data), len);
 }
 
@@ -734,7 +626,7 @@ void holdLine(char *dest, size_t cap, size_t *held, const char *sentence, size_t
 }
 
 void flushQualityLines() {
-  if (!deviceConnected && !phoneOnWifi()) return;
+  if (!deviceConnected) return;
   if (pendingGsaLen) {
     bleSend(pendingGsa, pendingGsaLen);
     pendingGsaLen = 0;
@@ -747,18 +639,6 @@ void flushQualityLines() {
 
 void sendTiltBle(unsigned long now) {
   if (!TILT_ENABLED || !tiltFresh) return;
-  if (phoneOnWifi()) {
-    if (lastImuMs == 0 || now - lastImuMs > 3000) return;
-    if (lastTiltBleMs != 0 && now - lastTiltBleMs < kTiltBleGapMs) return;
-    char line[32];
-    snprintf(line, sizeof(line), "$TILT,%.2f,%.2f\n", shownPitch, shownRoll);
-    if (!bleSend(line, strlen(line))) return;
-    lastTiltSentPitch = shownPitch;
-    lastTiltSentRoll = shownRoll;
-    lastTiltBleMs = now;
-    tiltTx++;
-    return;
-  }
   if (!deviceConnected) return;
   if (lastImuMs == 0 || now - lastImuMs > 3000) return;
   if (lastTiltBleMs != 0 && now - lastTiltBleMs < kTiltBleGapMs) return;
@@ -877,7 +757,7 @@ void onGnssSentence(const char *sentence, size_t len) {
   bool gsa = sentenceType(sentence, len, "GSA,");
   bool gst = sentenceType(sentence, len, "GST,");
   bool gsv = sentenceType(sentence, len, "GSV,") && gsvFirstPage(sentence, len);
-  if (!deviceConnected && !phoneOnWifi()) {
+  if (!deviceConnected) {
     if (gsa) holdLine(pendingGsa, sizeof(pendingGsa), &pendingGsaLen, sentence, len);
     else if (gst) holdLine(pendingGst, sizeof(pendingGst), &pendingGstLen, sentence, len);
     return;
@@ -1048,18 +928,29 @@ void sendPrtk() {
     hrms = sqrtf(fix.sigmaLat * fix.sigmaLat + fix.sigmaLon * fix.sigmaLon);
   }
   if (flowing && fix.sigmaAlt >= 0) vrms = fix.sigmaAlt;
-  char line[96];
+  char line[256];
+  int n;
   // Trailing age (GGA field 13) so the phone badge can show "รอ FLOAT" while quality is still SINGLE.
   if (flowing && fix.diffAge >= 0) {
-    snprintf(line, sizeof(line), "$PRTK,%s,%u,%.2f,%.2f,%.3f,%.3f,%.0f\n",
+    n = snprintf(line, sizeof(line), "$PRTK,%s,%u,%.2f,%.2f,%.3f,%.3f,%.0f",
              k902QualityName(fix.quality), fix.satellites,
              fix.pdop > 0 ? fix.pdop : 0.0f, fix.hdop, hrms, vrms, fix.diffAge);
   } else {
-    snprintf(line, sizeof(line), "$PRTK,%s,%u,%.2f,%.2f,%.3f,%.3f\n",
+    n = snprintf(line, sizeof(line), "$PRTK,%s,%u,%.2f,%.2f,%.3f,%.3f",
              flowing ? k902QualityName(fix.quality) : "NODATA", flowing ? fix.satellites : 0,
              flowing && fix.pdop > 0 ? fix.pdop : 0.0f, flowing ? fix.hdop : 0.0f, hrms, vrms);
   }
-  bleSend(line, strlen(line));
+  // Bubble diagnostics for the phone log: tilt tx/drop, IMU frames seen, IMU age, decode state.
+  const unsigned long imuAge = lastImuMs == 0 ? 0xFFFFFFFFUL : (unsigned long)(millis() - lastImuMs);
+  const unsigned long rtcmAge = lastRtcmOutMs == 0 ? 0xFFFFFFFFUL : (unsigned long)(millis() - lastRtcmOutMs);
+  n += snprintf(line + n, sizeof(line) - (size_t)n, ",%lu,%lu,%lu,%lu,%d,%u,%u,%d,%d,%lu,%lu,%lu,%lu,%lu,%lu\n",
+             (unsigned long)tiltTx, (unsigned long)tiltDrop,
+             (unsigned long)gnss.imuFrames(), imuAge, tiltFresh ? 1 : 0,
+             (unsigned)gnss.otherBinaryId(), (unsigned)gnss.otherBinaryLength(),
+             baseActive ? 1 : 0, hc12.atOk() ? 1 : 0, (unsigned long)hc12.baud(),
+             (unsigned long)hc12.txBytes(), (unsigned long)hc12.rxBytes(),
+             (unsigned long)hc12.drops(), rtcmOutFrames, rtcmAge);
+  bleSend(line, (size_t)n);
 }
 
 // Compact WGS84 UTM → lat/lon for $BCMD,START with N/E from the phone.
@@ -1135,6 +1026,7 @@ void hc12Task(void *) {
 }
 
 void onRtcmFromBoard(const uint8_t *data, size_t len) {
+  rtcmOutFrames++;
   if ((!baseActive && !rawLogActive) || len == 0) return;
   lastRtcmOutMs = millis();
   if (isBaseRole() && baseActive && hc12.atOk() && hc12Lock(0)) {
@@ -1862,7 +1754,6 @@ void setup() {
   hc12.begin(HC12_RX_PIN, HC12_TX_PIN, HC12_SET_PIN);
   xTaskCreate(hc12Task, "hc12", 4096, nullptr, 1, nullptr);
 
-  ensureRoverAp();  // before Classic BT, so the first beacon is not lost
   SerialBT.register_callback(onSppEvent);
   if (SerialBT.begin(BLE_DEVICE_NAME)) {
     Serial.println("Classic Bluetooth SPP ready (Survey Master)");
@@ -1926,7 +1817,6 @@ void setup() {
 
 void loop() {
   unsigned long now = millis();
-  ensureRoverAp();
   if (otaRebootPending && now - otaRebootAt >= 400) {
     otaRebootPending = false;
     ESP.restart();
@@ -1980,15 +1870,14 @@ void loop() {
       bleSend(line, strlen(line));
     }
   } else {
-    serviceRoverPhone();
-    if ((deviceConnected || phoneOnWifi()) && now - lastBaseLinkStatusMs >= 2000) {
-      lastBaseLinkStatusMs = now;
-      const char *linkStatus = roverCorrectionSource == RoverCorrectionSource::PhoneNtrip
-          ? "$BASELINK,MODE,NTRIP\n"
-          : ((now - lastRadioRtcmMs) < 3000 && lastRadioRtcmMs != 0 ? "$BASELINK,UP\n"
-             : "$BASELINK,WAIT,RADIO\n");
-      bleSend(linkStatus, strlen(linkStatus));
-    }
+  if (deviceConnected && now - lastBaseLinkStatusMs >= 2000) {
+    lastBaseLinkStatusMs = now;
+    const char *linkStatus = roverCorrectionSource == RoverCorrectionSource::PhoneNtrip
+        ? "$BASELINK,MODE,NTRIP\n"
+        : ((now - lastRadioRtcmMs) < 3000 && lastRadioRtcmMs != 0 ? "$BASELINK,UP\n"
+           : "$BASELINK,WAIT,RADIO\n");
+    bleSend(linkStatus, strlen(linkStatus));
+  }
   }
   handleConsole();
   char cmd[kPhoneCmdMax];

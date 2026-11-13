@@ -1,0 +1,13 @@
+---
+description: Name built ESP32 firmware binaries with the firmware version
+alwaysApply: true
+---
+
+# Firmware binary name
+
+After every ESP32 firmware build, copy the image to the project root with the version in the file name. Do not leave the user with only `.pio\build\esp32dev\firmware.bin`.
+
+- Read `FW_VERSION` in `src/main.cpp`.
+- Output file: `e25aer_gnss_<FW_VERSION>.bin` in the ESP32 project root.
+- Example: version `1.2.5` becomes `e25aer_gnss_1.2.5.bin`.
+- Tell the user that full path when the build is done.

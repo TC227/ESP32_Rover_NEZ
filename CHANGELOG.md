@@ -1,3 +1,15 @@
+## 1.2.11 - 2026-11-13
+
+- `$PRTK` carries diagnostics for the phone log: bubble tilt tx/drop + IMU frame state, and base radio state (baseActive, HC-12 AT/baud/tx/rx/drop, RTCM frames received from K902 + age).
+
+## 1.2.10 - 2026-11-13
+
+- Version bump for INS-RTK compensated pole-tip position support.
+
+## 1.2.9 - 2026-11-13
+
+- Remove WiFi hotspot feature. App now uses Bluetooth only.
+
 ## 1.2.8 - 2026-11-13
 
 - Enable the K902 `INSRTKCOMPENSATEB` output for tilted-pole surveying.
