@@ -1,3 +1,7 @@
+## 1.2.14 - 2026-11-14
+
+- BASE-only build rework: config window is now 40 minutes so the app can average a point for up to ~30 min before `$BCMD,START`; auto-start never fires while a phone is connected. Only an explicit `$BCMD,START` persists the surveyed fix (`bLat`/`bLon`/`bArp`) — auto-start reuses it after reboot, otherwise it uses the head's live GNSS position each boot (serial `!baseclr` clears the saved point, `!baseh <m>` sets antenna height).
+
 ## 1.2.13 - 2026-11-14
 
 - BASE-only build (`esp32dev_base`) is now standalone: BLE stays up for a 3-minute config window after boot so the app can still send `$BCMD,START` with surveyed coords; if no start arrives and the K902 has a position fix, the head auto-starts base TX using its own GNSS position plus the saved antenna height (`baseAntH` pref, set by `$BCMD,START` or serial `!baseh <m>`, default = pole height). Auto-start also cuts BLE like a manual start. Any explicit stop (`$BCMD,STOP` by phone or rover over HC-12) holds auto-start off until reboot.

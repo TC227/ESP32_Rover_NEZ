@@ -30,14 +30,14 @@
 #define K902_RTCM_INPUT 1  // RTCM3 written by the phone to the RX characteristic is fed to the K902
 
 #define BLE_DEVICE_NAME "E25aer_gnss"  // one binary; app sends $ROLE,BASE|ROVER after connect
-#define FW_VERSION "1.2.13"
+#define FW_VERSION "1.2.14"
 // Build with -DFORCE_BASE_ROLE=1 (env esp32dev_base) for a head locked to BASE:
 // $ROLE,ROVER is ignored, boot always starts as BASE, $FW reports the -BASE label.
 #ifndef FORCE_BASE_ROLE
 #define FORCE_BASE_ROLE 0
 #endif
 #if FORCE_BASE_ROLE
-#define FW_LABEL "1.2.13-BASE"
+#define FW_LABEL "1.2.14-BASE"
 #else
 #define FW_LABEL FW_VERSION
 #endif
@@ -1125,13 +1125,13 @@ const char *const kBaseCommands[] = {
 };
 
 // Queue the K902 RTCM log set + surveyed antenna phase-center, then mark base TX active.
-bool startBaseAtPosition(double lat, double lon, double alt, double antH) {
+// The fix is remembered in NVS so the BASE-only build can auto-start on it after a reboot.
+bool startBaseArp(double lat, double lon, double arp) {
   const size_t needed = sizeof(kBaseCommands) / sizeof(kBaseCommands[0]) + 1;
   if (gnss.freeCommandSlots() < needed) {
     Serial.println("BCMD K902 command queue busy");
     return false;
   }
-  double arp = alt + antH;
   char fixCmd[96];
   snprintf(fixCmd, sizeof(fixCmd), "fix position %.9f %.9f %.4f", lat, lon, arp);
   gnss.sendCommand(kBaseCommands[0]);
@@ -1153,6 +1153,10 @@ bool startBaseAtPosition(double lat, double lon, double alt, double antH) {
   return true;
 }
 
+bool startBaseAtPosition(double lat, double lon, double alt, double antH) {
+  return startBaseArp(lat, lon, alt + antH);
+}
+
 // zone <= 0 means the phone did not send one; fall back to the zone of the live fix.
 bool startBaseFromUtm(double north, double east, double elev, double antH, int zone, bool northern) {
   const K902Fix &fix = gnss.fix();
@@ -1171,26 +1175,47 @@ bool startBaseFromUtm(double north, double east, double elev, double antH, int z
     return false;
   }
   if (!startBaseAtPosition(lat, lon, elev, antH)) return false;
+  // Only an explicit phone $BCMD,START persists the point — auto-start on the
+  // live fix must not pin the base to wherever the head happened to sit.
+  prefs.putDouble("bLat", lat);
+  prefs.putDouble("bLon", lon);
+  prefs.putDouble("bArp", elev + antH);
   Serial.printf("zone %d%c\n", zone, northern ? 'N' : 'S');
   return true;
 }
 
 #if FORCE_BASE_ROLE
-// BASE-only build: after the config window, start broadcasting the head's own
-// GNSS fix over HC-12 with no phone involved. An explicit stop holds auto-start
-// off until the next reboot.
-const unsigned long kBaseConfigWindowMs = 180000;
+// BASE-only build: BLE stays up for a long config window so the app can
+// survey/average a point (up to ~30 min) and send $BCMD,START. Past the
+// window, once the K902 has a position fix and no phone is attached, the
+// head starts base TX on its own — reusing an app-surveyed point when one
+// was saved, otherwise its live GNSS position. An explicit stop holds
+// auto-start off until the next reboot.
+const unsigned long kBaseConfigWindowMs = 40UL * 60UL * 1000UL;
 unsigned long baseAutoAt = 0;
 bool baseAutoHold = false;
 
 void maybeAutoStartBase(unsigned long now) {
-  if (baseActive || baseAutoHold || baseAutoAt == 0 || now < baseAutoAt) return;
+  // A connected phone means the app is still configuring — never cut in.
+  if (baseActive || baseAutoHold || baseAutoAt == 0 || now < baseAutoAt || deviceConnected) return;
   const K902Fix &fix = gnss.fix();
   if (!fix.hasPosition()) return;  // keep waiting for a fix past the deadline
   baseAutoAt = 0;
-  const double antH = prefs.getFloat("baseAntH", poleHeightM);
-  Serial.println("Auto BASE start - using own GNSS fix");
-  if (startBaseAtPosition(fix.latitude, fix.longitude, fix.altitude, antH)) {
+  double lat, lon, arp;
+  if (prefs.isKey("bLat") && prefs.isKey("bLon") && prefs.isKey("bArp")) {
+    // A surveyed point was set before — reuse it even if the head moved.
+    lat = prefs.getDouble("bLat", 0);
+    lon = prefs.getDouble("bLon", 0);
+    arp = prefs.getDouble("bArp", 0);
+    Serial.println("Auto BASE start - saved fix");
+  } else {
+    const double antH = prefs.getFloat("baseAntH", poleHeightM);
+    lat = fix.latitude;
+    lon = fix.longitude;
+    arp = fix.altitude + antH;
+    Serial.println("Auto BASE start - using own GNSS fix");
+  }
+  if (startBaseArp(lat, lon, arp)) {
     bleCutPending = true;
     bleCutAt = millis();
   } else {
@@ -1557,6 +1582,11 @@ void handleConsole() {
       } else {
         Serial.println("!baseh needs 0 <= h < 20 m");
       }
+    } else if (strcmp(line, "!baseclr") == 0) {
+      prefs.remove("bLat");
+      prefs.remove("bLon");
+      prefs.remove("bArp");
+      Serial.println("Saved base fix cleared - auto-start will use the live GNSS position");
     } else if (gnss.sendCommand(line)) {
       Serial.printf("K902< %s\n", line);
     } else {
