@@ -30,14 +30,14 @@
 #define K902_RTCM_INPUT 1  // RTCM3 written by the phone to the RX characteristic is fed to the K902
 
 #define BLE_DEVICE_NAME "E25aer_gnss"  // one binary; app sends $ROLE,BASE|ROVER after connect
-#define FW_VERSION "1.2.14"
+#define FW_VERSION "1.2.15"
 // Build with -DFORCE_BASE_ROLE=1 (env esp32dev_base) for a head locked to BASE:
 // $ROLE,ROVER is ignored, boot always starts as BASE, $FW reports the -BASE label.
 #ifndef FORCE_BASE_ROLE
 #define FORCE_BASE_ROLE 0
 #endif
 #if FORCE_BASE_ROLE
-#define FW_LABEL "1.2.14-BASE"
+#define FW_LABEL "1.2.15-BASE"
 #else
 #define FW_LABEL FW_VERSION
 #endif
@@ -1198,23 +1198,24 @@ bool baseAutoHold = false;
 void maybeAutoStartBase(unsigned long now) {
   // A connected phone means the app is still configuring — never cut in.
   if (baseActive || baseAutoHold || baseAutoAt == 0 || now < baseAutoAt || deviceConnected) return;
-  const K902Fix &fix = gnss.fix();
-  if (!fix.hasPosition()) return;  // keep waiting for a fix past the deadline
-  baseAutoAt = 0;
   double lat, lon, arp;
   if (prefs.isKey("bLat") && prefs.isKey("bLon") && prefs.isKey("bArp")) {
     // A surveyed point was set before — reuse it even if the head moved.
+    // No fix needed: the K902 gets "fix position" and tracks satellites itself.
     lat = prefs.getDouble("bLat", 0);
     lon = prefs.getDouble("bLon", 0);
     arp = prefs.getDouble("bArp", 0);
     Serial.println("Auto BASE start - saved fix");
   } else {
+    const K902Fix &fix = gnss.fix();
+    if (!fix.hasPosition()) return;  // keep waiting for a fix past the deadline
     const double antH = prefs.getFloat("baseAntH", poleHeightM);
     lat = fix.latitude;
     lon = fix.longitude;
     arp = fix.altitude + antH;
     Serial.println("Auto BASE start - using own GNSS fix");
   }
+  baseAutoAt = 0;
   if (startBaseArp(lat, lon, arp)) {
     bleCutPending = true;
     bleCutAt = millis();
@@ -1581,6 +1582,18 @@ void handleConsole() {
         Serial.printf("Base antenna height %.3f m\n", h);
       } else {
         Serial.println("!baseh needs 0 <= h < 20 m");
+      }
+    } else if (strncmp(line, "!basepos ", 9) == 0) {
+      // !basepos <lat> <lon> <arp_m> — survey the base point by hand, no phone needed.
+      double blat = 0, blon = 0, barp = 0;
+      if (sscanf(line + 9, "%lf %lf %lf", &blat, &blon, &barp) == 3 &&
+          blat >= -90 && blat <= 90 && blon >= -180 && blon <= 180 && barp > -500 && barp < 10000) {
+        prefs.putDouble("bLat", blat);
+        prefs.putDouble("bLon", blon);
+        prefs.putDouble("bArp", barp);
+        Serial.printf("Saved base fix %.9f %.9f %.3f - auto-start uses it without a GNSS fix\n", blat, blon, barp);
+      } else {
+        Serial.println("!basepos <lat> <lon> <arp_m>");
       }
     } else if (strcmp(line, "!baseclr") == 0) {
       prefs.remove("bLat");

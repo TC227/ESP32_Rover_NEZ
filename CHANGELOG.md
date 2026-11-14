@@ -1,3 +1,7 @@
+## 1.2.15 - 2026-11-14
+
+- BASE-only auto-start no longer waits for a navigation fix when a surveyed point was saved via `$BCMD,START` — the K902 receives `fix position` and tracks satellites on its own, so base TX can begin indoors/outdoors before a 3D fix. The live-fix fallback path still requires `hasPosition()`.
+
 ## 1.2.14 - 2026-11-14
 
 - BASE-only build rework: config window is now 40 minutes so the app can average a point for up to ~30 min before `$BCMD,START`; auto-start never fires while a phone is connected. Only an explicit `$BCMD,START` persists the surveyed fix (`bLat`/`bLon`/`bArp`) — auto-start reuses it after reboot, otherwise it uses the head's live GNSS position each boot (serial `!baseclr` clears the saved point, `!baseh <m>` sets antenna height).
