@@ -173,6 +173,8 @@ unsigned long lastRtcmOutMs = 0;
 unsigned long rtcmOutFrames = 0;   // complete RTCM3 frames received from the K902
 unsigned long lastRawArmMs = 0;
 unsigned long lastLstatMs = 0;
+// Why the previous boot ended — survives until the next reset, so $PRTK can show it.
+int lastResetReason = -1;
 
 void handlePhoneCommand(char *cmd);
 
@@ -943,13 +945,14 @@ void sendPrtk() {
   // Bubble diagnostics for the phone log: tilt tx/drop, IMU frames seen, IMU age, decode state.
   const unsigned long imuAge = lastImuMs == 0 ? 0xFFFFFFFFUL : (unsigned long)(millis() - lastImuMs);
   const unsigned long rtcmAge = lastRtcmOutMs == 0 ? 0xFFFFFFFFUL : (unsigned long)(millis() - lastRtcmOutMs);
-  n += snprintf(line + n, sizeof(line) - (size_t)n, ",%lu,%lu,%lu,%lu,%d,%u,%u,%d,%d,%lu,%lu,%lu,%lu,%lu,%lu\n",
+  n += snprintf(line + n, sizeof(line) - (size_t)n, ",%lu,%lu,%lu,%lu,%d,%u,%u,%d,%d,%lu,%lu,%lu,%lu,%lu,%lu",
              (unsigned long)tiltTx, (unsigned long)tiltDrop,
              (unsigned long)gnss.imuFrames(), imuAge, tiltFresh ? 1 : 0,
              (unsigned)gnss.otherBinaryId(), (unsigned)gnss.otherBinaryLength(),
              baseActive ? 1 : 0, hc12.atOk() ? 1 : 0, (unsigned long)hc12.baud(),
              (unsigned long)hc12.txBytes(), (unsigned long)hc12.rxBytes(),
              (unsigned long)hc12.drops(), rtcmOutFrames, rtcmAge);
+  n += snprintf(line + n, sizeof(line) - (size_t)n, ",%d\n", lastResetReason);
   bleSend(line, (size_t)n);
 }
 
@@ -1712,6 +1715,7 @@ void setup() {
   digitalWrite(BUZZER_PIN, LOW);
   Serial.begin(115200);
   Serial.printf("\nReset reason: %s\n", resetReasonName(esp_reset_reason()));
+  lastResetReason = (int)esp_reset_reason();
   rtcmMux = xSemaphoreCreateMutex();
   phoneCmdQueue = xQueueCreate(4, kPhoneCmdMax);
   rtcmBuffer = xStreamBufferCreate(4096, 1);
