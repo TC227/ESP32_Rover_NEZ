@@ -31,6 +31,16 @@
 
 #define BLE_DEVICE_NAME "E25aer_gnss"  // one binary; app sends $ROLE,BASE|ROVER after connect
 #define FW_VERSION "1.2.11"
+// Build with -DFORCE_BASE_ROLE=1 (env esp32dev_base) for a head locked to BASE:
+// $ROLE,ROVER is ignored, boot always starts as BASE, $FW reports the -BASE label.
+#ifndef FORCE_BASE_ROLE
+#define FORCE_BASE_ROLE 0
+#endif
+#if FORCE_BASE_ROLE
+#define FW_LABEL "1.2.11-BASE"
+#else
+#define FW_LABEL FW_VERSION
+#endif
 #define BLE_SEND_NMEA 1    // every NMEA sentence on BLE; SW Maps needs GGA and RMC for a position
 #define BLE_SEND_PRTK_S 1  // "$PRTK,<fix>,<sats>" 1 Hz + "$S,<seq>,<dN cm>,<dE cm>" movement per fix
 #define TILT_ENABLED 1     // pole bubble from the K902 IMU: status line + "$TILT,<pitch>,<roll>"
@@ -1190,6 +1200,12 @@ void sendRoleAck() {
 }
 
 void applyHeadRole(HeadRole next, bool persist) {
+#if FORCE_BASE_ROLE
+  if (next == HeadRole::Rover) {
+    Serial.println("Base-only build: role stays BASE");
+    return;
+  }
+#endif
   if (next == HeadRole::Rover && baseActive) stopBase();
   if (next != headRole) {
     flushHc12Rx();
@@ -1267,8 +1283,8 @@ void onInsRtkComp(const K902InsRtk &c) {
 #endif
 
 void sendFwVersion() {
-  char line[24];
-  const int n = snprintf(line, sizeof(line), "$FW,%s\n", FW_VERSION);
+  char line[32];
+  const int n = snprintf(line, sizeof(line), "$FW,%s\n", FW_LABEL);
   if (n > 0) bleSend(line, (size_t)n);
 }
 
@@ -1720,10 +1736,14 @@ void setup() {
   phoneCmdQueue = xQueueCreate(4, kPhoneCmdMax);
   rtcmBuffer = xStreamBufferCreate(4096, 1);
   prefs.begin("rover");
+#if FORCE_BASE_ROLE
+  headRole = HeadRole::Base;
+#else
   headRole = prefs.getUChar("role", 0) == 1 ? HeadRole::Base : HeadRole::Rover;
+#endif
   const uint8_t savedSource = prefs.getUChar("corrSrc", 0);
   roverCorrectionSource = savedSource == 1 ? RoverCorrectionSource::PhoneNtrip : RoverCorrectionSource::Radio;
-  Serial.printf("E25aer_gnss fw %s role %s\n", FW_VERSION, headRoleName());
+  Serial.printf("E25aer_gnss fw %s role %s\n", FW_LABEL, headRoleName());
   if (prefs.isKey("poleH")) {
     float h = prefs.getFloat("poleH", 2.0f);
     if (h > 0.05f && h < 20.0f) poleHeightM = h;
@@ -1809,11 +1829,11 @@ void setup() {
   adv->setScanResponse(true);
   BLEAdvertisementData scanData;
   scanData.setCompleteServices(BLEUUID(SERVICE_UUID));
-  char mfg[2 + sizeof(FW_VERSION)];
+  char mfg[2 + sizeof(FW_LABEL)];
   mfg[0] = (char)0xFF;
   mfg[1] = (char)0xFF;
-  memcpy(mfg + 2, FW_VERSION, strlen(FW_VERSION));
-  scanData.setManufacturerData(String(mfg, 2 + strlen(FW_VERSION)));
+  memcpy(mfg + 2, FW_LABEL, strlen(FW_LABEL));
+  scanData.setManufacturerData(String(mfg, 2 + strlen(FW_LABEL)));
   adv->setScanResponseData(scanData);
   adv->start();
   Serial.println("Waiting for phone...");
@@ -1829,8 +1849,8 @@ void loop() {
   serviceBle(now);
   if (fwAnnouncePending && deviceConnected && now - lastFwAnnounceMs >= 500) {
     lastFwAnnounceMs = now;
-    char line[24];
-    const int n = snprintf(line, sizeof(line), "$FW,%s\n", FW_VERSION);
+    char line[32];
+    const int n = snprintf(line, sizeof(line), "$FW,%s\n", FW_LABEL);
     if (n > 0 && bleSend(line, (size_t)n)) fwAnnouncePending = false;
   }
   bool radioStop = false;

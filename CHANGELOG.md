@@ -1,6 +1,8 @@
-## 1.2.11 - 2026-11-13
+## 1.2.11 - 2026-11-14
 
-- `$PRTK` carries diagnostics for the phone log: bubble tilt tx/drop + IMU frame state, and base radio state (baseActive, HC-12 AT/baud/tx/rx/drop, RTCM frames received from K902 + age).
+- `$PRTK` carries diagnostics for the phone log: bubble tilt tx/drop + IMU frame state, base radio state (HC-12 AT/baud/tx/rx/drop, RTCM frames from K902 + age), and the last reset reason.
+- `env:esp32dev_base` builds a BASE-only head (`FORCE_BASE_ROLE`): always boots as BASE, ignores `$ROLE,ROVER`, `$FW` reports `1.2.11-BASE`.
+- `K902::readUart` is capped per poll so a flooding receiver cannot starve `loop()` into the task watchdog.
 
 ## 1.2.10 - 2026-11-13
 
