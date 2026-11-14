@@ -1,3 +1,7 @@
+## 1.2.12 - 2026-11-14
+
+- `$BCMD,START` now cuts the Bluetooth radio (BLE + Classic SPP) ~600 ms after the `$BSTAT` ack, so a transmitting base head drops the phone link's power draw. RTCM keeps streaming over HC-12 and `$BCMD,STOP` from the rover brings BLE back via `stopBase()`.
+
 ## 1.2.11 - 2026-11-14
 
 - `$PRTK` carries diagnostics for the phone log: bubble tilt tx/drop + IMU frame state, base radio state (HC-12 AT/baud/tx/rx/drop, RTCM frames from K902 + age), and the last reset reason.

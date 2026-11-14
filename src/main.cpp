@@ -30,14 +30,14 @@
 #define K902_RTCM_INPUT 1  // RTCM3 written by the phone to the RX characteristic is fed to the K902
 
 #define BLE_DEVICE_NAME "E25aer_gnss"  // one binary; app sends $ROLE,BASE|ROVER after connect
-#define FW_VERSION "1.2.11"
+#define FW_VERSION "1.2.12"
 // Build with -DFORCE_BASE_ROLE=1 (env esp32dev_base) for a head locked to BASE:
 // $ROLE,ROVER is ignored, boot always starts as BASE, $FW reports the -BASE label.
 #ifndef FORCE_BASE_ROLE
 #define FORCE_BASE_ROLE 0
 #endif
 #if FORCE_BASE_ROLE
-#define FW_LABEL "1.2.11-BASE"
+#define FW_LABEL "1.2.12-BASE"
 #else
 #define FW_LABEL FW_VERSION
 #endif
@@ -175,6 +175,8 @@ volatile bool sppUpEvent = false;
 volatile bool sppDownEvent = false;
 volatile bool sppCongested = false;
 volatile bool baseActive = false;
+bool bleCutPending = false;
+unsigned long bleCutAt = 0;
 unsigned long lastRadioStatusMs = 0;
 SemaphoreHandle_t hc12Mux = NULL;
 unsigned long lastBstatMs = 0;
@@ -187,6 +189,8 @@ unsigned long lastLstatMs = 0;
 int lastResetReason = -1;
 
 void handlePhoneCommand(char *cmd);
+void bleStart();
+void bleStop();
 
 BluetoothSerial SerialBT;
 
@@ -1183,6 +1187,7 @@ void stopBase() {
   baseActive = false;
   // If the queue is too full now, the re-arm check in loop() retries in 20 s.
   if (rawLogActive) armRawLog();
+  bleStart();  // no-op while the radio is already up; restores BLE after a base TX cut
   Serial.println("Base OFF");
 }
 
@@ -1427,6 +1432,10 @@ void handlePhoneCommand(char *cmd) {
       return;
     }
     sendBstat();
+    // The base keeps streaming RTCM over HC-12 without the phone. Give the
+    // $BSTAT ack a moment to flush, then cut the BLE radio to save power.
+    bleCutPending = true;
+    bleCutAt = millis();
     return;
   }
 }
@@ -1724,60 +1733,10 @@ class OtaCallbacks : public BLECharacteristicCallbacks {
   }
 };
 
-void setup() {
-  pinMode(HC12_SET_PIN, OUTPUT);
-  digitalWrite(HC12_SET_PIN, LOW);  // hold AT before USB/Serial come up
-  pinMode(BUZZER_PIN, OUTPUT);
-  digitalWrite(BUZZER_PIN, LOW);
-  Serial.begin(115200);
-  Serial.printf("\nReset reason: %s\n", resetReasonName(esp_reset_reason()));
-  lastResetReason = (int)esp_reset_reason();
-  rtcmMux = xSemaphoreCreateMutex();
-  phoneCmdQueue = xQueueCreate(4, kPhoneCmdMax);
-  rtcmBuffer = xStreamBufferCreate(4096, 1);
-  prefs.begin("rover");
-#if FORCE_BASE_ROLE
-  headRole = HeadRole::Base;
-#else
-  headRole = prefs.getUChar("role", 0) == 1 ? HeadRole::Base : HeadRole::Rover;
-#endif
-  const uint8_t savedSource = prefs.getUChar("corrSrc", 0);
-  roverCorrectionSource = savedSource == 1 ? RoverCorrectionSource::PhoneNtrip : RoverCorrectionSource::Radio;
-  Serial.printf("E25aer_gnss fw %s role %s\n", FW_LABEL, headRoleName());
-  if (prefs.isKey("poleH")) {
-    float h = prefs.getFloat("poleH", 2.0f);
-    if (h > 0.05f && h < 20.0f) poleHeightM = h;
-  }
-  if (prefs.isKey("levelRef")) {
-    prefs.getBytes("levelRef", levelRef, sizeof(levelRef));
-    float n = sqrtf(levelRef[0] * levelRef[0] + levelRef[1] * levelRef[1] + levelRef[2] * levelRef[2]);
-    if (!isfinite(n) || n < 0.5f || n > 1.5f) {
-      levelRef[0] = 0;
-      levelRef[1] = 0;
-      levelRef[2] = 1;
-      Serial.println("levelRef from NVS invalid - reset to +Z");
-    } else {
-      levelRef[0] /= n;
-      levelRef[1] /= n;
-      levelRef[2] /= n;
-    }
-  }
-
-  gnss.onSentence(onGnssSentence);
-  gnss.onFix(onGnssFix);
-  gnss.onText(onGnssText);
-  gnss.onImu(onGnssImu);
-#if K902_INS_ENABLED
-  gnss.onInsRtk(onInsRtkComp);
-#endif
-  gnss.onRtcmOut(onRtcmFromBoard);
-  gnss.begin(Serial2, K902_RX_PIN, K902_TX_PIN, K902_BAUD, kK902Setup,
-             sizeof(kK902Setup) / sizeof(kK902Setup[0]), K902_RTCM_INPUT);
-
-  hc12Mux = xSemaphoreCreateMutex();
-  hc12.begin(HC12_RX_PIN, HC12_TX_PIN, HC12_SET_PIN);
-  xTaskCreate(hc12Task, "hc12", 4096, nullptr, 1, nullptr);
-
+// BLE + Classic SPP bring-up. Safe to call again after bleStop() — it rebuilds
+// the whole GATT server and restarts advertising.
+void bleStart() {
+  if (pServer != NULL) return;
   SerialBT.register_callback(onSppEvent);
   if (SerialBT.begin(BLE_DEVICE_NAME)) {
     Serial.println("Classic Bluetooth SPP ready (Survey Master)");
@@ -1839,8 +1798,93 @@ void setup() {
   Serial.println("Waiting for phone...");
 }
 
+// Kill the whole Bluetooth radio (BLE + Classic SPP) so a transmitting base
+// head does not carry the ~50 mA phone link. stopBase() brings it back.
+void bleStop() {
+  if (pServer == NULL) {
+    SerialBT.end();
+    return;
+  }
+  const uint16_t connId = peerConnId;
+  deviceConnected = false;
+  oldDeviceConnected = false;
+  peerConnId = 0;
+  advertisePending = false;
+  pServer->getAdvertising()->stop();
+  if (connId != 0) pServer->disconnect(connId);
+  delay(100);  // let the disconnect reach the phone before the stack goes down
+  BLEDevice::deinit(true);
+  SerialBT.end();
+  pServer = NULL;
+  pTxCharacteristic = NULL;
+  pTiltCharacteristic = NULL;
+  pOtaCharacteristic = NULL;
+  Serial.println("BLE radio off - base TX continues on HC-12");
+}
+
+void setup() {
+  pinMode(HC12_SET_PIN, OUTPUT);
+  digitalWrite(HC12_SET_PIN, LOW);  // hold AT before USB/Serial come up
+  pinMode(BUZZER_PIN, OUTPUT);
+  digitalWrite(BUZZER_PIN, LOW);
+  Serial.begin(115200);
+  Serial.printf("\nReset reason: %s\n", resetReasonName(esp_reset_reason()));
+  lastResetReason = (int)esp_reset_reason();
+  rtcmMux = xSemaphoreCreateMutex();
+  phoneCmdQueue = xQueueCreate(4, kPhoneCmdMax);
+  rtcmBuffer = xStreamBufferCreate(4096, 1);
+  prefs.begin("rover");
+#if FORCE_BASE_ROLE
+  headRole = HeadRole::Base;
+#else
+  headRole = prefs.getUChar("role", 0) == 1 ? HeadRole::Base : HeadRole::Rover;
+#endif
+  const uint8_t savedSource = prefs.getUChar("corrSrc", 0);
+  roverCorrectionSource = savedSource == 1 ? RoverCorrectionSource::PhoneNtrip : RoverCorrectionSource::Radio;
+  Serial.printf("E25aer_gnss fw %s role %s\n", FW_LABEL, headRoleName());
+  if (prefs.isKey("poleH")) {
+    float h = prefs.getFloat("poleH", 2.0f);
+    if (h > 0.05f && h < 20.0f) poleHeightM = h;
+  }
+  if (prefs.isKey("levelRef")) {
+    prefs.getBytes("levelRef", levelRef, sizeof(levelRef));
+    float n = sqrtf(levelRef[0] * levelRef[0] + levelRef[1] * levelRef[1] + levelRef[2] * levelRef[2]);
+    if (!isfinite(n) || n < 0.5f || n > 1.5f) {
+      levelRef[0] = 0;
+      levelRef[1] = 0;
+      levelRef[2] = 1;
+      Serial.println("levelRef from NVS invalid - reset to +Z");
+    } else {
+      levelRef[0] /= n;
+      levelRef[1] /= n;
+      levelRef[2] /= n;
+    }
+  }
+
+  gnss.onSentence(onGnssSentence);
+  gnss.onFix(onGnssFix);
+  gnss.onText(onGnssText);
+  gnss.onImu(onGnssImu);
+#if K902_INS_ENABLED
+  gnss.onInsRtk(onInsRtkComp);
+#endif
+  gnss.onRtcmOut(onRtcmFromBoard);
+  gnss.begin(Serial2, K902_RX_PIN, K902_TX_PIN, K902_BAUD, kK902Setup,
+             sizeof(kK902Setup) / sizeof(kK902Setup[0]), K902_RTCM_INPUT);
+
+  hc12Mux = xSemaphoreCreateMutex();
+  hc12.begin(HC12_RX_PIN, HC12_TX_PIN, HC12_SET_PIN);
+  xTaskCreate(hc12Task, "hc12", 4096, nullptr, 1, nullptr);
+
+  bleStart();
+}
+
 void loop() {
   unsigned long now = millis();
+  if (bleCutPending && now - bleCutAt >= 600) {
+    bleCutPending = false;
+    bleStop();
+  }
   if (otaRebootPending && now - otaRebootAt >= 400) {
     otaRebootPending = false;
     ESP.restart();
