@@ -1,3 +1,7 @@
+## 1.2.13 - 2026-11-14
+
+- BASE-only build (`esp32dev_base`) is now standalone: BLE stays up for a 3-minute config window after boot so the app can still send `$BCMD,START` with surveyed coords; if no start arrives and the K902 has a position fix, the head auto-starts base TX using its own GNSS position plus the saved antenna height (`baseAntH` pref, set by `$BCMD,START` or serial `!baseh <m>`, default = pole height). Auto-start also cuts BLE like a manual start. Any explicit stop (`$BCMD,STOP` by phone or rover over HC-12) holds auto-start off until reboot.
+
 ## 1.2.12 - 2026-11-14
 
 - `$BCMD,START` now cuts the Bluetooth radio (BLE + Classic SPP) ~600 ms after the `$BSTAT` ack, so a transmitting base head drops the phone link's power draw. RTCM keeps streaming over HC-12 and `$BCMD,STOP` from the rover brings BLE back via `stopBase()`.

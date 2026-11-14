@@ -30,14 +30,14 @@
 #define K902_RTCM_INPUT 1  // RTCM3 written by the phone to the RX characteristic is fed to the K902
 
 #define BLE_DEVICE_NAME "E25aer_gnss"  // one binary; app sends $ROLE,BASE|ROVER after connect
-#define FW_VERSION "1.2.12"
+#define FW_VERSION "1.2.13"
 // Build with -DFORCE_BASE_ROLE=1 (env esp32dev_base) for a head locked to BASE:
 // $ROLE,ROVER is ignored, boot always starts as BASE, $FW reports the -BASE label.
 #ifndef FORCE_BASE_ROLE
 #define FORCE_BASE_ROLE 0
 #endif
 #if FORCE_BASE_ROLE
-#define FW_LABEL "1.2.12-BASE"
+#define FW_LABEL "1.2.13-BASE"
 #else
 #define FW_LABEL FW_VERSION
 #endif
@@ -1124,29 +1124,14 @@ const char *const kBaseCommands[] = {
   "log " K902_PORT " imudatab ontime 0.05",  // keep bubble alive while base is transmitting
 };
 
-// zone <= 0 means the phone did not send one; fall back to the zone of the live fix.
-bool startBaseFromUtm(double north, double east, double elev, double antH, int zone, bool northern) {
-  const K902Fix &fix = gnss.fix();
-  if (zone <= 0) {
-    if (!fix.hasPosition()) {
-      Serial.println("BCMD has no zone and the K902 has no fix");
-      return false;
-    }
-    zone = zoneFromLon(fix.longitude);
-    northern = fix.latitude >= 0;
-  }
-  if (zone > 60) return false;
-  double lat = 0, lon = 0;
-  if (!utmToLatLon(east, north, zone, northern, &lat, &lon)) {
-    Serial.println("BCMD UTM convert failed");
-    return false;
-  }
+// Queue the K902 RTCM log set + surveyed antenna phase-center, then mark base TX active.
+bool startBaseAtPosition(double lat, double lon, double alt, double antH) {
   const size_t needed = sizeof(kBaseCommands) / sizeof(kBaseCommands[0]) + 1;
   if (gnss.freeCommandSlots() < needed) {
     Serial.println("BCMD K902 command queue busy");
     return false;
   }
-  double arp = elev + antH;
+  double arp = alt + antH;
   char fixCmd[96];
   snprintf(fixCmd, sizeof(fixCmd), "fix position %.9f %.9f %.4f", lat, lon, arp);
   gnss.sendCommand(kBaseCommands[0]);
@@ -1164,9 +1149,55 @@ bool startBaseFromUtm(double north, double east, double elev, double antH, int z
     prefs.putUChar("role", static_cast<uint8_t>(HeadRole::Base));
     Serial.println("Role promoted to BASE");
   }
-  Serial.printf("Base ON fix %.9f %.9f %.3f zone %d%c\n", lat, lon, arp, zone, northern ? 'N' : 'S');
+  Serial.printf("Base ON fix %.9f %.9f %.3f\n", lat, lon, arp);
   return true;
 }
+
+// zone <= 0 means the phone did not send one; fall back to the zone of the live fix.
+bool startBaseFromUtm(double north, double east, double elev, double antH, int zone, bool northern) {
+  const K902Fix &fix = gnss.fix();
+  if (zone <= 0) {
+    if (!fix.hasPosition()) {
+      Serial.println("BCMD has no zone and the K902 has no fix");
+      return false;
+    }
+    zone = zoneFromLon(fix.longitude);
+    northern = fix.latitude >= 0;
+  }
+  if (zone > 60) return false;
+  double lat = 0, lon = 0;
+  if (!utmToLatLon(east, north, zone, northern, &lat, &lon)) {
+    Serial.println("BCMD UTM convert failed");
+    return false;
+  }
+  if (!startBaseAtPosition(lat, lon, elev, antH)) return false;
+  Serial.printf("zone %d%c\n", zone, northern ? 'N' : 'S');
+  return true;
+}
+
+#if FORCE_BASE_ROLE
+// BASE-only build: after the config window, start broadcasting the head's own
+// GNSS fix over HC-12 with no phone involved. An explicit stop holds auto-start
+// off until the next reboot.
+const unsigned long kBaseConfigWindowMs = 180000;
+unsigned long baseAutoAt = 0;
+bool baseAutoHold = false;
+
+void maybeAutoStartBase(unsigned long now) {
+  if (baseActive || baseAutoHold || baseAutoAt == 0 || now < baseAutoAt) return;
+  const K902Fix &fix = gnss.fix();
+  if (!fix.hasPosition()) return;  // keep waiting for a fix past the deadline
+  baseAutoAt = 0;
+  const double antH = prefs.getFloat("baseAntH", poleHeightM);
+  Serial.println("Auto BASE start - using own GNSS fix");
+  if (startBaseAtPosition(fix.latitude, fix.longitude, fix.altitude, antH)) {
+    bleCutPending = true;
+    bleCutAt = millis();
+  } else {
+    baseAutoAt = now + 10000;  // K902 queue busy - retry shortly
+  }
+}
+#endif
 
 void stopBase() {
   // Must land unlogall + fix none or the K902 stays on a monument and rover coords freeze.
@@ -1185,6 +1216,9 @@ void stopBase() {
     if (!gnss.sendCommand(kK902Setup[i])) Serial.printf("K902 queue full at %s\n", kK902Setup[i]);
   }
   baseActive = false;
+#if FORCE_BASE_ROLE
+  baseAutoHold = true;  // explicit stop wins over auto-start until reboot
+#endif
   // If the queue is too full now, the re-arm check in loop() retries in 20 s.
   if (rawLogActive) armRawLog();
   bleStart();  // no-op while the radio is already up; restores BLE after a base TX cut
@@ -1431,6 +1465,7 @@ void handlePhoneCommand(char *cmd) {
       sendBstatOff();
       return;
     }
+    prefs.putFloat("baseAntH", (float)antH);  // reused by BASE-build auto start
     sendBstat();
     // The base keeps streaming RTCM over HC-12 without the phone. Give the
     // $BSTAT ack a moment to flush, then cut the BLE radio to save power.
@@ -1514,6 +1549,14 @@ void handleConsole() {
       gnss.configure();
     } else if (strcmp(line, "!level") == 0) {
       setLevelReference();
+    } else if (strncmp(line, "!baseh ", 7) == 0) {
+      float h = (float)atof(line + 7);
+      if (h >= 0.0f && h < 20.0f) {
+        prefs.putFloat("baseAntH", h);
+        Serial.printf("Base antenna height %.3f m\n", h);
+      } else {
+        Serial.println("!baseh needs 0 <= h < 20 m");
+      }
     } else if (gnss.sendCommand(line)) {
       Serial.printf("K902< %s\n", line);
     } else {
@@ -1836,6 +1879,7 @@ void setup() {
   prefs.begin("rover");
 #if FORCE_BASE_ROLE
   headRole = HeadRole::Base;
+  baseAutoAt = millis() + kBaseConfigWindowMs;  // app may still send $BCMD,START first
 #else
   headRole = prefs.getUChar("role", 0) == 1 ? HeadRole::Base : HeadRole::Rover;
 #endif
@@ -1995,6 +2039,9 @@ void loop() {
   }
 
   ensureBubbleLog(now);
+#if FORCE_BASE_ROLE
+  maybeAutoStartBase(now);
+#endif
   gnss.poll();
 
   if (!baseActive && gnss.acceptsCorrections()) {
