@@ -30,14 +30,14 @@
 #define K902_RTCM_INPUT 1  // RTCM3 written by the phone to the RX characteristic is fed to the K902
 
 #define BLE_DEVICE_NAME "E25aer_gnss"  // one binary; app sends $ROLE,BASE|ROVER after connect
-#define FW_VERSION "1.2.23"
+#define FW_VERSION "1.2.24"
 // Build with -DFORCE_BASE_ROLE=1 (env esp32dev_base) for a head locked to BASE:
 // $ROLE,ROVER is ignored, boot always starts as BASE, $FW reports the -BASE label.
 #ifndef FORCE_BASE_ROLE
 #define FORCE_BASE_ROLE 0
 #endif
 #if FORCE_BASE_ROLE
-#define FW_LABEL "1.2.23-BASE"
+#define FW_LABEL "1.2.24-BASE"
 #else
 #define FW_LABEL FW_VERSION
 #endif
@@ -488,7 +488,6 @@ void ingestPhoneWrite(const uint8_t *data, size_t len) {
   if (len == 0 || data == NULL) return;
   bleWriteCount++;
   bleWriteBytes += len;
-  lastPhoneCmdMs = millis();
   if (!phoneWriteAnnounced) {
     phoneWriteAnnounced = true;
     phoneFirstWritePending = true;
@@ -1408,6 +1407,12 @@ void handlePhoneCommand(char *cmd) {
     if (*p == '\r' || *p == '\n') *p = '\0';
   }
   Serial.printf("Phone< %s\n", cmd);
+  // Read-only polls must not hold BASE auto-start — only commands that change
+  // configuration count as the app being busy.
+  const bool pollOnly = strcmp(cmd, "$FW") == 0 || strncmp(cmd, "$FW,", 4) == 0 ||
+      strcmp(cmd, "$VER") == 0 || strncmp(cmd, "$VER,", 5) == 0 ||
+      strncmp(cmd, "$BCMD,STATUS", 12) == 0;
+  if (!pollOnly) lastPhoneCmdMs = millis();
   if (strcmp(cmd, "$FW") == 0 || strncmp(cmd, "$FW,", 4) == 0 ||
       strcmp(cmd, "$VER") == 0 || strncmp(cmd, "$VER,", 5) == 0) {
     sendFwVersion();

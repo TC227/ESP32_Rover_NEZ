@@ -1,3 +1,7 @@
+## 1.2.24 - 2026-11-15
+
+- Read-only phone polls (`$FW`, `$VER`, `$BCMD,STATUS`) no longer refresh the auto-start idle timer — an app sitting on the BASE screen polling status was holding auto-start forever. Only state-changing commands count as activity now.
+
 ## 1.2.23 - 2026-11-15
 
 - BASE-only build no longer enables K902 INS/DR (`inscontrol disable` is sent instead, and the INS tuning/log commands are skipped): the base only needs a GNSS fix plus RTCM observations. INS mode reported GGA quality 6 and is suspected of suppressing base RTCM output. Rover/unified builds keep INS-RTK unchanged.
