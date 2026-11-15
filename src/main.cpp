@@ -30,14 +30,14 @@
 #define K902_RTCM_INPUT 1  // RTCM3 written by the phone to the RX characteristic is fed to the K902
 
 #define BLE_DEVICE_NAME "E25aer_gnss"  // one binary; app sends $ROLE,BASE|ROVER after connect
-#define FW_VERSION "1.2.17"
+#define FW_VERSION "1.2.18"
 // Build with -DFORCE_BASE_ROLE=1 (env esp32dev_base) for a head locked to BASE:
 // $ROLE,ROVER is ignored, boot always starts as BASE, $FW reports the -BASE label.
 #ifndef FORCE_BASE_ROLE
 #define FORCE_BASE_ROLE 0
 #endif
 #if FORCE_BASE_ROLE
-#define FW_LABEL "1.2.17-BASE"
+#define FW_LABEL "1.2.18-BASE"
 #else
 #define FW_LABEL FW_VERSION
 #endif
@@ -177,6 +177,7 @@ volatile bool sppCongested = false;
 volatile bool baseActive = false;
 bool bleCutPending = false;
 unsigned long bleCutAt = 0;
+unsigned long bleCutDelayMs = 600;  // phone START uses a longer window to show sats/H/V
 unsigned long lastRadioStatusMs = 0;
 SemaphoreHandle_t hc12Mux = NULL;
 unsigned long lastBstatMs = 0;
@@ -1012,12 +1013,14 @@ int zoneFromLon(double lon) {
 void sendBstat() {
   const K902Fix &fix = gnss.fix();
   float hrms = 0;
+  float vrms = 0;
   if (fix.sigmaLat >= 0 && fix.sigmaLon >= 0) {
     hrms = sqrtf(fix.sigmaLat * fix.sigmaLat + fix.sigmaLon * fix.sigmaLon);
   }
-  char line[48];
-  snprintf(line, sizeof(line), "$BSTAT,%s,%u,%.3f\n",
-           baseActive ? "ON" : "OFF", fix.satellites, hrms);
+  if (fix.sigmaAlt >= 0) vrms = fix.sigmaAlt;
+  char line[56];
+  snprintf(line, sizeof(line), "$BSTAT,%s,%u,%.3f,%.3f\n",
+           baseActive ? "ON" : "OFF", fix.satellites, hrms, vrms);
   bleSend(line, strlen(line));
 }
 
@@ -1229,6 +1232,7 @@ void maybeAutoStartBase(unsigned long now) {
   baseAutoAt = 0;
   if (startBaseArp(lat, lon, arp)) {
     bleCutPending = true;
+    bleCutDelayMs = 600;
     bleCutAt = millis();
   } else {
     baseAutoAt = now + 10000;  // K902 queue busy - retry shortly
@@ -1504,9 +1508,10 @@ void handlePhoneCommand(char *cmd) {
     }
     prefs.putFloat("baseAntH", (float)antH);  // reused by BASE-build auto start
     sendBstat();
-    // The base keeps streaming RTCM over HC-12 without the phone. Give the
-    // $BSTAT ack a moment to flush, then cut the BLE radio to save power.
+    // Keep BLE up ~20 s so the phone can show live sats / H / V while the
+    // base is already transmitting; then cut so the phone can move to the rover.
     bleCutPending = true;
+    bleCutDelayMs = 20000;
     bleCutAt = millis();
     return;
   }
@@ -1979,7 +1984,7 @@ void setup() {
 
 void loop() {
   unsigned long now = millis();
-  if (bleCutPending && now - bleCutAt >= 600) {
+  if (bleCutPending && now - bleCutAt >= bleCutDelayMs) {
     bleCutPending = false;
     bleStop();
   }
