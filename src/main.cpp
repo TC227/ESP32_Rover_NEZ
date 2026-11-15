@@ -30,7 +30,7 @@
 #define K902_RTCM_INPUT 1  // RTCM3 written by the phone to the RX characteristic is fed to the K902
 
 #define BLE_DEVICE_NAME "E25aer_gnss"  // one binary; app sends $ROLE,BASE|ROVER after connect
-#define FW_VERSION "1.2.29"
+#define FW_VERSION "1.2.30"
 // Build with -DFORCE_BASE_ROLE=1 (env esp32dev_base) for a head locked to BASE:
 // $ROLE,ROVER is ignored, boot always starts as BASE, $FW reports the -BASE label.
 #ifndef FORCE_BASE_ROLE
@@ -115,6 +115,9 @@ const char *const kK902Setup[] = {
   "log gbgsv ontime 5",
 #if TILT_ENABLED
   "log " K902_PORT " imudatab ontime 0.05",
+  // Field K902s have shown binary output routed to COM1 instead of COM2 —
+  // mirror the IMU log so the bubble works on either wiring.
+  "log COM1 imudatab ontime 0.05",
 #endif
 #if K902_INS_ENABLED && !FORCE_BASE_ROLE
   // Required for true tilted-pole surveying.  IMUDATA drives only the bubble;
@@ -1177,6 +1180,7 @@ void ensureBubbleLog(unsigned long now) {
   lastImuRearmMs = now;
   gnss.sendCommand("unlog " K902_PORT " rawimub");
   gnss.sendCommand("log " K902_PORT " imudatab ontime 0.05");
+  gnss.sendCommand("log COM1 imudatab ontime 0.05");
 #if K902_INS_ENABLED && !FORCE_BASE_ROLE
   gnss.sendCommand("log " K902_PORT " insrtkcompensateb ontime 0.2");
 #endif
