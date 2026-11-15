@@ -1,3 +1,7 @@
+## 1.2.25 - 2026-11-15
+
+- New `$K902,<command>` BLE/serial passthrough forwards a raw command to the receiver (replies `$K902,OK`/`$K902,BUSY`) — field debugging of K902 config without a wired console.
+
 ## 1.2.24 - 2026-11-15
 
 - Read-only phone polls (`$FW`, `$VER`, `$BCMD,STATUS`) no longer refresh the auto-start idle timer — an app sitting on the BASE screen polling status was holding auto-start forever. Only state-changing commands count as activity now.
