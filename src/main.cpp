@@ -37,7 +37,7 @@
 #define FORCE_BASE_ROLE 0
 #endif
 #if FORCE_BASE_ROLE
-#define FW_LABEL "1.2.25-BASE"
+#define FW_LABEL FW_VERSION "-BASE"
 #else
 #define FW_LABEL FW_VERSION
 #endif
