@@ -30,14 +30,14 @@
 #define K902_RTCM_INPUT 1  // RTCM3 written by the phone to the RX characteristic is fed to the K902
 
 #define BLE_DEVICE_NAME "E25aer_gnss"  // one binary; app sends $ROLE,BASE|ROVER after connect
-#define FW_VERSION "1.2.21"
+#define FW_VERSION "1.2.22"
 // Build with -DFORCE_BASE_ROLE=1 (env esp32dev_base) for a head locked to BASE:
 // $ROLE,ROVER is ignored, boot always starts as BASE, $FW reports the -BASE label.
 #ifndef FORCE_BASE_ROLE
 #define FORCE_BASE_ROLE 0
 #endif
 #if FORCE_BASE_ROLE
-#define FW_LABEL "1.2.21-BASE"
+#define FW_LABEL "1.2.22-BASE"
 #else
 #define FW_LABEL FW_VERSION
 #endif
@@ -181,6 +181,8 @@ unsigned long bleCutDelayMs = 600;  // phone START uses a longer window to show 
 volatile bool baseAvgHold = false;   // app signalled an averaging session is running
 unsigned long baseAvgHoldAt = 0;
 unsigned long lastPhoneCmdMs = 0;    // last command bytes written over BLE/SPP
+unsigned long baseTxHoldUntil = 0;   // delay first HC-12 RTCM burst after base start (power settle)
+static constexpr unsigned long kBaseTxDelayMs = 2500;
 unsigned long lastRadioStatusMs = 0;
 SemaphoreHandle_t hc12Mux = NULL;
 unsigned long lastBstatMs = 0;
@@ -1064,7 +1066,7 @@ void onRtcmFromBoard(const uint8_t *data, size_t len) {
   rtcmOutFrames++;
   if ((!baseActive && !rawLogActive) || len == 0) return;
   lastRtcmOutMs = millis();
-  if (isBaseRole() && baseActive && hc12.ready() && hc12Lock(40)) {
+  if (isBaseRole() && baseActive && hc12.ready() && millis() >= baseTxHoldUntil && hc12Lock(40)) {
     hc12.write(data, len);
     hc12Unlock();
   }
@@ -1177,6 +1179,10 @@ bool startBaseArp(double lat, double lon, double arp) {
     xSemaphoreGive(rtcmMux);
   }
   baseActive = true;
+  // Hold the first RF burst briefly: BLE teardown (auto-start) and the K902
+  // log-start inrush both land in this window, so the supply sees one step
+  // instead of BLE+HC-12+K902 spiking together. Early RTCM frames repeat anyway.
+  baseTxHoldUntil = millis() + kBaseTxDelayMs;
   if (headRole != HeadRole::Base) {
     headRole = HeadRole::Base;
     prefs.putUChar("role", static_cast<uint8_t>(HeadRole::Base));

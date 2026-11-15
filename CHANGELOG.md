@@ -1,3 +1,7 @@
+## 1.2.22 - 2026-11-15
+
+- Base TX now holds the first HC-12 RTCM burst for 2.5 s after `startBaseArp`: BLE teardown (auto-start path) and the K902 log-start inrush land inside the window, so the supply sees one step instead of BLE+radio+receiver spiking together. Early RTCM frames repeat, so nothing is lost.
+
 ## 1.2.21 - 2026-11-15
 
 - BASE auto-start no longer waits forever while a phone is merely connected: it starts once the config window has passed and the app has been silent for 10 minutes. New `$BAVG,1`/`$BAVG,0` command lets the app hold auto-start for the exact duration of a base-point averaging session (auto-expires after 75 min if the app dies).
