@@ -1637,4 +1637,2548 @@ K902> Command accepted! Port: COM1.
 [K902] BASE OTHER sats=38 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.248/0.223/0.524m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
 Base RTCM quiet - re-armed RTCM logs
 K902> OK!
-K902> Command acc
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=38 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.245/0.223/0.516m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+IMU quiet - re-armed IMU/INS logs
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=38 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.242/0.223/0.510m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=1, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=38 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.243/0.225/0.511m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=38 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.238/0.224/0.503m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=39 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.234/0.223/0.497m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=39 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.233/0.226/0.493m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=39 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.232/0.227/0.489m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=39 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.231/0.229/0.486m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=39 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.227/0.228/0.480m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+IMU quiet - re-armed IMU/INS logs
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=39 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.227/0.230/0.478m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=1, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=39 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.226/0.228/0.476m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=39 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.228/0.228/0.478m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=39 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.228/0.227/0.480m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=38 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.229/0.226/0.482m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=38 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.229/0.224/0.483m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=39 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.231/0.227/0.484m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=39 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.231/0.226/0.486m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+IMU quiet - re-armed IMU/INS logs
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=39 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.232/0.226/0.485m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=1, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=39 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.232/0.225/0.486m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=38 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.233/0.225/0.488m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=38 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.230/0.222/0.485m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=38 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.232/0.226/0.488m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=38 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.229/0.224/0.483m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=38 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.226/0.225/0.479m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=38 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.223/0.225/0.474m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+IMU quiet - re-armed IMU/INS logs
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=38 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.222/0.224/0.472m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=1, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=38 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.222/0.223/0.471m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=38 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.220/0.222/0.468m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=38 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.218/0.222/0.465m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: TCP.
+[K902] BASE OTHER sats=38 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.218/0.224/0.463m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=38 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.217/0.224/0.460m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=38 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.216/0.225/0.458m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=38 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.214/0.224/0.454m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+IMU quiet - re-armed IMU/INS logs
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=38 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.214/0.224/0.455m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=1, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=39 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.214/0.224/0.456m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=39 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.216/0.225/0.457m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=39 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.213/0.224/0.454m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=39 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.212/0.225/0.451m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=39 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.211/0.225/0.448m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=39 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.210/0.225/0.447m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=38 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.210/0.227/0.445m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+IMU quiet - re-armed IMU/INS logs
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=38 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.209/0.225/0.441m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=1, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=38 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.208/0.225/0.440m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=38 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.208/0.225/0.439m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=38 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.208/0.225/0.439m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=38 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.208/0.225/0.438m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.206/0.223/0.435m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.206/0.224/0.435m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.205/0.222/0.433m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+IMU quiet - re-armed IMU/INS logs
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=38 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.204/0.221/0.432m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=1, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.203/0.221/0.432m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=38 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.203/0.223/0.431m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=38 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.203/0.223/0.431m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=38 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.202/0.222/0.429m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=38 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.200/0.220/0.428m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=38 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.200/0.220/0.428m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=38 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.202/0.222/0.430m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+IMU quiet - re-armed IMU/INS logs
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=38 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.200/0.222/0.429m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=1, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=38 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.201/0.222/0.430m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=38 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.201/0.222/0.431m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.201/0.223/0.431m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=38 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.201/0.222/0.430m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=38 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.203/0.225/0.431m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.200/0.222/0.427m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.201/0.224/0.428m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+IMU quiet - re-armed IMU/INS logs
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.202/0.226/0.428m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=1, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.201/0.226/0.428m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.201/0.227/0.428m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.202/0.228/0.429m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.205/0.228/0.434m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.206/0.228/0.438m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.206/0.225/0.439m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.210/0.227/0.444m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+IMU quiet - re-armed IMU/INS logs
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.211/0.224/0.445m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=1, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.210/0.225/0.443m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.210/0.227/0.442m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.208/0.227/0.441m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.208/0.227/0.441m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.210/0.227/0.446m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.212/0.226/0.450m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.213/0.227/0.454m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+IMU quiet - re-armed IMU/INS logs
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.214/0.227/0.457m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=1, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.217/0.226/0.460m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.218/0.226/0.463m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.219/0.225/0.465m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.220/0.223/0.467m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.220/0.221/0.469m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.221/0.220/0.470m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.222/0.221/0.474m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: TCP.
+K902> OK!
+K902> Command accepted! Port: COM1.
+IMU quiet - re-armed IMU/INS logs
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.225/0.222/0.478m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=1, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.226/0.221/0.480m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=36 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.227/0.221/0.483m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.230/0.222/0.486m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.232/0.223/0.489m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.235/0.223/0.492m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.237/0.222/0.496m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.239/0.221/0.498m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+IMU quiet - re-armed IMU/INS logs
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.242/0.223/0.502m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=1, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.244/0.223/0.506m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.245/0.221/0.508m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=36 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.249/0.223/0.512m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=36 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.249/0.221/0.514m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=35 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.251/0.220/0.516m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=36 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.253/0.219/0.518m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=36 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.255/0.220/0.521m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+IMU quiet - re-armed IMU/INS logs
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=35 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.257/0.219/0.523m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=1, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=35 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.259/0.221/0.526m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=35 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.261/0.220/0.528m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=35 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.262/0.221/0.531m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=36 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.264/0.223/0.534m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=35 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.267/0.225/0.539m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=34 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.267/0.223/0.541m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=35 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.269/0.224/0.544m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+IMU quiet - re-armed IMU/INS logs
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=35 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.271/0.225/0.546m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=1, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=35 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.271/0.224/0.548m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=35 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.274/0.224/0.552m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=35 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.274/0.224/0.554m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=35 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.274/0.224/0.555m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=35 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.275/0.224/0.557m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=35 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.277/0.225/0.560m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=35 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.277/0.226/0.562m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+IMU quiet - re-armed IMU/INS logs
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=35 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.279/0.226/0.564m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=1, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=35 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.282/0.228/0.567m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=35 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.282/0.227/0.568m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=35 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.283/0.228/0.571m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=35 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.285/0.228/0.573m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=35 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.287/0.229/0.574m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=35 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.286/0.228/0.574m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=35 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.286/0.228/0.574m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+IMU quiet - re-armed IMU/INS logs
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=35 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.287/0.229/0.575m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=1, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=35 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.286/0.229/0.575m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=35 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.288/0.232/0.577m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=35 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.285/0.229/0.575m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=35 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.287/0.231/0.577m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=35 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.286/0.230/0.578m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=35 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.287/0.231/0.581m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=34 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.286/0.230/0.581m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+IMU quiet - re-armed IMU/INS logs
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=35 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.285/0.229/0.582m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=1, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=35 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.285/0.229/0.583m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=35 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.285/0.228/0.583m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=35 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.284/0.227/0.582m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=35 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.284/0.226/0.582m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=35 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.283/0.224/0.581m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=35 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.283/0.224/0.582m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=35 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.283/0.223/0.583m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+IMU quiet - re-armed IMU/INS logs
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=35 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.282/0.223/0.584m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=1, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=35 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.282/0.222/0.583m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=35 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.280/0.220/0.582m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=35 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.281/0.220/0.583m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=35 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.281/0.220/0.583m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=35 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.279/0.218/0.583m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=35 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.280/0.219/0.584m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=35 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.279/0.218/0.583m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+IMU quiet - re-armed IMU/INS logs
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=34 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.280/0.219/0.584m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=1, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=35 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.280/0.219/0.584m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=35 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.280/0.219/0.584m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=35 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.280/0.219/0.584m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=35 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.281/0.220/0.585m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=34 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.282/0.221/0.586m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=35 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.282/0.221/0.586m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=35 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.282/0.221/0.587m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+IMU quiet - re-armed IMU/INS logs
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=34 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.282/0.221/0.587m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=1, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.281/0.223/0.586m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.277/0.221/0.583m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.274/0.220/0.581m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.272/0.220/0.579m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.272/0.222/0.578m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.269/0.222/0.575m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.266/0.222/0.571m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+IMU quiet - re-armed IMU/INS logs
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.266/0.223/0.570m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=1, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.262/0.222/0.566m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.261/0.222/0.563m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.257/0.221/0.558m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.256/0.221/0.555m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.255/0.222/0.554m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.256/0.224/0.555m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.254/0.225/0.552m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+IMU quiet - re-armed IMU/INS logs
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.255/0.227/0.552m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=1, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.253/0.226/0.550m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.253/0.225/0.549m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=36 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.253/0.227/0.549m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.250/0.224/0.545m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.251/0.226/0.545m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.249/0.225/0.541m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.249/0.225/0.539m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+IMU quiet - re-armed IMU/INS logs
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.248/0.225/0.537m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=1, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.246/0.223/0.534m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.245/0.222/0.533m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.244/0.221/0.531m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.244/0.221/0.532m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.241/0.218/0.529m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.241/0.219/0.529m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.241/0.219/0.529m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+IMU quiet - re-armed IMU/INS logs
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.242/0.218/0.530m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=1, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=36 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.241/0.217/0.529m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.241/0.217/0.529m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.240/0.216/0.528m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.238/0.215/0.525m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.236/0.213/0.522m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=36 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.235/0.212/0.519m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=36 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.234/0.212/0.518m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+IMU quiet - re-armed IMU/INS logs
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=36 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.233/0.212/0.516m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=1, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=36 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.231/0.211/0.514m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=36 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.232/0.212/0.513m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=36 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.230/0.212/0.511m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=36 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.232/0.215/0.511m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=36 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.230/0.214/0.508m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=36 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.230/0.214/0.508m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=36 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.230/0.214/0.506m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+IMU quiet - re-armed IMU/INS logs
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=36 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.228/0.213/0.504m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=1, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=36 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.228/0.213/0.504m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=36 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.227/0.213/0.503m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=36 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.225/0.211/0.499m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=36 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.224/0.211/0.497m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=36 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.224/0.210/0.496m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=36 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.221/0.208/0.492m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=36 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.219/0.207/0.489m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+IMU quiet - re-armed IMU/INS logs
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=36 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.219/0.208/0.489m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=1, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=36 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.218/0.208/0.488m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=36 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.217/0.208/0.487m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=36 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.216/0.208/0.487m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=36 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.216/0.209/0.487m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=36 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.216/0.208/0.486m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=36 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.217/0.211/0.486m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=36 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.215/0.209/0.483m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+IMU quiet - re-armed IMU/INS logs
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=36 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.215/0.210/0.483m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=1, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=36 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.215/0.210/0.482m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=36 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.216/0.210/0.483m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=35 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.215/0.210/0.481m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=36 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.216/0.210/0.482m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=36 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.216/0.210/0.483m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=36 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.217/0.211/0.483m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=36 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.217/0.211/0.484m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+IMU quiet - re-armed IMU/INS logs
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.218/0.211/0.485m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=1, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.219/0.211/0.486m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.220/0.212/0.488m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.221/0.212/0.490m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=38 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.224/0.213/0.493m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=38 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.224/0.213/0.494m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.222/0.211/0.493m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=38 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.224/0.211/0.495m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+IMU quiet - re-armed IMU/INS logs
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=38 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.227/0.214/0.499m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=1, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=38 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.227/0.213/0.498m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=38 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.228/0.213/0.500m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=38 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.227/0.213/0.500m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=38 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.229/0.214/0.502m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=38 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.229/0.212/0.504m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=38 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.232/0.213/0.507m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=38 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.232/0.213/0.508m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+IMU quiet - re-armed IMU/INS logs
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=38 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.233/0.213/0.509m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=1, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.234/0.213/0.510m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.235/0.214/0.511m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.237/0.214/0.513m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.238/0.215/0.513m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=36 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.240/0.216/0.516m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=36 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.241/0.216/0.517m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=36 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.242/0.216/0.517m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+IMU quiet - re-armed IMU/INS logs
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=36 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.243/0.217/0.518m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=1, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=36 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.245/0.219/0.521m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=36 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.245/0.218/0.522m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=36 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.246/0.217/0.523m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=36 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.248/0.218/0.525m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=36 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.248/0.218/0.526m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=36 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.250/0.219/0.529m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+[K902] BASE OTHER sats=35 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.251/0.220/0.531m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+IMU quiet - re-armed IMU/INS logs
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=36 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.252/0.221/0.533m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=1, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=36 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.252/0.219/0.533m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=36 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.254/0.221/0.534m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=36 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.255/0.221/0.536m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=36 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.257/0.222/0.539m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=36 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.258/0.224/0.540m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=36 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.258/0.224/0.541m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=36 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.259/0.225/0.543m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+IMU quiet - re-armed IMU/INS logs
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: TCP.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.257/0.223/0.542m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=1, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.258/0.224/0.544m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.259/0.224/0.545m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+Base RTCM quiet - re-armed RTCM logs
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.260/0.225/0.548m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=5, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+K902> OK!
+K902> Command accepted! Port: COM1.
+K902> Command transmited to target port.
+K902> OK!
+K902> Command accepted! Port: COM2.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.262/0.227/0.550m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected CMD q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+K902 port DIFF, accepting RTCM
+K902> OK!
+K902> Command accepted! Port: COM1.
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.264/0.230/0.554m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud tx=0 rx=0 drop=0 | BLE connected DIFF q=0, SPP waiting 0 B, phone 117 B/7 writes, wait 0, RTCM 0 B/0 frames base=0 gps=0 glo=0 gal=0 bds=0 qzs=0 last=0 tilt 0/0
+[K902] BASE OTHER sats=37 hdop=0.5 lat=13.841017882 lon=100.341548127 alt=12.448 sd=0.265/0.230/0.555m tilt=-- (no IMUDATA) | up RTCM 0 frames, 0 dropped, queue 0, BLE fails 0 | HC-12 115200 baud 
