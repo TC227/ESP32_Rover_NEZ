@@ -30,14 +30,14 @@
 #define K902_RTCM_INPUT 1  // RTCM3 written by the phone to the RX characteristic is fed to the K902
 
 #define BLE_DEVICE_NAME "E25aer_gnss"  // one binary; app sends $ROLE,BASE|ROVER after connect
-#define FW_VERSION "1.2.22"
+#define FW_VERSION "1.2.23"
 // Build with -DFORCE_BASE_ROLE=1 (env esp32dev_base) for a head locked to BASE:
 // $ROLE,ROVER is ignored, boot always starts as BASE, $FW reports the -BASE label.
 #ifndef FORCE_BASE_ROLE
 #define FORCE_BASE_ROLE 0
 #endif
 #if FORCE_BASE_ROLE
-#define FW_LABEL "1.2.22-BASE"
+#define FW_LABEL "1.2.23-BASE"
 #else
 #define FW_LABEL FW_VERSION
 #endif
@@ -77,7 +77,7 @@ const char *const kK902Setup[] = {
   "unlockoutall",
   "rtkobsmode 0",
   "set appscene survey",
-#if K902_INS_ENABLED
+#if K902_INS_ENABLED && !FORCE_BASE_ROLE
   "inscontrol enable",
   "set smootheddr on",
   // imuaxestype is not sent here. The manual applies it only after saveconfig and a
@@ -86,6 +86,10 @@ const char *const kK902Setup[] = {
   "set drconfig 1.0",    // walk-up init ~1 m/s; default vehicle threshold never aligns on a pole
   "set rtkfreq 10",
   "set pvtfreq 10",
+#elif FORCE_BASE_ROLE
+  // A base only needs a clean GNSS fix + RTCM observations — INS/DR mode on the
+  // K902 reports quality 6 and can suppress base RTCM output, so keep it off.
+  "inscontrol disable",
 #endif
   "log gpgga ontime 0.2",
   "log gprmc ontime 1",
@@ -101,7 +105,7 @@ const char *const kK902Setup[] = {
 #if TILT_ENABLED
   "log " K902_PORT " imudatab ontime 0.05",
 #endif
-#if K902_INS_ENABLED
+#if K902_INS_ENABLED && !FORCE_BASE_ROLE
   // Required for true tilted-pole surveying.  IMUDATA drives only the bubble;
   // INSRTKCOMPENSATE carries the K902-calculated pole-tip ENU offset.
   "log " K902_PORT " insrtkcompensateb ontime 0.2",
@@ -1095,7 +1099,7 @@ void ensureBubbleLog(unsigned long now) {
   lastImuRearmMs = now;
   gnss.sendCommand("unlog " K902_PORT " rawimub");
   gnss.sendCommand("log " K902_PORT " imudatab ontime 0.05");
-#if K902_INS_ENABLED
+#if K902_INS_ENABLED && !FORCE_BASE_ROLE
   gnss.sendCommand("log " K902_PORT " insrtkcompensateb ontime 0.2");
 #endif
   Serial.println("IMU quiet - re-armed IMU/INS logs");

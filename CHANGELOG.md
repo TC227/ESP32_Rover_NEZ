@@ -1,3 +1,7 @@
+## 1.2.23 - 2026-11-15
+
+- BASE-only build no longer enables K902 INS/DR (`inscontrol disable` is sent instead, and the INS tuning/log commands are skipped): the base only needs a GNSS fix plus RTCM observations. INS mode reported GGA quality 6 and is suspected of suppressing base RTCM output. Rover/unified builds keep INS-RTK unchanged.
+
 ## 1.2.22 - 2026-11-15
 
 - Base TX now holds the first HC-12 RTCM burst for 2.5 s after `startBaseArp`: BLE teardown (auto-start path) and the K902 log-start inrush land inside the window, so the supply sees one step instead of BLE+radio+receiver spiking together. Early RTCM frames repeat, so nothing is lost.
