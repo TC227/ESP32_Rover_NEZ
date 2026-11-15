@@ -92,10 +92,12 @@ bool Hc12Radio::configure() {
     }
   }
   if (!alive) {
-    leaveAt(kAtBaud);
+    // Module may already be 115200 transparent from a prior boot; SET/wiring
+    // failures must not leave the UART at 9600 or RX stays empty forever.
+    leaveAt(kWorkBaud);
     ready_ = true;
     atOk_ = false;
-    Serial.println("HC-12 AT not answered at 115200 or 9600");
+    Serial.println("HC-12 AT not answered — transparent 115200 guess");
     return false;
   }
   char ch[12];
@@ -109,10 +111,11 @@ bool Hc12Radio::configure() {
     if (!baudOk) delay(80);
   }
   if (!baudOk) {
-    leaveAt(kAtBaud);
+    leaveAt(baud_);
     ready_ = true;
     atOk_ = false;
-    Serial.println("HC-12 AT ok but AT+B115200 failed — staying 9600");
+    Serial.printf("HC-12 AT ok but AT+B115200 failed — transparent %lu\n",
+                  (unsigned long)baud_);
     return false;
   }
   leaveAt(kWorkBaud);

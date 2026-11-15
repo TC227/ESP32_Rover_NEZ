@@ -30,14 +30,14 @@
 #define K902_RTCM_INPUT 1  // RTCM3 written by the phone to the RX characteristic is fed to the K902
 
 #define BLE_DEVICE_NAME "E25aer_gnss"  // one binary; app sends $ROLE,BASE|ROVER after connect
-#define FW_VERSION "1.2.15"
+#define FW_VERSION "1.2.16"
 // Build with -DFORCE_BASE_ROLE=1 (env esp32dev_base) for a head locked to BASE:
 // $ROLE,ROVER is ignored, boot always starts as BASE, $FW reports the -BASE label.
 #ifndef FORCE_BASE_ROLE
 #define FORCE_BASE_ROLE 0
 #endif
 #if FORCE_BASE_ROLE
-#define FW_LABEL "1.2.15-BASE"
+#define FW_LABEL "1.2.16-BASE"
 #else
 #define FW_LABEL FW_VERSION
 #endif
@@ -1031,14 +1031,19 @@ void hc12Unlock() {
 }
 
 // AT uses delay(). It runs here so the main loop can keep reading K902 (no NODATA).
+// After a few AT misses, back off so SET is not held low every 4 s (that kills RX).
 void hc12Task(void *) {
+  uint8_t atFails = 0;
   for (;;) {
     if (!hc12.atOk() && hc12Lock(1000)) {
       const bool ok = hc12.configure();
       hc12Unlock();
+      if (ok) atFails = 0;
+      else if (atFails < 20) atFails++;
       Serial.println(ok ? "HC-12 115200 ready" : "HC-12 not 115200 yet — retry");
     }
-    vTaskDelay(pdMS_TO_TICKS(hc12.atOk() ? 30000 : 4000));
+    const uint32_t waitMs = hc12.atOk() ? 30000UL : (atFails < 3 ? 4000UL : 60000UL);
+    vTaskDelay(pdMS_TO_TICKS(waitMs));
   }
 }
 
@@ -1046,7 +1051,7 @@ void onRtcmFromBoard(const uint8_t *data, size_t len) {
   rtcmOutFrames++;
   if ((!baseActive && !rawLogActive) || len == 0) return;
   lastRtcmOutMs = millis();
-  if (isBaseRole() && baseActive && hc12.atOk() && hc12Lock(0)) {
+  if (isBaseRole() && baseActive && hc12.ready() && hc12Lock(0)) {
     hc12.write(data, len);
     hc12Unlock();
   }
@@ -1404,7 +1409,7 @@ void handlePhoneCommand(char *cmd) {
       return;
     }
     bool ok = false;
-    if (hc12.atOk() && hc12Lock(50)) {
+    if (hc12.ready() && hc12Lock(50)) {
       ok = hc12.writeText("$BCMD,STOP\n") > 0;
       hc12Unlock();
     }
@@ -1986,12 +1991,12 @@ void loop() {
   }
   bool radioStop = false;
   if (hc12Lock(0)) {
-    if (isBaseRole() && hc12.atOk()) {
+    if (isBaseRole() && hc12.ready()) {
       char radioLine[80];
       if (hc12.pollLine(radioLine, sizeof(radioLine)) && strncmp(radioLine, "$BCMD,STOP", 10) == 0) {
         radioStop = true;
       }
-    } else if (!isBaseRole() && hc12.atOk() &&
+    } else if (!isBaseRole() && hc12.ready() &&
                roverCorrectionSource == RoverCorrectionSource::Radio && !baseActive) {
       uint8_t baseRtcm[256];
       size_t baseRtcmLen;
@@ -2019,18 +2024,25 @@ void loop() {
     if (deviceConnected && now - lastRadioStatusMs >= 2000) {
       lastRadioStatusMs = now;
       char line[48];
-      if (baseActive && hc12.atOk()) snprintf(line, sizeof(line), "$RADIO,UP,%lu\n", (unsigned long)hc12.txBytes());
+      if (baseActive && hc12.ready()) snprintf(line, sizeof(line), "$RADIO,UP,%lu\n", (unsigned long)hc12.txBytes());
       else if (hc12.atOk()) snprintf(line, sizeof(line), "$RADIO,READY,115200\n");
+      else if (hc12.ready()) snprintf(line, sizeof(line), "$RADIO,READY,NOAT\n");
       else snprintf(line, sizeof(line), "$RADIO,WAIT,AT\n");
       bleSend(line, strlen(line));
     }
   } else {
   if (deviceConnected && now - lastBaseLinkStatusMs >= 2000) {
     lastBaseLinkStatusMs = now;
-    const char *linkStatus = roverCorrectionSource == RoverCorrectionSource::PhoneNtrip
-        ? "$BASELINK,MODE,NTRIP\n"
-        : ((now - lastRadioRtcmMs) < 3000 && lastRadioRtcmMs != 0 ? "$BASELINK,UP\n"
-           : "$BASELINK,WAIT,RADIO\n");
+    const char *linkStatus;
+    if (roverCorrectionSource == RoverCorrectionSource::PhoneNtrip) {
+      linkStatus = "$BASELINK,MODE,NTRIP\n";
+    } else if ((now - lastRadioRtcmMs) < 3000 && lastRadioRtcmMs != 0) {
+      linkStatus = "$BASELINK,UP\n";
+    } else if (!hc12.atOk()) {
+      linkStatus = "$BASELINK,WAIT,AT\n";
+    } else {
+      linkStatus = "$BASELINK,WAIT,RADIO\n";
+    }
     bleSend(linkStatus, strlen(linkStatus));
   }
   }
