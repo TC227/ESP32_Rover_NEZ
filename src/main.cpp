@@ -30,7 +30,7 @@
 #define K902_RTCM_INPUT 1  // RTCM3 written by the phone to the RX characteristic is fed to the K902
 
 #define BLE_DEVICE_NAME "E25aer_gnss"  // one binary; app sends $ROLE,BASE|ROVER after connect
-#define FW_VERSION "1.2.25"
+#define FW_VERSION "1.2.26"
 // Build with -DFORCE_BASE_ROLE=1 (env esp32dev_base) for a head locked to BASE:
 // $ROLE,ROVER is ignored, boot always starts as BASE, $FW reports the -BASE label.
 #ifndef FORCE_BASE_ROLE
@@ -1147,8 +1147,18 @@ const char *const kBaseCommands[] = {
   "log " K902_PORT " rtcm1124b ontime 1",
   "log " K902_PORT " rtcm1005b ontime 5",
   "log " K902_PORT " rtcm1033b ontime 10",
+  // Field units have shown NMEA+commands on the wire but zero COM2 binary
+  // (no IMU, no RTCM). Mirror the base logs on COM1 so TX works whichever
+  // TTL port the K902 actually routes to the ESP32.
+  "log COM1 rtcm1074b ontime 1",
+  "log COM1 rtcm1084b ontime 1",
+  "log COM1 rtcm1094b ontime 1",
+  "log COM1 rtcm1124b ontime 1",
+  "log COM1 rtcm1005b ontime 5",
+  "log COM1 rtcm1033b ontime 10",
   "log gpgga ontime 1",
   "log " K902_PORT " imudatab ontime 0.05",  // keep bubble alive while base is transmitting
+  "log COM1 imudatab ontime 0.05",
 };
 
 // fix position can land before the RTCM logs do. If the board stays quiet,
@@ -1158,7 +1168,7 @@ void ensureBaseRtcm(unsigned long now) {
   if (lastRtcmOutMs != 0 && now - lastRtcmOutMs < 3000) return;
   static unsigned long lastArmMs = 0;
   if (lastArmMs != 0 && now - lastArmMs < 4000) return;
-  if (gnss.freeCommandSlots() < 8) return;
+  if (gnss.freeCommandSlots() < sizeof(kBaseCommands) / sizeof(kBaseCommands[0])) return;
   lastArmMs = now;
   for (size_t i = 1; i < sizeof(kBaseCommands) / sizeof(kBaseCommands[0]); i++) {
     gnss.sendCommand(kBaseCommands[i]);
@@ -1628,6 +1638,7 @@ void printStatus() {
                 (unsigned long)gnss.correctionGlo(), (unsigned long)gnss.correctionGal(),
                 (unsigned long)gnss.correctionBds(), (unsigned long)gnss.correctionQzs(),
                 (unsigned)gnss.lastCorrectionType(), tiltTx, tiltDrop);
+  Serial.printf(" | K902 rx=%lu\n", (unsigned long)gnss.rxBytes());
   if (phoneFirstWritePending) {
     phoneFirstWritePending = false;
     Serial.printf("Phone RX first write %u B (0x%02X) gatts_h=%u seen=%lu\n",

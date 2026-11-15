@@ -101,6 +101,7 @@ class K902 {
   uint32_t correctionBds() const { return rtcm_.bdsMsm; }
   uint16_t lastCorrectionType() const { return rtcm_.lastType; }
   uint32_t imuFrames() const { return imuFrames_; }
+  uint32_t rxBytes() const { return rxBytes_; }
   uint16_t imuMessageId() const { return imuMessageId_; }
   uint16_t otherBinaryId() const { return otherBinaryId_; }
   uint16_t otherBinaryLength() const { return otherBinaryLen_; }
@@ -177,6 +178,7 @@ class K902 {
   uint16_t rtcmOutLeft_ = 0;
   uint8_t rtcmOutHeader_ = 0;
   uint16_t rtcmOutLength_ = 0;
+  uint32_t rxBytes_ = 0;   // every byte read off the K902 UART, ASCII or binary
   uint32_t imuFrames_ = 0;
   uint16_t imuMessageId_ = 0;
   uint16_t otherBinaryId_ = 0;

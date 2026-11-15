@@ -315,6 +315,7 @@ void K902::readUart(uint32_t now) {
   // Cap per call: a K902 streaming flat-out must not starve loop() into the task watchdog.
   for (int budget = 512; budget > 0 && uart_->available() > 0; budget--) {
     uint8_t b = (uint8_t)uart_->read();
+    rxBytes_++;
     if (binLen_ > 0 && feedBinary(b)) continue;
     if (rtcmOutLen_ > 0 || (b == 0xD3 && lineLen_ == 0)) {
       if (feedRtcmOut(b)) {
