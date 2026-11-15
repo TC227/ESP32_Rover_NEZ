@@ -1,3 +1,19 @@
+## 1.2.28 - 2026-11-15
+
+- BASE keeps IMU logs again (`imudatab` on both COM1 and COM2) so the bubble level works on a base head too; `ensureBubbleLog` no longer skips the BASE role.
+- Verified in the field: K902 on this hardware routes binary logs (IMU + RTCM) out COM1, not COM2 — RTCM logs are mirrored on both ports so either wiring works.
+- BASE `$FW`/BLE advertisement label was hardcoded `1.2.25-BASE`; now derived from `FW_VERSION` so the app shows the real version.
+
+## 1.2.27 - 2026-11-15
+
+- BASE RTCM log set trimmed to observations only; briefly removed IMU logs (restored in 1.2.28 for the bubble).
+- `$K902` passthrough and the `K902 rx=` UART byte counter retained for field diagnosis.
+
+## 1.2.26 - 2026-11-15
+
+- BASE mirrors RTCM + IMU logs on COM1 in addition to COM2 — the field K902 delivers binary output on COM1, which is why base RTCM stayed silent despite accepted `log COM2` commands.
+- Status line gains `K902 rx=` (raw UART byte counter) to prove data is actually arriving.
+
 ## 1.2.25 - 2026-11-15
 
 - New `$K902,<command>` BLE/serial passthrough forwards a raw command to the receiver (replies `$K902,OK`/`$K902,BUSY`) — field debugging of K902 config without a wired console.
