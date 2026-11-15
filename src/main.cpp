@@ -30,7 +30,7 @@
 #define K902_RTCM_INPUT 1  // RTCM3 written by the phone to the RX characteristic is fed to the K902
 
 #define BLE_DEVICE_NAME "E25aer_gnss"  // one binary; app sends $ROLE,BASE|ROVER after connect
-#define FW_VERSION "1.2.34"
+#define FW_VERSION "1.2.35"
 // Build with -DFORCE_BASE_ROLE=1 (env esp32dev_base) for a head locked to BASE:
 // $ROLE,ROVER is ignored, boot always starts as BASE, $FW reports the -BASE label.
 #ifndef FORCE_BASE_ROLE
@@ -961,6 +961,28 @@ void handleTiltCommand(const char *arg) {
   }
   if (strcmp(arg, "LEVEL") == 0) {
     tiltAck("LEVEL", setLevelReference() ? "OK" : "FAIL");
+    return;
+  }
+  if (strcmp(arg, "RST") == 0) {
+    // Factory bubble tuning — extreme slider values can park the bubble.
+    tiltFollowDynamic = 0.45f;
+    tiltFollowStatic = 0.85f;
+    tiltGyroAlpha = 0.72f;
+    tiltBlendDynamic = 0.12f;
+    tiltGyroOn = true;
+    tiltMount = 0;
+    prefs.putFloat("tSpd", tiltFollowDynamic);
+    prefs.putFloat("tSta", tiltFollowStatic);
+    prefs.putFloat("tGal", tiltGyroAlpha);
+    prefs.putFloat("tBld", tiltBlendDynamic);
+    prefs.putBool("tGyro", tiltGyroOn);
+    prefs.putUChar("tMnt", tiltMount);
+    char line[96];
+    snprintf(line, sizeof(line), "$TILT,CFG,%.3f,%.3f,%.3f,%.3f,%d,%u\n",
+             tiltFollowDynamic, tiltFollowStatic, tiltGyroAlpha,
+             tiltBlendDynamic, tiltGyroOn ? 1 : 0, (unsigned)(tiltMount & 3));
+    bleSend(line, strlen(line));
+    Serial.println("Tilt cfg reset to defaults");
     return;
   }
   const char *comma = strchr(arg, ',');
