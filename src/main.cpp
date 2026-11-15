@@ -30,7 +30,7 @@
 #define K902_RTCM_INPUT 1  // RTCM3 written by the phone to the RX characteristic is fed to the K902
 
 #define BLE_DEVICE_NAME "E25aer_gnss"  // one binary; app sends $ROLE,BASE|ROVER after connect
-#define FW_VERSION "1.2.27"
+#define FW_VERSION "1.2.28"
 // Build with -DFORCE_BASE_ROLE=1 (env esp32dev_base) for a head locked to BASE:
 // $ROLE,ROVER is ignored, boot always starts as BASE, $FW reports the -BASE label.
 #ifndef FORCE_BASE_ROLE
@@ -106,7 +106,7 @@ const char *const kK902Setup[] = {
   "log glgsv ontime 5",
   "log gagsv ontime 5",
   "log gbgsv ontime 5",
-#if TILT_ENABLED && !FORCE_BASE_ROLE
+#if TILT_ENABLED
   "log " K902_PORT " imudatab ontime 0.05",
 #endif
 #if K902_INS_ENABLED && !FORCE_BASE_ROLE
@@ -1095,7 +1095,7 @@ const size_t kRawLogCount = sizeof(kRawLogs) / sizeof(kRawLogs[0]);
 // Boot setup can be lost when the K902 restarts mid-queue. NMEA from the saved
 // config then keeps flowing, so the normal retry never runs and the bubble stays dead.
 void ensureBubbleLog(unsigned long now) {
-  if (!TILT_ENABLED || isBaseRole() || !gnss.nmeaFlowing()) return;
+  if (!TILT_ENABLED || !gnss.nmeaFlowing()) return;
   if (lastImuMs != 0 && now - lastImuMs < 2000) return;
   if (lastImuRearmMs != 0 && now - lastImuRearmMs < 8000) return;
   if (gnss.freeCommandSlots() < 3) return;
@@ -1157,6 +1157,8 @@ const char *const kBaseCommands[] = {
   "log COM1 rtcm1005b ontime 5",
   "log COM1 rtcm1033b ontime 10",
   "log gpgga ontime 1",
+  "log " K902_PORT " imudatab ontime 0.05",  // bubble level on whichever port the K902 wires out
+  "log COM1 imudatab ontime 0.05",
 };
 
 // fix position can land before the RTCM logs do. If the board stays quiet,
