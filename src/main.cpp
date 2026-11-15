@@ -30,7 +30,7 @@
 #define K902_RTCM_INPUT 1  // RTCM3 written by the phone to the RX characteristic is fed to the K902
 
 #define BLE_DEVICE_NAME "E25aer_gnss"  // one binary; app sends $ROLE,BASE|ROVER after connect
-#define FW_VERSION "1.2.33"
+#define FW_VERSION "1.2.34"
 // Build with -DFORCE_BASE_ROLE=1 (env esp32dev_base) for a head locked to BASE:
 // $ROLE,ROVER is ignored, boot always starts as BASE, $FW reports the -BASE label.
 #ifndef FORCE_BASE_ROLE
@@ -1322,6 +1322,32 @@ bool startBaseFromUtm(double north, double east, double elev, double antH, int z
   return true;
 }
 
+// $BCMD,SAVE — persist a surveyed base point to NVS without starting TX, so a
+// later reboot/auto-start uses it even when the app never pressed START.
+bool saveBasePointFromUtm(double north, double east, double elev, double antH, int zone, bool northern) {
+  const K902Fix &fix = gnss.fix();
+  if (zone <= 0) {
+    if (!fix.hasPosition()) {
+      Serial.println("BCMD SAVE has no zone and the K902 has no fix");
+      return false;
+    }
+    zone = zoneFromLon(fix.longitude);
+    northern = fix.latitude >= 0;
+  }
+  if (zone > 60) return false;
+  double lat = 0, lon = 0;
+  if (!utmToLatLon(east, north, zone, northern, &lat, &lon)) {
+    Serial.println("BCMD SAVE UTM convert failed");
+    return false;
+  }
+  prefs.putDouble("bLat", lat);
+  prefs.putDouble("bLon", lon);
+  prefs.putDouble("bArp", elev + antH);
+  prefs.putFloat("baseAntH", (float)antH);
+  Serial.printf("Base point saved %.9f %.9f arp %.3f\n", lat, lon, elev + antH);
+  return true;
+}
+
 // BASE role (dedicated build or $ROLE,BASE on the unified build): BLE stays up
 // for a long config window so the app can survey/average a point (up to ~30 min)
 // and send $BCMD,START. Past the window, once the K902 has a position fix and
@@ -1680,6 +1706,23 @@ void handlePhoneCommand(char *cmd) {
   if (strncmp(cmd, "$BCMD,STOP", 10) == 0) {
     if (baseActive) stopBase();
     sendBstat();
+    return;
+  }
+  if (strncmp(cmd, "$BCMD,SAVE,", 11) == 0) {
+    double north = 0, east = 0, elev = 0, antH = 0;
+    int zone = 0;
+    char hemi = 'N';
+    int got = sscanf(cmd + 11, "%lf,%lf,%lf,%lf,%d,%c", &north, &east, &elev, &antH, &zone, &hemi);
+    if (got != 4 && got != 6) {
+      bleSend("$BCMD,SAVE,FAIL\n", 15);
+      return;
+    }
+    if (got == 4) zone = 0;
+    if (saveBasePointFromUtm(north, east, elev, antH, zone, hemi != 'S' && hemi != 's')) {
+      bleSend("$BCMD,SAVED\n", 13);
+    } else {
+      bleSend("$BCMD,SAVE,FAIL\n", 15);
+    }
     return;
   }
   if (strncmp(cmd, "$BCMD,START,", 12) == 0) {
