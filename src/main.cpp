@@ -30,14 +30,14 @@
 #define K902_RTCM_INPUT 1  // RTCM3 written by the phone to the RX characteristic is fed to the K902
 
 #define BLE_DEVICE_NAME "E25aer_gnss"  // one binary; app sends $ROLE,BASE|ROVER after connect
-#define FW_VERSION "1.2.19"
+#define FW_VERSION "1.2.20"
 // Build with -DFORCE_BASE_ROLE=1 (env esp32dev_base) for a head locked to BASE:
 // $ROLE,ROVER is ignored, boot always starts as BASE, $FW reports the -BASE label.
 #ifndef FORCE_BASE_ROLE
 #define FORCE_BASE_ROLE 0
 #endif
 #if FORCE_BASE_ROLE
-#define FW_LABEL "1.2.19-BASE"
+#define FW_LABEL "1.2.20-BASE"
 #else
 #define FW_LABEL FW_VERSION
 #endif
@@ -1060,7 +1060,7 @@ void onRtcmFromBoard(const uint8_t *data, size_t len) {
   rtcmOutFrames++;
   if ((!baseActive && !rawLogActive) || len == 0) return;
   lastRtcmOutMs = millis();
-  if (isBaseRole() && baseActive && hc12.ready() && hc12Lock(20)) {
+  if (isBaseRole() && baseActive && hc12.ready() && hc12Lock(40)) {
     hc12.write(data, len);
     hc12Unlock();
   }
@@ -1137,6 +1137,21 @@ const char *const kBaseCommands[] = {
   "log gpgga ontime 1",
   "log " K902_PORT " imudatab ontime 0.05",  // keep bubble alive while base is transmitting
 };
+
+// fix position can land before the RTCM logs do. If the board stays quiet,
+// queue the log lines again so HC-12 has frames to send.
+void ensureBaseRtcm(unsigned long now) {
+  if (!isBaseRole() || !baseActive) return;
+  if (lastRtcmOutMs != 0 && now - lastRtcmOutMs < 3000) return;
+  static unsigned long lastArmMs = 0;
+  if (lastArmMs != 0 && now - lastArmMs < 4000) return;
+  if (gnss.freeCommandSlots() < 8) return;
+  lastArmMs = now;
+  for (size_t i = 1; i < sizeof(kBaseCommands) / sizeof(kBaseCommands[0]); i++) {
+    gnss.sendCommand(kBaseCommands[i]);
+  }
+  Serial.println("Base RTCM quiet - re-armed RTCM logs");
+}
 
 // Queue the K902 RTCM log set + surveyed antenna phase-center, then mark base TX active.
 // The fix is remembered in NVS so the BASE-only build can auto-start on it after a reboot.
@@ -1515,11 +1530,8 @@ void handlePhoneCommand(char *cmd) {
     }
     prefs.putFloat("baseAntH", (float)antH);  // reused by BASE-build auto start
     sendBstat();
-    // Keep BLE up ~20 s so the phone can show live sats / H / V while the
-    // base is already transmitting; then cut so the phone can move to the rover.
-    bleCutPending = true;
-    bleCutDelayMs = 20000;
-    bleCutAt = millis();
+    // Stay on BLE after a phone start so tx bytes / RTCM frames stay visible.
+    bleCutPending = false;
     return;
   }
 }
@@ -2123,6 +2135,7 @@ void loop() {
   }
 
   ensureBubbleLog(now);
+  ensureBaseRtcm(now);
 #if FORCE_BASE_ROLE
   maybeAutoStartBase(now);
 #endif
