@@ -30,7 +30,7 @@
 #define K902_RTCM_INPUT 1  // RTCM3 written by the phone to the RX characteristic is fed to the K902
 
 #define BLE_DEVICE_NAME "E25aer_gnss"  // one binary; app sends $ROLE,BASE|ROVER after connect
-#define FW_VERSION "1.2.28"
+#define FW_VERSION "1.2.29"
 // Build with -DFORCE_BASE_ROLE=1 (env esp32dev_base) for a head locked to BASE:
 // $ROLE,ROVER is ignored, boot always starts as BASE, $FW reports the -BASE label.
 #ifndef FORCE_BASE_ROLE
@@ -48,13 +48,20 @@
 // Bubble snappiness: higher blend / lower thresholds = follows the pole faster (more IMU noise).
 // Accel-only bubbles feel bad while swinging (linear accel ≠ gravity). Gate hard when
 // |a|≠g, and fuse gyro when the short IMUDATA frame carries it. BLE ~25 Hz binary tilt.
-static const float kTiltAccelBlendStatic = 0.92f; // settle to gravity faster when held still
-static const float kTiltAccelBlendDynamic = 0.12f;
-static const float kTiltStaticGAbs = 1.8f;    // | |a|-g | below this → trust accel
-static const float kTiltShowEpsDeg = 0.01f;
+// The tunables below are per-head prefs — IMU samples differ between K902 units, so the
+// app tunes them over BLE with $TILT,<KEY>,<val> (see handleTiltCommand).
+float tiltBlendStatic = 0.92f;   // settle to gravity faster when held still
+float tiltBlendDynamic = 0.12f;
+float tiltStaticGAbs = 1.8f;     // | |a|-g | below this → trust accel
+float tiltShowEpsDeg = 0.01f;
 static const unsigned kTiltBleGapMs = 25;     // ~40 Hz bubble notify
 static const unsigned kTiltBleRetryMs = 10;
-static const float kTiltGyroAlpha = 0.72f;    // complementary: lower = return to level faster when still
+float tiltGyroAlpha = 0.72f;     // complementary: lower = return to level faster when still
+float tiltFollowStatic = 0.85f;  // accel follow gain while nearly static
+float tiltFollowDynamic = 0.45f; // accel follow gain while swinging
+bool tiltGyroOn = true;          // gyro-aided fusion while nearly static
+uint8_t tiltMount = 0;           // 0..3 quarter-turn remap of (pitch,roll) for odd IMU mounts
+bool tiltRawOn = false;          // $TILTRAW debug stream (not persisted)
 
 #define SERVICE_UUID           "6E400001-B5A3-F393-E0A9-E50E24DCCA9E"
 #define CHARACTERISTIC_UUID_RX "6E400002-B5A3-F393-E0A9-E50E24DCCA9E"
@@ -247,6 +254,7 @@ unsigned long lastTiltBleMs = 0;
 unsigned long lastTiltAttemptMs = 0;
 unsigned long tiltTx = 0;
 unsigned long tiltDrop = 0;
+unsigned long lastTiltRawMs = 0;
 unsigned long lastGgaBleMs = 0;
 
 class MyServerCallbacks : public BLEServerCallbacks {
@@ -677,8 +685,8 @@ void sendTiltBle(unsigned long now) {
     if (bleCongested) return;
   }
   if (lastTiltAttemptMs != 0 && now - lastTiltAttemptMs < kTiltBleRetryMs) return;
-  const bool moved = fabsf(shownPitch - lastTiltSentPitch) >= kTiltShowEpsDeg ||
-                     fabsf(shownRoll - lastTiltSentRoll) >= kTiltShowEpsDeg;
+  const bool moved = fabsf(shownPitch - lastTiltSentPitch) >= tiltShowEpsDeg ||
+                     fabsf(shownRoll - lastTiltSentRoll) >= tiltShowEpsDeg;
   const bool heartbeat = lastTiltBleMs == 0 || now - lastTiltBleMs >= 500;
   if (!moved && !heartbeat) return;
   lastTiltAttemptMs = now;
@@ -842,8 +850,8 @@ void onGnssImu(const K902Imu &imu) {
     if (!isfinite(sample[i])) return;
   }
   const float sampleG = sqrtf(sample[0] * sample[0] + sample[1] * sample[1] + sample[2] * sample[2]);
-  const bool nearlyStatic = fabsf(sampleG - 9.80665f) < kTiltStaticGAbs;
-  const float blend = nearlyStatic ? kTiltAccelBlendStatic : kTiltAccelBlendDynamic;
+  const bool nearlyStatic = fabsf(sampleG - 9.80665f) < tiltStaticGAbs;
+  const float blend = nearlyStatic ? tiltBlendStatic : tiltBlendDynamic;
   for (int i = 0; i < 3; i++) {
     gravity[i] = gravitySet ? gravity[i] + blend * (sample[i] - gravity[i]) : sample[i];
     if (!isfinite(gravity[i])) {
@@ -871,7 +879,7 @@ void onGnssImu(const K902Imu &imu) {
   // if magnitude looks like deg/s (>~10), convert.
   float gx = (float)imu.gyro[0], gy = (float)imu.gyro[1], gz = (float)imu.gyro[2];
   const float gmag = fabsf(gx) + fabsf(gy) + fabsf(gz);
-  tiltGyroLive = gmag > 1e-6f;
+  tiltGyroLive = tiltGyroOn && gmag > 1e-6f;
   if (tiltGyroLive && gmag > 10.0f) {
     gx *= DEG_TO_RAD;
     gy *= DEG_TO_RAD;
@@ -886,19 +894,35 @@ void onGnssImu(const K902Imu &imu) {
     // Map body rates onto lean axes used by bubbleLean (IMU pitch/roll of the pole).
     fusedPitch += gy * RAD_TO_DEG * dt;
     fusedRoll += gx * RAD_TO_DEG * dt;
-    fusedPitch = kTiltGyroAlpha * fusedPitch + (1.0f - kTiltGyroAlpha) * accelPitch;
-    fusedRoll = kTiltGyroAlpha * fusedRoll + (1.0f - kTiltGyroAlpha) * accelRoll;
+    fusedPitch = tiltGyroAlpha * fusedPitch + (1.0f - tiltGyroAlpha) * accelPitch;
+    fusedRoll = tiltGyroAlpha * fusedRoll + (1.0f - tiltGyroAlpha) * accelRoll;
   } else {
     // Always follow gravity. Holding the last angle while |a| leaves 1 g left the
     // bubble stuck on a rover whose first samples were not a clean static reading.
-    const float follow = nearlyStatic ? 0.85f : 0.45f;
+    const float follow = nearlyStatic ? tiltFollowStatic : tiltFollowDynamic;
     fusedPitch += follow * (accelPitch - fusedPitch);
     fusedRoll += follow * (accelRoll - fusedRoll);
   }
 
-  shownPitch = fusedPitch;
-  shownRoll = fusedRoll;
+  // Per-head IMU mount may sit rotated relative to the pole — remap quarter turns.
+  float mp = fusedPitch, mr = fusedRoll;
+  switch (tiltMount & 3) {
+    case 1: mp = -fusedRoll; mr = fusedPitch; break;
+    case 2: mp = -fusedPitch; mr = -fusedRoll; break;
+    case 3: mp = fusedRoll; mr = -fusedPitch; break;
+  }
+  shownPitch = mp;
+  shownRoll = mr;
   tiltFresh = true;
+
+  if (tiltRawOn && deviceConnected && now - lastTiltRawMs >= 100) {
+    lastTiltRawMs = now;
+    char raw[120];
+    const int n = snprintf(raw, sizeof(raw),
+        "$TILTRAW,%.2f,%.2f,%.2f,%.2f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f\n",
+        shownPitch, shownRoll, tiltDeg, g, sample[0], sample[1], sample[2], gx, gy, gz);
+    if (n > 0) bleSend(raw, (size_t)n);
+  }
 }
 
 bool setLevelReference() {
@@ -911,6 +935,57 @@ bool setLevelReference() {
   prefs.putBytes("levelRef", levelRef, sizeof(levelRef));
   Serial.printf("Tilt reference saved: %.3f %.3f %.3f\n", levelRef[0], levelRef[1], levelRef[2]);
   return true;
+}
+
+void tiltAck(const char *key, const char *val) {
+  char line[64];
+  snprintf(line, sizeof(line), "$TILT,ACK,%s,%s\n", key, val);
+  bleSend(line, strlen(line));
+}
+
+// $TILT,<KEY>... — per-head bubble tuning from the app. Persisted keys land in NVS;
+// LEVEL re-captures the vertical reference, RAW toggles the $TILTRAW debug stream.
+void handleTiltCommand(const char *arg) {
+  if (strcmp(arg, "GET") == 0) {
+    char line[96];
+    snprintf(line, sizeof(line), "$TILT,CFG,%.3f,%.3f,%.3f,%.3f,%d,%u\n",
+             tiltFollowDynamic, tiltFollowStatic, tiltGyroAlpha,
+             tiltBlendDynamic, tiltGyroOn ? 1 : 0, (unsigned)(tiltMount & 3));
+    bleSend(line, strlen(line));
+    return;
+  }
+  if (strcmp(arg, "LEVEL") == 0) {
+    tiltAck("LEVEL", setLevelReference() ? "OK" : "FAIL");
+    return;
+  }
+  const char *comma = strchr(arg, ',');
+  if (!comma) return;
+  char key[8];
+  const size_t klen = (size_t)(comma - arg);
+  if (klen == 0 || klen >= sizeof(key)) return;
+  memcpy(key, arg, klen);
+  key[klen] = '\0';
+  const float v = (float)atof(comma + 1);
+  char val[16];
+  if (!strcmp(key, "SPD") && v >= 0.02f && v <= 1.0f) {
+    tiltFollowDynamic = v; prefs.putFloat("tSpd", v); snprintf(val, sizeof(val), "%.3f", v);
+  } else if (!strcmp(key, "STA") && v >= 0.02f && v <= 1.0f) {
+    tiltFollowStatic = v; prefs.putFloat("tSta", v); snprintf(val, sizeof(val), "%.3f", v);
+  } else if (!strcmp(key, "ALPHA") && v >= 0.05f && v <= 0.98f) {
+    tiltGyroAlpha = v; prefs.putFloat("tGal", v); snprintf(val, sizeof(val), "%.3f", v);
+  } else if (!strcmp(key, "BLEND") && v >= 0.01f && v <= 1.0f) {
+    tiltBlendDynamic = v; prefs.putFloat("tBld", v); snprintf(val, sizeof(val), "%.3f", v);
+  } else if (!strcmp(key, "GYRO")) {
+    tiltGyroOn = v >= 0.5f; prefs.putBool("tGyro", tiltGyroOn); snprintf(val, sizeof(val), "%d", tiltGyroOn ? 1 : 0);
+  } else if (!strcmp(key, "MNT")) {
+    tiltMount = (uint8_t)v & 3; prefs.putUChar("tMnt", tiltMount); snprintf(val, sizeof(val), "%u", (unsigned)tiltMount);
+  } else if (!strcmp(key, "RAW")) {
+    tiltRawOn = v >= 0.5f; snprintf(val, sizeof(val), "%d", tiltRawOn ? 1 : 0);
+  } else {
+    return;
+  }
+  tiltAck(key, val);
+  Serial.printf("Tilt cfg %s=%s\n", key, val);
 }
 
 // Lean of the pole away from the saved vertical, in the IMU plane. Both are 0 when the bubble is centered.
@@ -1240,13 +1315,12 @@ bool startBaseFromUtm(double north, double east, double elev, double antH, int z
   return true;
 }
 
-#if FORCE_BASE_ROLE
-// BASE-only build: BLE stays up for a long config window so the app can
-// survey/average a point (up to ~30 min) and send $BCMD,START. Past the
-// window, once the K902 has a position fix and no phone is attached, the
-// head starts base TX on its own — reusing an app-surveyed point when one
-// was saved, otherwise its live GNSS position. An explicit stop holds
-// auto-start off until the next reboot.
+// BASE role (dedicated build or $ROLE,BASE on the unified build): BLE stays up
+// for a long config window so the app can survey/average a point (up to ~30 min)
+// and send $BCMD,START. Past the window, once the K902 has a position fix and
+// no phone is attached, the head starts base TX on its own — reusing an
+// app-surveyed point when one was saved, otherwise its live GNSS position.
+// An explicit stop holds auto-start off until the next reboot.
 const unsigned long kBaseConfigWindowMs = 40UL * 60UL * 1000UL;
 unsigned long baseAutoAt = 0;
 bool baseAutoHold = false;
@@ -1254,6 +1328,7 @@ static constexpr unsigned long kBaseIdleMs = 10UL * 60 * 1000;   // connected bu
 static constexpr unsigned long kBaseAvgHoldMs = 75UL * 60 * 1000; // auto-release if the app died mid-average
 
 void maybeAutoStartBase(unsigned long now) {
+  if (!isBaseRole()) return;
   // Explicit averaging hold wins; it auto-expires so a dead app cannot park the base forever.
   if (baseAvgHold && now - baseAvgHoldAt > kBaseAvgHoldMs) baseAvgHold = false;
   if (baseActive || baseAutoHold || baseAvgHold || baseAutoAt == 0 || now < baseAutoAt) return;
@@ -1286,7 +1361,6 @@ void maybeAutoStartBase(unsigned long now) {
     baseAutoAt = now + 10000;  // K902 queue busy - retry shortly
   }
 }
-#endif
 
 void stopBase() {
   // Must land unlogall + fix none or the K902 stays on a monument and rover coords freeze.
@@ -1341,6 +1415,20 @@ void applyHeadRole(HeadRole next, bool persist) {
     lastRadioStatusMs = 0;
     lastBaseLinkStatusMs = 0;
     Serial.printf("Role %s -> %s\n", headRoleName(), next == HeadRole::Base ? "BASE" : "ROVER");
+    // Retune the K902 for the new role: BASE wants a clean fix + RTCM only
+    // (INS/DR suppresses base output), ROVER wants GNSS+INS for pole-tip survey.
+    if (next == HeadRole::Base) {
+      gnss.sendCommand("inscontrol disable");
+      gnss.sendCommand("set smootheddr off");
+      gnss.sendCommand("set drleverarm 0 0 0");
+    } else {
+      gnss.sendCommand("inscontrol enable");
+      gnss.sendCommand("set smootheddr on");
+      gnss.sendCommand("set drleverarm 0 0 0");
+      gnss.sendCommand("set drconfig 1.0");
+      gnss.sendCommand("set rtkfreq 10");
+      gnss.sendCommand("set pvtfreq 10");
+    }
   }
   headRole = next;
   if (persist) prefs.putUChar("role", static_cast<uint8_t>(headRole));
@@ -1548,6 +1636,10 @@ void handlePhoneCommand(char *cmd) {
       float h = (float)atof(comma + 1);
       if (h > 0.05f) applyInsRodLength(h);
     }
+    return;
+  }
+  if (strncmp(cmd, "$TILT,", 6) == 0) {
+    handleTiltCommand(cmd + 6);
     return;
   }
   if (strncmp(cmd, "$LCMD,START", 11) == 0) {
@@ -2023,10 +2115,10 @@ void setup() {
   prefs.begin("rover");
 #if FORCE_BASE_ROLE
   headRole = HeadRole::Base;
-  baseAutoAt = millis() + kBaseConfigWindowMs;  // app may still send $BCMD,START first
 #else
   headRole = prefs.getUChar("role", 0) == 1 ? HeadRole::Base : HeadRole::Rover;
 #endif
+  if (isBaseRole()) baseAutoAt = millis() + kBaseConfigWindowMs;  // app may still send $BCMD,START first
   const uint8_t savedSource = prefs.getUChar("corrSrc", 0);
   roverCorrectionSource = savedSource == 1 ? RoverCorrectionSource::PhoneNtrip : RoverCorrectionSource::Radio;
   Serial.printf("E25aer_gnss fw %s role %s\n", FW_LABEL, headRoleName());
@@ -2048,6 +2140,13 @@ void setup() {
       levelRef[2] /= n;
     }
   }
+  // Per-head bubble tuning saved by the app's calibration screen ($TILT,...).
+  tiltFollowDynamic = prefs.getFloat("tSpd", tiltFollowDynamic);
+  tiltFollowStatic = prefs.getFloat("tSta", tiltFollowStatic);
+  tiltGyroAlpha = prefs.getFloat("tGal", tiltGyroAlpha);
+  tiltBlendDynamic = prefs.getFloat("tBld", tiltBlendDynamic);
+  tiltGyroOn = prefs.getBool("tGyro", tiltGyroOn);
+  tiltMount = prefs.getUChar("tMnt", tiltMount) & 3;
 
   gnss.onSentence(onGnssSentence);
   gnss.onFix(onGnssFix);
@@ -2202,9 +2301,7 @@ void loop() {
 
   ensureBubbleLog(now);
   ensureBaseRtcm(now);
-#if FORCE_BASE_ROLE
   maybeAutoStartBase(now);
-#endif
   gnss.poll();
 
   if (!baseActive && gnss.acceptsCorrections()) {
