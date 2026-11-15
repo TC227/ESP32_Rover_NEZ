@@ -1,3 +1,7 @@
+## 1.2.21 - 2026-11-15
+
+- BASE auto-start no longer waits forever while a phone is merely connected: it starts once the config window has passed and the app has been silent for 10 minutes. New `$BAVG,1`/`$BAVG,0` command lets the app hold auto-start for the exact duration of a base-point averaging session (auto-expires after 75 min if the app dies).
+
 ## 1.2.15 - 2026-11-14
 
 - BASE-only auto-start no longer waits for a navigation fix when a surveyed point was saved via `$BCMD,START` — the K902 receives `fix position` and tracks satellites on its own, so base TX can begin indoors/outdoors before a 3D fix. The live-fix fallback path still requires `hasPosition()`.

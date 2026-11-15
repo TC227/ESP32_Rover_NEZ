@@ -30,14 +30,14 @@
 #define K902_RTCM_INPUT 1  // RTCM3 written by the phone to the RX characteristic is fed to the K902
 
 #define BLE_DEVICE_NAME "E25aer_gnss"  // one binary; app sends $ROLE,BASE|ROVER after connect
-#define FW_VERSION "1.2.20"
+#define FW_VERSION "1.2.21"
 // Build with -DFORCE_BASE_ROLE=1 (env esp32dev_base) for a head locked to BASE:
 // $ROLE,ROVER is ignored, boot always starts as BASE, $FW reports the -BASE label.
 #ifndef FORCE_BASE_ROLE
 #define FORCE_BASE_ROLE 0
 #endif
 #if FORCE_BASE_ROLE
-#define FW_LABEL "1.2.20-BASE"
+#define FW_LABEL "1.2.21-BASE"
 #else
 #define FW_LABEL FW_VERSION
 #endif
@@ -178,6 +178,9 @@ volatile bool baseActive = false;
 bool bleCutPending = false;
 unsigned long bleCutAt = 0;
 unsigned long bleCutDelayMs = 600;  // phone START uses a longer window to show sats/H/V
+volatile bool baseAvgHold = false;   // app signalled an averaging session is running
+unsigned long baseAvgHoldAt = 0;
+unsigned long lastPhoneCmdMs = 0;    // last command bytes written over BLE/SPP
 unsigned long lastRadioStatusMs = 0;
 SemaphoreHandle_t hc12Mux = NULL;
 unsigned long lastBstatMs = 0;
@@ -286,7 +289,7 @@ bool allCommandAscii(const uint8_t *data, size_t len) {
 
 // Only these reach the command path; anything else on the RX characteristic is RTCM.
 bool commandPrefixOk(const char *s, size_t len) {
-  static const char *const kPrefixes[] = {"$ICMD,", "$BCMD,", "$LCMD,", "$RCMD,", "$WCMD,", "$ROLE", "$FW", "$VER"};
+  static const char *const kPrefixes[] = {"$ICMD,", "$BCMD,", "$BAVG,", "$LCMD,", "$RCMD,", "$WCMD,", "$ROLE", "$FW", "$VER"};
   for (const char *p : kPrefixes) {
     size_t n = strlen(p);
     if (strncmp(s, p, len < n ? len : n) == 0) return true;
@@ -479,6 +482,7 @@ void ingestPhoneWrite(const uint8_t *data, size_t len) {
   if (len == 0 || data == NULL) return;
   bleWriteCount++;
   bleWriteBytes += len;
+  lastPhoneCmdMs = millis();
   if (!phoneWriteAnnounced) {
     phoneWriteAnnounced = true;
     phoneFirstWritePending = true;
@@ -1223,10 +1227,16 @@ bool startBaseFromUtm(double north, double east, double elev, double antH, int z
 const unsigned long kBaseConfigWindowMs = 40UL * 60UL * 1000UL;
 unsigned long baseAutoAt = 0;
 bool baseAutoHold = false;
+static constexpr unsigned long kBaseIdleMs = 10UL * 60 * 1000;   // connected but silent this long -> start anyway
+static constexpr unsigned long kBaseAvgHoldMs = 75UL * 60 * 1000; // auto-release if the app died mid-average
 
 void maybeAutoStartBase(unsigned long now) {
-  // A connected phone means the app is still configuring — never cut in.
-  if (baseActive || baseAutoHold || baseAutoAt == 0 || now < baseAutoAt || deviceConnected) return;
+  // Explicit averaging hold wins; it auto-expires so a dead app cannot park the base forever.
+  if (baseAvgHold && now - baseAvgHoldAt > kBaseAvgHoldMs) baseAvgHold = false;
+  if (baseActive || baseAutoHold || baseAvgHold || baseAutoAt == 0 || now < baseAutoAt) return;
+  // A connected phone blocks auto-start only while it is actually talking to us.
+  // Silent connection past the idle window means the app is just sitting there — start anyway.
+  if (deviceConnected && lastPhoneCmdMs != 0 && now - lastPhoneCmdMs < kBaseIdleMs) return;
   double lat, lon, arp;
   if (prefs.isKey("bLat") && prefs.isKey("bLon") && prefs.isKey("bArp")) {
     // A surveyed point was set before — reuse it even if the head moved.
@@ -1395,6 +1405,21 @@ void handlePhoneCommand(char *cmd) {
   }
   if (strncmp(cmd, "$WCMD,WIFI,", 11) == 0) {
     bleSend("$WCMD,ACK\n", 10);
+    return;
+  }
+  if (strncmp(cmd, "$BAVG,", 6) == 0) {
+    // App hold for the duration of a base-point averaging session.
+    if (isBaseRole()) {
+      if (cmd[6] == '1') {
+        baseAvgHold = true;
+        baseAvgHoldAt = millis();
+        Serial.println("Base auto-start held - averaging");
+      } else {
+        baseAvgHold = false;
+        Serial.println("Base auto-start released");
+      }
+    }
+    bleSend("$BAVG,OK\n", 9);
     return;
   }
   if (strncmp(cmd, "$ROLE", 5) == 0) {
