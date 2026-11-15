@@ -30,14 +30,14 @@
 #define K902_RTCM_INPUT 1  // RTCM3 written by the phone to the RX characteristic is fed to the K902
 
 #define BLE_DEVICE_NAME "E25aer_gnss"  // one binary; app sends $ROLE,BASE|ROVER after connect
-#define FW_VERSION "1.2.18"
+#define FW_VERSION "1.2.19"
 // Build with -DFORCE_BASE_ROLE=1 (env esp32dev_base) for a head locked to BASE:
 // $ROLE,ROVER is ignored, boot always starts as BASE, $FW reports the -BASE label.
 #ifndef FORCE_BASE_ROLE
 #define FORCE_BASE_ROLE 0
 #endif
 #if FORCE_BASE_ROLE
-#define FW_LABEL "1.2.18-BASE"
+#define FW_LABEL "1.2.19-BASE"
 #else
 #define FW_LABEL FW_VERSION
 #endif
@@ -1401,6 +1401,13 @@ void handlePhoneCommand(char *cmd) {
     } else if (strcmp(source, "NTRIP") == 0) {
       roverCorrectionSource = RoverCorrectionSource::PhoneNtrip;
       prefs.putUChar("corrSrc", static_cast<uint8_t>(roverCorrectionSource));
+      // Drop stale radio bytes so they cannot splice into phone NTRIP RTCM.
+      flushHc12Rx();
+      lastRadioRtcmMs = 0;
+      if (rtcmMux && xSemaphoreTake(rtcmMux, pdMS_TO_TICKS(20)) == pdTRUE) {
+        xStreamBufferReset(rtcmBuffer);
+        xSemaphoreGive(rtcmMux);
+      }
       bleSend("$RSOURCE,ACK,NTRIP\n", 19);
     }
     lastBaseLinkStatusMs = 0;
@@ -2001,7 +2008,8 @@ void loop() {
     if (n > 0 && bleSend(line, (size_t)n)) fwAnnouncePending = false;
   }
   bool radioStop = false;
-  if (hc12Lock(0)) {
+  // Rover radio RX waits a few ms for the mutex so AT retries do not starve RTCM.
+  if (hc12Lock(isBaseRole() ? 0 : 5)) {
     if (isBaseRole() && hc12.ready()) {
       char radioLine[80];
       if (hc12.pollLine(radioLine, sizeof(radioLine)) && strncmp(radioLine, "$BCMD,STOP", 10) == 0) {
