@@ -92,12 +92,12 @@ bool Hc12Radio::configure() {
     }
   }
   if (!alive) {
-    // Module may already be 115200 transparent from a prior boot; SET/wiring
-    // failures must not leave the UART at 9600 or RX stays empty forever.
-    leaveAt(kWorkBaud);
+    // Factory default is 9600. Prefer that when AT never answers so two
+    // unconfigured heads still hear each other (SET missing / clone quirks).
+    leaveAt(kAtBaud);
     ready_ = true;
     atOk_ = false;
-    Serial.println("HC-12 AT not answered — transparent 115200 guess");
+    Serial.println("HC-12 AT not answered — transparent 9600");
     return false;
   }
   char ch[12];
@@ -127,14 +127,30 @@ bool Hc12Radio::configure() {
 
 size_t Hc12Radio::write(const uint8_t *data, size_t len) {
   if (data == nullptr || len == 0) return 0;
-  const int room = uart_.availableForWrite();
-  if (room < static_cast<int>(len)) {
-    drops_++;
-    return 0;
+  // MSM frames can be hundreds of bytes — never drop a whole frame just because
+  // the UART TX buffer is momentarily fuller than `len`.
+  size_t sent = 0;
+  const unsigned long start = millis();
+  while (sent < len) {
+    const int room = uart_.availableForWrite();
+    if (room <= 0) {
+      if (millis() - start > 80) {
+        drops_++;
+        break;
+      }
+      delay(1);
+      continue;
+    }
+    const size_t chunk = (len - sent) < (size_t)room ? (len - sent) : (size_t)room;
+    const size_t n = uart_.write(data + sent, chunk);
+    if (n == 0) {
+      drops_++;
+      break;
+    }
+    sent += n;
+    txBytes_ += n;
   }
-  const size_t n = uart_.write(data, len);
-  txBytes_ += n;
-  return n;
+  return sent;
 }
 
 size_t Hc12Radio::writeText(const char *text) {
