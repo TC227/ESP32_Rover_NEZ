@@ -30,7 +30,7 @@
 #define K902_RTCM_INPUT 1  // RTCM3 written by the phone to the RX characteristic is fed to the K902
 
 #define BLE_DEVICE_NAME "E25aer_gnss"  // one binary; app sends $ROLE,BASE|ROVER after connect
-#define FW_VERSION "1.2.31"
+#define FW_VERSION "1.2.32"
 // Build with -DFORCE_BASE_ROLE=1 (env esp32dev_base) for a head locked to BASE:
 // $ROLE,ROVER is ignored, boot always starts as BASE, $FW reports the -BASE label.
 #ifndef FORCE_BASE_ROLE
@@ -123,6 +123,8 @@ const char *const kK902Setup[] = {
   // Required for true tilted-pole surveying.  IMUDATA drives only the bubble;
   // INSRTKCOMPENSATE carries the K902-calculated pole-tip ENU offset.
   "log " K902_PORT " insrtkcompensateb ontime 0.2",
+  // Same COM1/COM2 routing issue as imudatab — mirror so INS tip works on either wiring.
+  "log COM1 insrtkcompensateb ontime 0.2",
 #endif
   // rawimub at 100 Hz fills the 115200 COM2 link and drops imudatab, so the
   // bubble and level calibration see no IMU. insconfigb is only on change.
@@ -1183,6 +1185,7 @@ void ensureBubbleLog(unsigned long now) {
   gnss.sendCommand("log COM1 imudatab ontime 0.05");
 #if K902_INS_ENABLED && !FORCE_BASE_ROLE
   gnss.sendCommand("log " K902_PORT " insrtkcompensateb ontime 0.2");
+  gnss.sendCommand("log COM1 insrtkcompensateb ontime 0.2");
 #endif
   Serial.println("IMU quiet - re-armed IMU/INS logs");
 }
