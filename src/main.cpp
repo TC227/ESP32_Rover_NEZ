@@ -30,7 +30,7 @@
 #define K902_RTCM_INPUT 1  // RTCM3 written by the phone to the RX characteristic is fed to the K902
 
 #define BLE_DEVICE_NAME "E25aer_gnss"  // one binary; app sends $ROLE,BASE|ROVER after connect
-#define FW_VERSION "1.2.42"
+#define FW_VERSION "1.2.43"
 // Build with -DFORCE_BASE_ROLE=1 (env esp32dev_base) for a head locked to BASE:
 // $ROLE,ROVER is ignored, boot always starts as BASE, $FW reports the -BASE label.
 #ifndef FORCE_BASE_ROLE
@@ -1405,7 +1405,7 @@ void maybeAutoStartBase(unsigned long now) {
   }
   // While the app averages, keep the K902 released: anything that re-latches
   // "fix position" mid-session freezes GGA at quality 7 (OTHER, sigma 0).
-  if (baseAvgHold && now - baseAvgFixNoneMs >= 3000) {
+  if (baseAvgHold && now - baseAvgFixNoneMs >= 1000) {
     baseAvgFixNoneMs = now;
     if (gnss.sendCommand("fix none")) baseAvgFixNonePending = false;
     else baseAvgFixNonePending = true;
