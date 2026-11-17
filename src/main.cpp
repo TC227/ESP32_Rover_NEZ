@@ -30,7 +30,7 @@
 #define K902_RTCM_INPUT 1  // RTCM3 written by the phone to the RX characteristic is fed to the K902
 
 #define BLE_DEVICE_NAME "E25aer_gnss"  // one binary; app sends $ROLE,BASE|ROVER after connect
-#define FW_VERSION "1.2.39"
+#define FW_VERSION "1.2.40"
 // Build with -DFORCE_BASE_ROLE=1 (env esp32dev_base) for a head locked to BASE:
 // $ROLE,ROVER is ignored, boot always starts as BASE, $FW reports the -BASE label.
 #ifndef FORCE_BASE_ROLE
@@ -211,6 +211,7 @@ bool bleCutPending = false;
 unsigned long bleCutAt = 0;
 unsigned long bleCutDelayMs = 600;  // phone START uses a longer window to show sats/H/V
 volatile bool baseAvgHold = false;   // app signalled an averaging session is running
+volatile bool baseAvgFixNonePending = false; // retry "fix none" until the K902 queue accepts it
 unsigned long baseAvgHoldAt = 0;
 unsigned long lastPhoneCmdMs = 0;    // last command bytes written over BLE/SPP
 unsigned long baseTxHoldUntil = 0;   // delay first HC-12 RTCM burst after base start (power settle)
@@ -1396,6 +1397,7 @@ static constexpr unsigned long kBaseAvgHoldMs = 75UL * 60 * 1000; // auto-releas
 
 void maybeAutoStartBase(unsigned long now) {
   if (!isBaseRole()) return;
+  if (baseAvgFixNonePending && gnss.sendCommand("fix none")) baseAvgFixNonePending = false;
   // Explicit averaging hold wins; it auto-expires so a dead app cannot park the base forever.
   if (baseAvgHold && now - baseAvgHoldAt > kBaseAvgHoldMs) baseAvgHold = false;
   if (baseActive || baseAutoHold || baseAvgHold || baseAutoAt == 0 || now < baseAutoAt) return;
@@ -1630,8 +1632,10 @@ void handlePhoneCommand(char *cmd) {
         // A previous base session leaves "fix position" latched on the K902 —
         // GGA then reports one frozen coordinate and averaging sigma reads 0.
         // Release it so the average sees the live GNSS wander; $BCMD,START
-        // re-applies fix position when transmission actually begins.
-        if (gnss.freeCommandSlots() >= 1) gnss.sendCommand("fix none");
+        // re-applies fix position when transmission actually begins. Retry until
+        // the queue accepts — a dropped fix none leaves GGA frozen at quality 7.
+        baseAvgFixNonePending = true;
+        if (gnss.sendCommand("fix none")) baseAvgFixNonePending = false;
         Serial.println("Base auto-start held - averaging");
       } else {
         baseAvgHold = false;
