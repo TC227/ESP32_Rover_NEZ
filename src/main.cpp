@@ -30,7 +30,7 @@
 #define K902_RTCM_INPUT 1  // RTCM3 written by the phone to the RX characteristic is fed to the K902
 
 #define BLE_DEVICE_NAME "E25aer_gnss"  // one binary; app sends $ROLE,BASE|ROVER after connect
-#define FW_VERSION "1.2.35"
+#define FW_VERSION "1.2.36"
 // Build with -DFORCE_BASE_ROLE=1 (env esp32dev_base) for a head locked to BASE:
 // $ROLE,ROVER is ignored, boot always starts as BASE, $FW reports the -BASE label.
 #ifndef FORCE_BASE_ROLE
@@ -1499,6 +1499,13 @@ void applyInsRodLength(float meters) {
   if (meters > 20.0f) meters = 20.0f;
   poleHeightM = meters;
   prefs.putFloat("poleH", poleHeightM);
+#if K902_INS_ENABLED
+  // Manual 4.6.2.2: the insrtk tilt module needs the centering-rod length in mm
+  // or INSRTKCOMPENSATE compensation is computed against a wrong lever arm.
+  char cmd[48];
+  snprintf(cmd, sizeof(cmd), "insrtk rodlength %d", (int)(poleHeightM * 1000.0f + 0.5f));
+  gnss.sendCommand(cmd);
+#endif
 }
 
 #if K902_INS_ENABLED
@@ -1682,6 +1689,10 @@ void handlePhoneCommand(char *cmd) {
     insInitPending = levelOk;
     insInitStartedMs = millis();
     lastInsStatus = -99;
+    // Manual 4.6.4.4: initialization needs "insrtk init 1" after the rod length is
+    // set. Requires open sky / RTK FIX; the user shakes the pole per the status
+    // reported through $PINS/$ICALIB.
+    gnss.sendCommand("insrtk init 1");
     const char *reply = levelOk ? "$ICALIB,START,wait_ins\n" : "$ICALIB,FAIL,no_imu\n";
 #else
     const char *reply = levelOk ? "$ICALIB,OK,level_only\n" : "$ICALIB,FAIL,no_imu\n";
