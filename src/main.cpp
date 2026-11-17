@@ -30,7 +30,7 @@
 #define K902_RTCM_INPUT 1  // RTCM3 written by the phone to the RX characteristic is fed to the K902
 
 #define BLE_DEVICE_NAME "E25aer_gnss"  // one binary; app sends $ROLE,BASE|ROVER after connect
-#define FW_VERSION "1.2.36"
+#define FW_VERSION "1.2.37"
 // Build with -DFORCE_BASE_ROLE=1 (env esp32dev_base) for a head locked to BASE:
 // $ROLE,ROVER is ignored, boot always starts as BASE, $FW reports the -BASE label.
 #ifndef FORCE_BASE_ROLE
@@ -130,6 +130,9 @@ const char *const kK902Setup[] = {
   // bubble and level calibration see no IMU. insconfigb is only on change.
   "unlog " K902_PORT " rawimub",
   "log " K902_PORT " insconfigb onchanged",
+  // Persist the clean baseline so a K902 reboot keeps our logs/settings instead
+  // of whatever a previous session (or another tool) left behind.
+  "saveconfig",
 };
 
 K902 gnss;
@@ -312,7 +315,7 @@ bool allCommandAscii(const uint8_t *data, size_t len) {
 
 // Only these reach the command path; anything else on the RX characteristic is RTCM.
 bool commandPrefixOk(const char *s, size_t len) {
-  static const char *const kPrefixes[] = {"$ICMD,", "$BCMD,", "$BAVG,", "$K902,", "$LCMD,", "$RCMD,", "$WCMD,", "$ROLE", "$FW", "$VER", "$TILT"};
+  static const char *const kPrefixes[] = {"$ICMD,", "$BCMD,", "$BAVG,", "$K902S,", "$K902,", "$LCMD,", "$RCMD,", "$WCMD,", "$ROLE", "$FW", "$VER", "$TILT"};
   for (const char *p : kPrefixes) {
     size_t n = strlen(p);
     if (strncmp(s, p, len < n ? len : n) == 0) return true;
@@ -1584,6 +1587,18 @@ void handlePhoneCommand(char *cmd) {
   }
   if (strncmp(cmd, "$WCMD,WIFI,", 11) == 0) {
     bleSend("$WCMD,ACK\n", 10);
+    return;
+  }
+  if (strncmp(cmd, "$K902S,", 7) == 0) {
+    // "$K902S,<cmd>" = passthrough then saveconfig, so K902 settings survive reboot
+    // (magvar, ecutoff, posave, rtktimeout, headingoffset, lockout, ...).
+    const char *kcmd = cmd + 7;
+    if (*kcmd && gnss.sendCommand(kcmd) && gnss.sendCommand("saveconfig")) {
+      Serial.printf("K902S passthrough+save< %s\n", kcmd);
+      bleSend("$K902S,OK\n", 10);
+    } else {
+      bleSend("$K902S,BUSY\n", 12);
+    }
     return;
   }
   if (strncmp(cmd, "$K902,", 6) == 0) {
