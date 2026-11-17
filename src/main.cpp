@@ -30,7 +30,7 @@
 #define K902_RTCM_INPUT 1  // RTCM3 written by the phone to the RX characteristic is fed to the K902
 
 #define BLE_DEVICE_NAME "E25aer_gnss"  // one binary; app sends $ROLE,BASE|ROVER after connect
-#define FW_VERSION "1.2.37"
+#define FW_VERSION "1.2.38"
 // Build with -DFORCE_BASE_ROLE=1 (env esp32dev_base) for a head locked to BASE:
 // $ROLE,ROVER is ignored, boot always starts as BASE, $FW reports the -BASE label.
 #ifndef FORCE_BASE_ROLE
@@ -130,6 +130,11 @@ const char *const kK902Setup[] = {
   // bubble and level calibration see no IMU. insconfigb is only on change.
   "unlog " K902_PORT " rawimub",
   "log " K902_PORT " insconfigb onchanged",
+  // Accuracy/stability defaults from the K902 manual: cut low-elevation
+  // multipath satellites and drop RTK quickly when corrections go stale instead
+  // of holding a drifting FIX. Tune per site with $K902S,ecutoff / rtktimeout.
+  "ecutoff 15",
+  "rtktimeout 60",
   // Persist the clean baseline so a K902 reboot keeps our logs/settings instead
   // of whatever a previous session (or another tool) left behind.
   "saveconfig",
