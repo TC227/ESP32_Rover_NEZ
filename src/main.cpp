@@ -30,7 +30,7 @@
 #define K902_RTCM_INPUT 1  // RTCM3 written by the phone to the RX characteristic is fed to the K902
 
 #define BLE_DEVICE_NAME "E25aer_gnss"  // one binary; app sends $ROLE,BASE|ROVER after connect
-#define FW_VERSION "1.2.41"
+#define FW_VERSION "1.2.42"
 // Build with -DFORCE_BASE_ROLE=1 (env esp32dev_base) for a head locked to BASE:
 // $ROLE,ROVER is ignored, boot always starts as BASE, $FW reports the -BASE label.
 #ifndef FORCE_BASE_ROLE
@@ -213,6 +213,7 @@ unsigned long bleCutDelayMs = 600;  // phone START uses a longer window to show 
 volatile bool baseAvgHold = false;   // app signalled an averaging session is running
 volatile bool baseAvgFixNonePending = false; // retry "fix none" until the K902 queue accepts it
 unsigned long baseAvgFixNoneMs = 0;
+bool baseAvgCfgSaved = false; // saveconfig once after releasing fix so K902 stops re-latching it
 unsigned long baseAvgHoldAt = 0;
 unsigned long lastPhoneCmdMs = 0;    // last command bytes written over BLE/SPP
 unsigned long baseTxHoldUntil = 0;   // delay first HC-12 RTCM burst after base start (power settle)
@@ -1398,7 +1399,10 @@ static constexpr unsigned long kBaseAvgHoldMs = 75UL * 60 * 1000; // auto-releas
 
 void maybeAutoStartBase(unsigned long now) {
   if (!isBaseRole()) return;
-  if (baseAvgFixNonePending && gnss.sendCommand("fix none")) baseAvgFixNonePending = false;
+  if (baseAvgFixNonePending && gnss.sendCommand("fix none")) {
+    baseAvgFixNonePending = false;
+    if (baseAvgHold && !baseAvgCfgSaved) { baseAvgCfgSaved = true; gnss.sendCommand("saveconfig"); }
+  }
   // While the app averages, keep the K902 released: anything that re-latches
   // "fix position" mid-session freezes GGA at quality 7 (OTHER, sigma 0).
   if (baseAvgHold && now - baseAvgFixNoneMs >= 3000) {
@@ -1643,7 +1647,11 @@ void handlePhoneCommand(char *cmd) {
         // re-applies fix position when transmission actually begins. Retry until
         // the queue accepts — a dropped fix none leaves GGA frozen at quality 7.
         baseAvgFixNonePending = true;
-        if (gnss.sendCommand("fix none")) baseAvgFixNonePending = false;
+        baseAvgCfgSaved = false;
+        if (gnss.sendCommand("fix none")) {
+          baseAvgFixNonePending = false;
+          if (gnss.sendCommand("saveconfig")) baseAvgCfgSaved = true;
+        }
         Serial.println("Base auto-start held - averaging");
       } else {
         baseAvgHold = false;
