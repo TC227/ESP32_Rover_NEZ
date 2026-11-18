@@ -138,6 +138,8 @@ NETS = [
     (10, "UART1_RX_HC"),
     (11, "PSU_K"),
     (12, "BUZZER"),
+    (13, "I2C_SDA"),
+    (14, "I2C_SCL"),
 ]
 
 # --- Placement ---
@@ -250,7 +252,7 @@ parts: list[str] = []
 # ----- TOP: ESP32 -----
 left_names = ["3V3", "GND", "15", "2", "4", "16", "17", "5", "18", "19", "21", "RX0", "TX0", "22", "23"]
 right_names = ["VIN", "GND2", "13", "12", "14", "27", "26", "25", "33", "32", "35", "34", "VN", "VP", "EN"]
-left_nets = {"3V3": (8, "3V3"), "GND": (1, "GND"), "16": (3, "UART2_RX"), "17": (4, "UART2_TX"), "23": (12, "BUZZER")}
+left_nets = {"3V3": (8, "3V3"), "GND": (1, "GND"), "16": (3, "UART2_RX"), "17": (4, "UART2_TX"), "23": (12, "BUZZER"), "21": (13, "I2C_SDA"), "22": (14, "I2C_SCL")}
 right_nets = {"VIN": (9, "VIN"), "GND2": (1, "GND"), "27": (6, "UART1_TX"), "26": (5, "UART1_RX"), "25": (7, "HC12_SET")}
 
 esp_pads = []
@@ -369,6 +371,25 @@ parts.append(
     + "\t)\n"
 )
 tht += [("BZ1.VCC", *bz_vcc), ("BZ1.IO", *bz_io), ("BZ1.GND", *bz_gnd)]
+
+# GY-273 magnetometer (HMC5883L/QMC5883L) — female 1x5 socket, top side, bottom-left.
+# Far from K902 GNSS antenna (top), ESP32 antenna (top-right), HC-12 (bottom-center).
+# Pin order assumed: 1=VCC 2=GND 3=SCL 4=SDA 5=DRDY (top→bottom) — VERIFY module silkscreen.
+GY = (20.0, 30.0)
+gy_pads = [
+    pad("1", 0, (1 - 3) * 2.54, 8, "3V3"),   # VCC — module has own LDO, 3V3 ok
+    pad("2", 0, (2 - 3) * 2.54, 1, "GND"),
+    pad("3", 0, (3 - 3) * 2.54, 14, "I2C_SCL"),
+    pad("4", 0, (4 - 3) * 2.54, 13, "I2C_SDA"),
+    pad("5", 0, (5 - 3) * 2.54, 0, ""),       # DRDY — NC (polling)
+]
+parts.append(
+    fp_header("Connector_PinSocket_2.54mm:PinSocket_1x05_P2.54mm_Vertical", "F.Cu", GY, "J4", "GY-273", "Magnetometer. Bottom-left, clear of antennas. Verify pin order vs silkscreen")
+    + "".join(gy_pads)
+    + "\t)\n"
+)
+for i in range(1, 6):
+    tht.append((f"J4.{i}", GY[0], GY[1] + (i - 3) * 2.54))
 
 # K902 mounting holes 30×30 mm, Ø2.2, centered on the 38×38 body
 k_holes = [(CX + sx * 15.0, CY + sy * 15.0) for sx in (-1.0, 1.0) for sy in (-1.0, 1.0)]
@@ -537,6 +558,9 @@ graphics.append(silk_text("GND", j8_g[0] + 1.4, j8_g[1] - 2.4, 0.7, "B.SilkS", T
 graphics.append(silk_text("5V: USB-C OR BAT  one source", 14, 76.6, 0.75, "B.SilkS", True))
 graphics.append(silk_text("C6 220u", C6_AT[0] + 2.2, C6_AT[1], 0.7, "B.SilkS", True))
 graphics.append(silk_text("R10 1k", R10_AT[0] - 8, R10_AT[1] + 2.4, 0.7, "B.SilkS", True))
+graphics.append(silk_rect(GY[0], GY[1] - 7.0, GY[0] + 14.0, GY[1] + 7.0, "F.SilkS"))
+graphics.append(silk_text("GY-273 MAG", GY[0] + 0.5, GY[1] + 8.0, 0.8))
+graphics.append(silk_text("1=VCC 2=GND 3=SCL 4=SDA 5=DRDY", GY[0] - 1.0, GY[1] - 8.5, 0.6))
 
 graphics.append(keepout(40, 86, 80, 114, "K902_GNSS_keepout"))
 graphics.append(keepout(88, 78, 114, 96, "ESP32_24G_keepout"))
@@ -622,6 +646,33 @@ tracks.append(via(*esp_gnd_l, 1))
 tracks.append(via(*esp_gnd_r, 1))
 tracks.append(via(*c6_n, 1))
 tracks.append(via(*j8_g, 1))
+
+# I2C to GY-273 (J4): ESP32 GPIO21=SDA GPIO22=SCL, 3V3 power.
+# F.Cu channel between K902 (x<=79) and ESP32 (x>=87.3), then B.Cu hops to pads.
+gpio21 = (LX, py(10))
+gpio22 = (LX, py(13))
+esp_3v3 = (LX, py(0))
+# SDA net13 — escape y67.62, vertical x85.6, trunk y38.0, via (22,38.0), B.Cu to pad4 (20,32.54)
+tracks.append(segment(*gpio21, 85.6, gpio21[1], 13, 0.35))
+tracks.append(segment(85.6, gpio21[1], 85.6, 38.0, 13, 0.35))
+tracks.append(segment(85.6, 38.0, 22.0, 38.0, 13, 0.35))
+tracks.append(via(22.0, 38.0, 13))
+tracks.append(segment(22.0, 38.0, 22.0, 32.54, 13, 0.35, "B.Cu"))
+tracks.append(segment(22.0, 32.54, 20.0, 32.54, 13, 0.35, "B.Cu"))
+# SCL net14 — escape y75.24, vertical x84.8, trunk y38.8, via (24.5,38.8), B.Cu to pad3 (20,30.0)
+tracks.append(segment(*gpio22, 84.8, gpio22[1], 14, 0.35))
+tracks.append(segment(84.8, gpio22[1], 84.8, 38.8, 14, 0.35))
+tracks.append(segment(84.8, 38.8, 24.5, 38.8, 14, 0.35))
+tracks.append(via(24.5, 38.8, 14))
+tracks.append(segment(24.5, 38.8, 24.5, 30.0, 14, 0.35, "B.Cu"))
+tracks.append(segment(24.5, 30.0, 20.0, 30.0, 14, 0.35, "B.Cu"))
+# 3V3 net8 — escape y42.22, vertical x86.4, trunk y37.0, via (27,37.0), B.Cu to pad1 (20,24.92)
+tracks.append(segment(*esp_3v3, 86.4, esp_3v3[1], 8, 0.4))
+tracks.append(segment(86.4, esp_3v3[1], 86.4, 37.0, 8, 0.4))
+tracks.append(segment(86.4, 37.0, 27.0, 37.0, 8, 0.4))
+tracks.append(via(27.0, 37.0, 8))
+tracks.append(segment(27.0, 37.0, 27.0, 24.92, 8, 0.4, "B.Cu"))
+tracks.append(segment(27.0, 24.92, 20.0, 24.92, 8, 0.4, "B.Cu"))
 
 # PSU_K on B.Cu: module K → J8.1 (external SW3). Never tie to 5V.
 tracks.append(segment(*psu_k, psu_k[0], 74.0, 11, 0.5, "B.Cu"))
