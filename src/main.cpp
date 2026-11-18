@@ -30,7 +30,7 @@
 #define K902_RTCM_INPUT 1  // RTCM3 written by the phone to the RX characteristic is fed to the K902
 
 #define BLE_DEVICE_NAME "E25aer_gnss"  // one binary; app sends $ROLE,BASE|ROVER after connect
-#define FW_VERSION "1.2.43"
+#define FW_VERSION "1.2.44"
 // Build with -DFORCE_BASE_ROLE=1 (env esp32dev_base) for a head locked to BASE:
 // $ROLE,ROVER is ignored, boot always starts as BASE, $FW reports the -BASE label.
 #ifndef FORCE_BASE_ROLE
@@ -327,7 +327,7 @@ bool allCommandAscii(const uint8_t *data, size_t len) {
 
 // Only these reach the command path; anything else on the RX characteristic is RTCM.
 bool commandPrefixOk(const char *s, size_t len) {
-  static const char *const kPrefixes[] = {"$ICMD,", "$BCMD,", "$BAVG,", "$K902S,", "$K902,", "$LCMD,", "$RCMD,", "$WCMD,", "$ROLE", "$FW", "$VER", "$TILT"};
+  static const char *const kPrefixes[] = {"$ICMD,", "$BCMD,", "$BAVG,", "$K902S,", "$K902,", "$LCMD,", "$RCMD,", "$WCMD,", "$ROLE", "$FW", "$VER", "$TILT", "$STAT"};
   for (const char *p : kPrefixes) {
     size_t n = strlen(p);
     if (strncmp(s, p, len < n ? len : n) == 0) return true;
@@ -1601,11 +1601,35 @@ void handlePhoneCommand(char *cmd) {
   // configuration count as the app being busy.
   const bool pollOnly = strcmp(cmd, "$FW") == 0 || strncmp(cmd, "$FW,", 4) == 0 ||
       strcmp(cmd, "$VER") == 0 || strncmp(cmd, "$VER,", 5) == 0 ||
-      strncmp(cmd, "$BCMD,STATUS", 12) == 0;
+      strncmp(cmd, "$BCMD,STATUS", 12) == 0 ||
+      strcmp(cmd, "$STAT") == 0 || strncmp(cmd, "$STAT,", 5) == 0;
   if (!pollOnly) lastPhoneCmdMs = millis();
   if (strcmp(cmd, "$FW") == 0 || strncmp(cmd, "$FW,", 4) == 0 ||
       strcmp(cmd, "$VER") == 0 || strncmp(cmd, "$VER,", 5) == 0) {
     sendFwVersion();
+    return;
+  }
+  if (strcmp(cmd, "$STAT") == 0 || strncmp(cmd, "$STAT,", 5) == 0) {
+    // One-line health snapshot for field diagnostics.
+    char line[192];
+    const unsigned long upS = millis() / 1000UL;
+    const unsigned long rtcmAge = lastRtcmOutMs == 0 ? 0xFFFFFFFFUL : (unsigned long)(millis() - lastRtcmOutMs);
+    // parts[1..4] keep the app's legacy contract: rtcmOn,queued,dropped,bleFails.
+    // Extended diagnostics follow — the app ignores fields it does not parse.
+    const bool rtcmOn = isBaseRole() ? baseActive
+        : (roverCorrectionSource == RoverCorrectionSource::Radio &&
+           lastRadioRtcmMs != 0 && (millis() - lastRadioRtcmMs) < 3000);
+    snprintf(line, sizeof(line),
+             "$STAT,%s,%lu,%lu,%lu,%lu,%u,%s,%s,%lu,%lu,%u,%u,%lu,%lu,%lu\n",
+             rtcmOn ? "ON" : "OFF",
+             (unsigned long)rawFramesQueued, (unsigned long)rawFramesDropped,
+             (unsigned long)bleNotifyFails,
+             upS, (unsigned)ESP.getFreeHeap(),
+             isBaseRole() ? "BASE" : "ROVER", FW_LABEL,
+             (unsigned long)rtcmOutFrames, (unsigned long)hc12.drops(),
+             deviceConnected ? 1u : 0u, hc12.ready() ? 1u : 0u,
+             (unsigned long)hc12.txBytes(), (unsigned long)hc12.rxBytes(), rtcmAge);
+    bleSend(line, strlen(line));
     return;
   }
   if (strncmp(cmd, "$WCMD,WIFI,", 11) == 0) {
