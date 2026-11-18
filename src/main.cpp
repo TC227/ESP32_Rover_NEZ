@@ -30,7 +30,7 @@
 #define K902_RTCM_INPUT 1  // RTCM3 written by the phone to the RX characteristic is fed to the K902
 
 #define BLE_DEVICE_NAME "E25aer_gnss"  // one binary; app sends $ROLE,BASE|ROVER after connect
-#define FW_VERSION "1.2.47"
+#define FW_VERSION "1.2.48"
 // Build with -DFORCE_BASE_ROLE=1 (env esp32dev_base) for a head locked to BASE:
 // $ROLE,ROVER is ignored, boot always starts as BASE, $FW reports the -BASE label.
 #ifndef FORCE_BASE_ROLE
@@ -2394,6 +2394,21 @@ void setup() {
 
 void loop() {
   unsigned long now = millis();
+  // kK902Setup is rover-flavored even in the unified build (inscontrol enable +
+  // smootheddr on). applyHeadRole only retunes on a role CHANGE, so a head that
+  // boots already BASE keeps INS/smoothing enabled and the
+  // K902 latches held positions (quality 7). Re-assert the base profile once,
+  // after the boot setup queue has had time to drain.
+  static bool baseBootRetuneDone = false;
+  if (isBaseRole() && !baseBootRetuneDone && now > 8000) {
+    baseBootRetuneDone = true;
+    gnss.sendCommand("inscontrol disable");
+    gnss.sendCommand("set smootheddr off");
+    gnss.sendCommand("set drleverarm 0 0 0");
+    gnss.sendCommand("fix none");
+    gnss.sendCommand("saveconfig");
+    Serial.println("Base boot retune: inscontrol off, smootheddr off, fix none");
+  }
   if (bleCutPending && now - bleCutAt >= bleCutDelayMs) {
     bleCutPending = false;
     bleStop();
