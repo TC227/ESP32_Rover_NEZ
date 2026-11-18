@@ -16,7 +16,7 @@
 #include "K902.h"
 #include "Hc12Radio.h"
 
-// ESP32 UART2 <-> K902 UART2 (COM2), 3.3 V TTL (never wire its RS-232 DB9 directly):
+// ESP32 UART2 <-> K902 UART1 (COM1), 3.3 V TTL (never wire its RS-232 DB9 directly):
 // K902 TXD -> GPIO16 (RX2), K902 RXD <- GPIO17 (TX2), GND <-> GND.
 #define K902_RX_PIN 16
 #define K902_TX_PIN 17
@@ -26,7 +26,8 @@
 #define HC12_TX_PIN 27
 #define HC12_SET_PIN 25
 #define BUZZER_PIN 23  // active buzzer I/O, high = beep. VCC from 5V on the carrier.
-#define K902_PORT "COM2"   // K902 port those wires go to
+#define K902_PORT "COM1"   // K902 port wired to ESP32 Serial2
+#define K902_MIRROR_PORT "COM2"   // Secondary output for field units with alternate routing
 #define K902_RTCM_INPUT 1  // RTCM3 written by the phone to the RX characteristic is fed to the K902
 
 #define BLE_DEVICE_NAME "E25aer_gnss"  // one binary; app sends $ROLE,BASE|ROVER after connect
@@ -115,18 +116,17 @@ const char *const kK902Setup[] = {
   "log gbgsv ontime 5",
 #if TILT_ENABLED
   "log " K902_PORT " imudatab ontime 0.05",
-  // Field K902s have shown binary output routed to COM1 instead of COM2 —
-  // mirror the IMU log so the bubble works on either wiring.
-  "log COM1 imudatab ontime 0.05",
+  // Mirror the IMU log to support field units with alternate routing.
+  "log " K902_MIRROR_PORT " imudatab ontime 0.05",
 #endif
 #if K902_INS_ENABLED && !FORCE_BASE_ROLE
   // Required for true tilted-pole surveying.  IMUDATA drives only the bubble;
   // INSRTKCOMPENSATE carries the K902-calculated pole-tip ENU offset.
   "log " K902_PORT " insrtkcompensateb ontime 0.2",
   // Same COM1/COM2 routing issue as imudatab — mirror so INS tip works on either wiring.
-  "log COM1 insrtkcompensateb ontime 0.2",
+  "log " K902_MIRROR_PORT " insrtkcompensateb ontime 0.2",
 #endif
-  // rawimub at 100 Hz fills the 115200 COM2 link and drops imudatab, so the
+  // rawimub at 100 Hz fills the 115200-baud link and drops imudatab, so the
   // bubble and level calibration see no IMU. insconfigb is only on change.
   "unlog " K902_PORT " rawimub",
   "log " K902_PORT " insconfigb onchanged",
@@ -1245,10 +1245,10 @@ void ensureBubbleLog(unsigned long now) {
   lastImuRearmMs = now;
   gnss.sendCommand("unlog " K902_PORT " rawimub");
   gnss.sendCommand("log " K902_PORT " imudatab ontime 0.05");
-  gnss.sendCommand("log COM1 imudatab ontime 0.05");
+  gnss.sendCommand("log " K902_MIRROR_PORT " imudatab ontime 0.05");
 #if K902_INS_ENABLED && !FORCE_BASE_ROLE
   gnss.sendCommand("log " K902_PORT " insrtkcompensateb ontime 0.2");
-  gnss.sendCommand("log COM1 insrtkcompensateb ontime 0.2");
+  gnss.sendCommand("log " K902_MIRROR_PORT " insrtkcompensateb ontime 0.2");
 #endif
   Serial.println("IMU quiet - re-armed IMU/INS logs");
 }
@@ -1292,18 +1292,16 @@ const char *const kBaseCommands[] = {
   "log " K902_PORT " rtcm1124b ontime 1",
   "log " K902_PORT " rtcm1005b ontime 5",
   "log " K902_PORT " rtcm1033b ontime 10",
-  // Field units have shown NMEA+commands on the wire but zero COM2 binary
-  // (no IMU, no RTCM). Mirror the base logs on COM1 so TX works whichever
-  // TTL port the K902 actually routes to the ESP32.
-  "log COM1 rtcm1074b ontime 1",
-  "log COM1 rtcm1084b ontime 1",
-  "log COM1 rtcm1094b ontime 1",
-  "log COM1 rtcm1124b ontime 1",
-  "log COM1 rtcm1005b ontime 5",
-  "log COM1 rtcm1033b ontime 10",
+  // Mirror the base logs for field units with alternate routing.
+  "log " K902_MIRROR_PORT " rtcm1074b ontime 1",
+  "log " K902_MIRROR_PORT " rtcm1084b ontime 1",
+  "log " K902_MIRROR_PORT " rtcm1094b ontime 1",
+  "log " K902_MIRROR_PORT " rtcm1124b ontime 1",
+  "log " K902_MIRROR_PORT " rtcm1005b ontime 5",
+  "log " K902_MIRROR_PORT " rtcm1033b ontime 10",
   "log gpgga ontime 1",
   "log " K902_PORT " imudatab ontime 0.05",  // bubble level on whichever port the K902 wires out
-  "log COM1 imudatab ontime 0.05",
+  "log " K902_MIRROR_PORT " imudatab ontime 0.05",
 };
 
 // fix position can land before the RTCM logs do. If the board stays quiet,
@@ -1320,7 +1318,7 @@ static void queueRtcmRate(int ontime) {
   char cmd[72];
   static const char *const kRtcmMsgs[] = {"rtcm1074b", "rtcm1084b", "rtcm1094b", "rtcm1124b"};
   if (gnss.freeCommandSlots() < 10) return;
-  for (const char *port : {K902_PORT, "COM1"}) {
+  for (const char *port : {K902_PORT, K902_MIRROR_PORT}) {
     for (const char *msg : kRtcmMsgs) {
       snprintf(cmd, sizeof(cmd), "log %s %s ontime %d", port, msg, ontime);
       gnss.sendCommand(cmd);
