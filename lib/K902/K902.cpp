@@ -128,6 +128,7 @@ const char *k902QualityName(uint8_t quality) {
     case 4: return "FIXED";
     case 5: return "FLOAT";
     case 6: return "INS";
+    case 7: return "HOLD";   // K902 fix position latched — frozen coordinate, not a live fix
     default: return "OTHER";
   }
 }

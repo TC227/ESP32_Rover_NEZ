@@ -30,7 +30,7 @@
 #define K902_RTCM_INPUT 1  // RTCM3 written by the phone to the RX characteristic is fed to the K902
 
 #define BLE_DEVICE_NAME "E25aer_gnss"  // one binary; app sends $ROLE,BASE|ROVER after connect
-#define FW_VERSION "1.2.44"
+#define FW_VERSION "1.2.45"
 // Build with -DFORCE_BASE_ROLE=1 (env esp32dev_base) for a head locked to BASE:
 // $ROLE,ROVER is ignored, boot always starts as BASE, $FW reports the -BASE label.
 #ifndef FORCE_BASE_ROLE
@@ -1282,6 +1282,56 @@ const char *const kBaseCommands[] = {
 
 // fix position can land before the RTCM logs do. If the board stays quiet,
 // queue the log lines again so HC-12 has frames to send.
+// RTCM adaptive rate: hc12.drops() counts bytes that overflowed the HC-12 TX
+// FIFO - the K902's 1 Hz MSM stream outrunning the radio. Back the log rate off
+// to ontime 2 until a clean window passes, then restore ontime 1.
+static bool rtcmRateRelaxed = false;
+static uint32_t rtcmAdaptLastDrops = 0;
+static unsigned long rtcmAdaptLastCheck = 0;
+static unsigned long rtcmAdaptCleanSince = 0;
+
+static void queueRtcmRate(int ontime) {
+  char cmd[72];
+  static const char *const kRtcmMsgs[] = {"rtcm1074b", "rtcm1084b", "rtcm1094b", "rtcm1124b"};
+  if (gnss.freeCommandSlots() < 10) return;
+  for (const char *port : {K902_PORT, "COM1"}) {
+    for (const char *msg : kRtcmMsgs) {
+      snprintf(cmd, sizeof(cmd), "log %s %s ontime %d", port, msg, ontime);
+      gnss.sendCommand(cmd);
+    }
+  }
+}
+
+void adaptRtcmRate(unsigned long now) {
+  if (!isBaseRole() || !baseActive) {
+    rtcmRateRelaxed = false;
+    rtcmAdaptCleanSince = 0;
+    rtcmAdaptLastDrops = hc12.drops();
+    rtcmAdaptLastCheck = now;
+    return;
+  }
+  if (now - rtcmAdaptLastCheck < 10000) return;
+  rtcmAdaptLastCheck = now;
+  const uint32_t drops = hc12.drops();
+  const bool dropped = drops != rtcmAdaptLastDrops;
+  rtcmAdaptLastDrops = drops;
+  if (dropped) {
+    rtcmAdaptCleanSince = 0;
+  } else if (rtcmAdaptCleanSince == 0) {
+    rtcmAdaptCleanSince = now;
+  }
+  if (!rtcmRateRelaxed && dropped) {
+    queueRtcmRate(2);
+    rtcmRateRelaxed = true;
+    Serial.println("RTCM rate relaxed to ontime 2 (HC-12 TX drops)");
+  } else if (rtcmRateRelaxed && rtcmAdaptCleanSince != 0 && now - rtcmAdaptCleanSince >= 60000) {
+    queueRtcmRate(1);
+    rtcmRateRelaxed = false;
+    rtcmAdaptCleanSince = 0;
+    Serial.println("RTCM rate restored to ontime 1");
+  }
+}
+
 void ensureBaseRtcm(unsigned long now) {
   if (!isBaseRole() || !baseActive) return;
   if (lastRtcmOutMs != 0 && now - lastRtcmOutMs < 3000) return;
@@ -1292,6 +1342,7 @@ void ensureBaseRtcm(unsigned long now) {
   for (size_t i = 1; i < sizeof(kBaseCommands) / sizeof(kBaseCommands[0]); i++) {
     gnss.sendCommand(kBaseCommands[i]);
   }
+  if (rtcmRateRelaxed) queueRtcmRate(2);  // re-arm must not undo the relaxed rate
   Serial.println("Base RTCM quiet - re-armed RTCM logs");
 }
 
@@ -2457,6 +2508,7 @@ void loop() {
 
   ensureBubbleLog(now);
   ensureBaseRtcm(now);
+  adaptRtcmRate(now);
   maybeAutoStartBase(now);
   gnss.poll();
 
