@@ -30,7 +30,7 @@
 #define K902_RTCM_INPUT 1  // RTCM3 written by the phone to the RX characteristic is fed to the K902
 
 #define BLE_DEVICE_NAME "E25aer_gnss"  // one binary; app sends $ROLE,BASE|ROVER after connect
-#define FW_VERSION "1.2.49"
+#define FW_VERSION "1.2.50"
 // Build with -DFORCE_BASE_ROLE=1 (env esp32dev_base) for a head locked to BASE:
 // $ROLE,ROVER is ignored, boot always starts as BASE, $FW reports the -BASE label.
 #ifndef FORCE_BASE_ROLE
@@ -327,7 +327,7 @@ bool allCommandAscii(const uint8_t *data, size_t len) {
 
 // Only these reach the command path; anything else on the RX characteristic is RTCM.
 bool commandPrefixOk(const char *s, size_t len) {
-  static const char *const kPrefixes[] = {"$ICMD,", "$BCMD,", "$BAVG,", "$K902S,", "$K902,", "$LCMD,", "$RCMD,", "$WCMD,", "$ROLE", "$FW", "$VER", "$TILT", "$STAT"};
+  static const char *const kPrefixes[] = {"$ICMD,", "$BCMD,", "$BAVG,", "$K902S,", "$K902,", "$LCMD,", "$RCMD,", "$WCMD,", "$ROLE", "$FW", "$VER", "$TILT", "$STAT", "$K902CLR"};
   for (const char *p : kPrefixes) {
     size_t n = strlen(p);
     if (strncmp(s, p, len < n ? len : n) == 0) return true;
@@ -854,6 +854,19 @@ void onGnssText(const char *line) {
   out[w++] = '\n';
   out[w] = '\0';
   bleSend(out, (size_t)w);
+  // The board answers an unknown command with "Error! Invalid key word!"
+  // followed by the echoed command text — blacklist it so setup retries and
+  // future sessions stop resending a command this K902 firmware cannot parse.
+  static bool rejectEchoPending = false;
+  const bool isReject = strstr(line, "Invalid key word") != nullptr;
+  if (rejectEchoPending && !isReject && line[0]) {
+    rejectEchoPending = false;
+    if (gnss.noteRejected(line)) {
+      prefs.putString("k902rej", gnss.rejectedBlob());
+      Serial.println("Saved K902 rejected-command list to NVS");
+    }
+  }
+  if (isReject) rejectEchoPending = true;
 }
 
 float gravityNorm() {
@@ -1731,6 +1744,14 @@ void handlePhoneCommand(char *cmd) {
     }
     return;
   }
+  if (strcmp(cmd, "$K902CLR") == 0) {
+    // Forget every command this K902 rejected (e.g. after swapping the board
+    // or flashing new K902 firmware that now understands them).
+    gnss.clearRejected();
+    prefs.remove("k902rej");
+    bleSend("$K902CLR,OK\n", 12);
+    return;
+  }
   if (strncmp(cmd, "$K902,", 6) == 0) {
     // Raw K902 command passthrough for field debugging (e.g. "$K902,set smootheddr off").
     const char *kcmd = cmd + 6;
@@ -2397,6 +2418,12 @@ void setup() {
   gnss.onRtcmOut(onRtcmFromBoard);
   gnss.begin(Serial2, K902_RX_PIN, K902_TX_PIN, K902_BAUD, kK902Setup,
              sizeof(kK902Setup) / sizeof(kK902Setup[0]), K902_RTCM_INPUT);
+  // Commands this K902 firmware rejected on a previous boot — skip them so
+  // setup retries do not spam "Invalid key word" over the UART.
+  {
+    String rej = prefs.getString("k902rej", "");
+    if (rej.length()) gnss.loadRejected(rej.c_str());
+  }
 
   hc12Mux = xSemaphoreCreateMutex();
   hc12.begin(HC12_RX_PIN, HC12_TX_PIN, HC12_SET_PIN);

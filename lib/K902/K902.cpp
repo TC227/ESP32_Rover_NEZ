@@ -235,11 +235,76 @@ void K902::configure() {
   Serial.println(first ? "K902 setup" : "K902 setup retry");
 }
 
+void K902::normalizeCommand(const char *in, char *out, size_t outSize) {
+  // Uppercase + single spaces so "log glgsa ontime 1" matches the board's
+  // "LOG GLGSA ONTIME 1" echo regardless of case or spacing.
+  size_t w = 0;
+  bool pendingSpace = false;
+  for (const char *p = in; *p && w + 1 < outSize; ++p) {
+    char c = *p;
+    if (c >= 'a' && c <= 'z') c = (char)(c - 'a' + 'A');
+    if (c == ' ' || c == '\t') {
+      pendingSpace = w != 0;
+      continue;
+    }
+    if (pendingSpace) out[w++] = ' ';
+    pendingSpace = false;
+    out[w++] = c;
+  }
+  out[w] = '\0';
+}
+
+bool K902::commandRejected(const char *command) const {
+  char norm[kCommandMax];
+  normalizeCommand(command, norm, sizeof(norm));
+  if (!norm[0]) return false;
+  for (size_t i = 0; i < rejectedCount_; i++) {
+    if (strcmp(rejected_[i], norm) == 0) return true;
+  }
+  return false;
+}
+
 bool K902::sendCommand(const char *command) {
+  // Silently drop commands this board firmware already rejected — resending
+  // them on every setup retry only fills the UART with "Invalid key word".
+  if (commandRejected(command)) return true;
   if (!command[0] || queueCount_ >= kQueueLen) return false;
   strlcpy(queue_[(queueHead_ + queueCount_) % kQueueLen], command, kCommandMax);
   queueCount_++;
   return true;
+}
+
+bool K902::noteRejected(const char *command) {
+  char norm[kCommandMax];
+  normalizeCommand(command, norm, sizeof(norm));
+  // Only plausible commands — reject short echoes like "OK!" or banner text.
+  if (strlen(norm) < 4 || norm[0] < 'A' || norm[0] > 'Z' || commandRejected(norm)) return false;
+  if (rejectedCount_ >= kMaxRejected) return false;
+  strlcpy(rejected_[rejectedCount_++], norm, kCommandMax);
+  Serial.printf("K902 rejected command blacklisted: %s\n", norm);
+  return true;
+}
+
+void K902::loadRejected(const char *blob) {
+  if (!blob || !blob[0]) return;
+  char buf[1024];
+  strlcpy(buf, blob, sizeof(buf));
+  for (char *tok = strtok(buf, "\n"); tok && rejectedCount_ < kMaxRejected; tok = strtok(nullptr, "\n")) {
+    char norm[kCommandMax];
+    normalizeCommand(tok, norm, sizeof(norm));
+    if (norm[0] && !commandRejected(norm)) {
+      strlcpy(rejected_[rejectedCount_++], norm, kCommandMax);
+    }
+  }
+}
+
+String K902::rejectedBlob() const {
+  String out;
+  for (size_t i = 0; i < rejectedCount_; i++) {
+    if (i) out += '\n';
+    out += rejected_[i];
+  }
+  return out;
 }
 
 bool K902::acceptsCorrections() const {

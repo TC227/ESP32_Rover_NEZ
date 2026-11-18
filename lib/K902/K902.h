@@ -72,6 +72,16 @@ class K902 {
 
   void configure();
   bool sendCommand(const char *command);
+  // The board answers unknown commands with "Error! Invalid key word!" followed
+  // by the echoed command. noteRejected() remembers that command (normalized)
+  // so sendCommand() silently drops it instead of spamming setup retries.
+  // The caller persists rejectedBlob() (e.g. NVS) and feeds it back via
+  // loadRejected() after boot; clearRejected() wipes the list.
+  bool noteRejected(const char *command);
+  void loadRejected(const char *blob);
+  void clearRejected() { rejectedCount_ = 0; }
+  size_t rejectedCount() const { return rejectedCount_; }
+  String rejectedBlob() const;
   bool acceptsCorrections() const;
   const char *portState() const;
   uint8_t pendingCommands() const { return queueCount_; }
@@ -113,6 +123,7 @@ class K902 {
   static const size_t kQueueLen = 32;
   static const size_t kCommandMax = 128;
   static const size_t kMaxBauds = 9;
+  static const size_t kMaxRejected = 24;
 
   enum class PortMode : uint8_t { Unknown, Command, Differential };
 
@@ -155,6 +166,8 @@ class K902 {
   void enterDifferential(uint32_t now);
   void leaveDifferentialMode();
   void transmit(const char *command);
+  bool commandRejected(const char *command) const;
+  static void normalizeCommand(const char *in, char *out, size_t outSize);
 
   HardwareSerial *uart_ = nullptr;
   const char *const *setup_ = nullptr;
@@ -190,6 +203,8 @@ class K902 {
   char queue_[kQueueLen][kCommandMax];
   uint8_t queueHead_ = 0;
   uint8_t queueCount_ = 0;
+  char rejected_[kMaxRejected][kCommandMax];
+  uint8_t rejectedCount_ = 0;
   PortMode portMode_ = PortMode::Unknown;
   uint32_t nextTxMs_ = 0;
   uint32_t lastTxMs_ = 0;

@@ -1,3 +1,8 @@
+## 1.2.50 - 2026-11-18
+
+- K902 "Invalid key word" blacklist: when the board rejects a command it echoes the text back; the firmware now remembers rejected commands (persisted in NVS `k902rej`) and `sendCommand` silently drops them, so setup retries stop spamming errors. Field K902s reject `glgsa/gagsa/gbgsa`, `glgsv/gagsv/gbgsv`, `insrtkcompensateb`, `insconfigb`, and `insrtk rodlength` — those logs simply never arm on that board revision instead of retrying forever.
+- New `$K902CLR` command clears the rejected-command list (e.g. after swapping the K902 board or flashing new receiver firmware).
+
 ## 1.2.28 - 2026-11-15
 
 - BASE keeps IMU logs again (`imudatab` on both COM1 and COM2) so the bubble level works on a base head too; `ensureBubbleLog` no longer skips the BASE role.
