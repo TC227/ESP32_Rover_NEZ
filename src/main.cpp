@@ -30,7 +30,7 @@
 #define K902_RTCM_INPUT 1  // RTCM3 written by the phone to the RX characteristic is fed to the K902
 
 #define BLE_DEVICE_NAME "E25aer_gnss"  // one binary; app sends $ROLE,BASE|ROVER after connect
-#define FW_VERSION "1.2.45"
+#define FW_VERSION "1.2.46"
 // Build with -DFORCE_BASE_ROLE=1 (env esp32dev_base) for a head locked to BASE:
 // $ROLE,ROVER is ignored, boot always starts as BASE, $FW reports the -BASE label.
 #ifndef FORCE_BASE_ROLE
@@ -1460,6 +1460,16 @@ void maybeAutoStartBase(unsigned long now) {
     baseAvgFixNoneMs = now;
     if (gnss.sendCommand("fix none")) baseAvgFixNonePending = false;
     else baseAvgFixNonePending = true;
+  }
+  // Tell the app what the head actually believes: hold flag + live K902 quality,
+  // so the UI can show "head not holding" instead of a silent frozen average.
+  static unsigned long lastBavgStateMs = 0;
+  if (baseAvgHold && now - lastBavgStateMs >= 1000) {
+    lastBavgStateMs = now;
+    char st[48];
+    const int q = (int)gnss.fix().quality;
+    const int n = snprintf(st, sizeof(st), "$BAVGSTATE,%d,%d\n", 1, q);
+    if (n > 0) bleSend(st, (size_t)n);
   }
   // Explicit averaging hold wins; it auto-expires so a dead app cannot park the base forever.
   if (baseAvgHold && now - baseAvgHoldAt > kBaseAvgHoldMs) baseAvgHold = false;
