@@ -30,7 +30,7 @@
 #define K902_RTCM_INPUT 1  // RTCM3 written by the phone to the RX characteristic is fed to the K902
 
 #define BLE_DEVICE_NAME "E25aer_gnss"  // one binary; app sends $ROLE,BASE|ROVER after connect
-#define FW_VERSION "1.2.48"
+#define FW_VERSION "1.2.49"
 // Build with -DFORCE_BASE_ROLE=1 (env esp32dev_base) for a head locked to BASE:
 // $ROLE,ROVER is ignored, boot always starts as BASE, $FW reports the -BASE label.
 #ifndef FORCE_BASE_ROLE
@@ -841,6 +841,19 @@ void onGnssSentence(const char *sentence, size_t len) {
 
 void onGnssText(const char *line) {
   Serial.printf("K902> %s\n", line);
+  // Mirror K902 command replies to the phone as $K902T,<text> so field
+  // debugging (e.g. why "fix none" does not stick) works over BLE only.
+  char out[160];
+  int w = 0;
+  out[w++] = '$'; out[w++] = 'K'; out[w++] = '9'; out[w++] = '0'; out[w++] = '2'; out[w++] = 'T'; out[w++] = ',';
+  for (const char *p = line; *p && w < (int)sizeof(out) - 8; p++) {
+    char c = *p;
+    if (c == '\r' || c == '\n' || c == ',') c = ' ';
+    out[w++] = c;
+  }
+  out[w++] = '\n';
+  out[w] = '\0';
+  bleSend(out, (size_t)w);
 }
 
 float gravityNorm() {
